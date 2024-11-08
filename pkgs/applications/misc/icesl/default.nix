@@ -1,13 +1,15 @@
 { stdenv, lib, fetchzip, freeglut, libXmu, libXi, libX11, libICE, libGLU, libGL, libSM
 , libXext, gcc-unwrapped, glibc, lua, luabind, glfw, libgccjit, dialog, openssl, makeWrapper }:
+
 let
   lpath = lib.makeLibraryPath [ libXmu libXi libX11 freeglut libICE libGLU libGL libSM libXext gcc-unwrapped glibc lua glfw luabind libgccjit openssl ];
   #makeVersionBeta = beta: "${beta}";
 in
+
 stdenv.mkDerivation rec {
   pname = "iceSL";
   version = "2.5.3";
-  _versionType = "version=beta";
+  _versionType = "version=stable";
 
   src =  if stdenv.hostPlatform.system == "x86_64-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=amd64";
@@ -17,7 +19,7 @@ stdenv.mkDerivation rec {
   } else if stdenv.hostPlatform.system == "i686-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=i386";
     extension = "zip";
-    sha256 = "0n2yyxzw0arkc70f0qli4n5chdlh9vc7aqizk4v7825mcglhwlyh";
+    sha256 = "sha256-ZXG3ZX8weJ3hgBqyZj2Ynx2vrUKTqWVYqZDRTv9Z61k=";
   } else throw "Unsupported architecture";
 
   nativeBuildInputs = [ makeWrapper ];
