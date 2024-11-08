@@ -1,25 +1,26 @@
 { stdenv, lib, fetchzip, freeglut, libXmu, libXi, libX11, libICE, libGLU, libGL, libSM
-, libXext, gcc-unwrapped, glibc, lua, luabind, glfw, libgccjit, dialog, openssl, makeWrapper }:
+, libXext, gcc-unwrapped, glibc, lua, luabind, libgccjit, dialog, openssl, makeWrapper }:
 
 let
-  lpath = lib.makeLibraryPath [ libXmu libXi libX11 freeglut libICE libGLU libGL libSM libXext gcc-unwrapped glibc lua glfw luabind libgccjit openssl ];
+  lpath = lib.makeLibraryPath [ libXmu libXi libX11 freeglut libICE libGLU libGL libSM libXext gcc-unwrapped glibc lua luabind libgccjit openssl ];
   #makeVersionBeta = beta: "${beta}";
 in
 
 stdenv.mkDerivation rec {
   pname = "iceSL";
-  version = "2.5.3";
-  _versionType = "version=stable";
+  version = "2.5.4-beta1"; #statically compiles glfw
+  _versionType = "version=beta";
 
   src =  if stdenv.hostPlatform.system == "x86_64-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=amd64";
     extension = "zip";
-    sha256 = "sha256-db4qj7hg0UnrlCnWAijvMWMgncUWPacnip3jdKU6Vl4=";
-    #sha256 = "sha256-wFsyJS3UMw/b4nZTGBg74exVBHTQs6JoLmJs57/D8Co=";
+    sha256 = "sha256-GHlfVvXg/XqGThgrce+l3nnHXV/ya2y+HLwu+DY8bo0=";
+    #sha256 = "sha256-db4qj7hg0UnrlCnWAijvMWMgncUWPacnip3jdKU6Vl4="; #hash for 2.5.3 stable
   } else if stdenv.hostPlatform.system == "i686-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=i386";
     extension = "zip";
-    sha256 = "sha256-ZXG3ZX8weJ3hgBqyZj2Ynx2vrUKTqWVYqZDRTv9Z61k=";
+    sha256 = "sha256-ZXG3ZX8weJ3hgBqyZj2Ynx2vrUKTqWVYqZDRTv9Z61k="; #hash for 2.5.3 stable
+    #sha256 = ""; #2.5.4-beta1 unavailable 2024-11-08 check back
   } else throw "Unsupported architecture";
 
   nativeBuildInputs = [ makeWrapper ];
