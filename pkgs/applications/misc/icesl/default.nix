@@ -14,7 +14,7 @@ stdenv.mkDerivation rec {
   src =  if stdenv.hostPlatform.system == "x86_64-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=amd64";
     extension = "zip";
-    sha256 = "sha256-60V6ynykHcD5knv5t7vWJdxzLk1DQdIfWqzNZcU1dQA=";
+    sha256 = "sha256-nEI7IQBOjUFcN0oLA7IcMKVWuoI4WTQK6mvBtdPgsAU=";
     #sha256 = "sha256-db4qj7hg0UnrlCnWAijvMWMgncUWPacnip3jdKU6Vl4="; #hash for 2.5.3 stable
   } else if stdenv.hostPlatform.system == "i686-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=i386";
