@@ -24,7 +24,7 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   buildInputs = lib.optionals stdenv.hostPlatform.isElf [
-    stdenv.cc.cc.lib
+    (lib.getLib stdenv.cc.cc)
   ];
 
   installPhase = ''
@@ -38,5 +38,6 @@ stdenv.mkDerivation (finalAttrs: {
     platforms = [ "aarch64-darwin" "x86_64-linux" ];
     maintainers = with maintainers; [ aaronjheng ];
     mainProgram = "starpls";
+    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
   };
 })

@@ -449,7 +449,6 @@ with lib.maintainers;
   haskell = {
     members = [
       cdepillabout
-      expipiplus1
       maralorn
       ncfavier
       sternenseemann
@@ -496,6 +495,19 @@ with lib.maintainers;
     ];
     scope = "Input-Output Global employees, which maintain critical software";
     shortName = "Input-Output Global employees";
+  };
+
+  java = {
+    githubTeams = [ "java" ];
+    members = [
+      chayleaf
+      fliegendewurst
+      infinidoge
+      tomodachi94
+    ];
+    shortName = "Java";
+    scope = "Maintainers of the Nixpkgs Java ecosystem (JDK, JVM, Java, Gradle, Maven, Ant, and adjacent projects)";
+    enableFeatureFreezePing = true;
   };
 
   jitsi = {
@@ -1064,7 +1076,6 @@ with lib.maintainers;
     members = [
       hehongbo
       lach
-      rane
       sigmasquadron
     ];
     scope = "Maintain the Xen Project Hypervisor and the related tooling ecosystem.";
