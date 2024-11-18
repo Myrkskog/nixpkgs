@@ -14,23 +14,23 @@
 
 buildPythonPackage rec {
   pname = "flask-wtf";
-  version = "1.2.2";
-  pyproject = true;
+  version = "1.2.1";
+  format = "pyproject";
 
-  disabled = pythonOlder "3.9";
+  disabled = pythonOlder "3.8";
 
   src = fetchPypi {
     pname = "flask_wtf";
     inherit version;
-    hash = "sha256-edLuHkNs9XC8y32RZTP6GHV6LxjCkKzP+rG5oLaEZms=";
+    hash = "sha256-i7Jp65u0a4fnyCM9fn3r3x+LdL+QzBeJmIwps3qXtpU=";
   };
 
-  build-system = [
+  nativeBuildInputs = [
     hatchling
     setuptools
   ];
 
-  dependencies = [
+  propagatedBuildInputs = [
     flask
     itsdangerous
     wtforms
@@ -42,7 +42,10 @@ buildPythonPackage rec {
 
   nativeCheckInputs = [ pytestCheckHook ];
 
-  pythonImportsCheck = [ "flask_wtf" ];
+  pytestFlagsArray = [
+    "-W"
+    "ignore::DeprecationWarning"
+  ];
 
   meta = with lib; {
     description = "Simple integration of Flask and WTForms";
@@ -51,7 +54,7 @@ buildPythonPackage rec {
       mic92
       anthonyroussel
     ];
-    homepage = "https://github.com/pallets-eco/flask-wtf/";
-    changelog = "https://github.com/pallets-eco/flask-wtf/releases/tag/v${version}";
+    homepage = "https://github.com/lepture/flask-wtf/";
+    changelog = "https://github.com/wtforms/flask-wtf/releases/tag/v${version}";
   };
 }

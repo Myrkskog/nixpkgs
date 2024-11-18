@@ -64,7 +64,7 @@ stdenv.mkDerivation (finalAttrs: {
       # nix provide lib/clang headers in libclang, not in llvm.
       substituteInPlace casadi/interfaces/clang/CMakeLists.txt --replace-fail \
         '$'{CLANG_LLVM_LIB_DIR} \
-        ${lib.getLib llvmPackages_17.libclang}/lib
+        ${llvmPackages_17.libclang.lib}/lib
 
       # help casadi find its own libs
       substituteInPlace casadi/core/casadi_os.cpp --replace-fail \

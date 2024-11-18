@@ -2,6 +2,8 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
+  stdenv,
+  darwin,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -16,7 +18,9 @@ rustPlatform.buildRustPackage rec {
     fetchSubmodules = true;
   };
 
-  cargoPatches = [ ./0001-update-time-rs.patch ];
+  cargoPatches = [
+    ./0001-update-time-rs.patch
+  ];
 
   cargoLock = {
     lockFile = ./Cargo.lock;
@@ -24,6 +28,11 @@ rustPlatform.buildRustPackage rec {
       "serum_dex-0.4.0" = "sha256-Nzhh3OcAFE2LcbUgrA4zE2TnUMfV0dD4iH6fTi48GcI=";
     };
   };
+
+  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
+    darwin.apple_sdk.frameworks.Security
+    darwin.apple_sdk.frameworks.SystemConfiguration
+  ];
 
   checkFlags = [
     # the following test cases try to access network, skip them

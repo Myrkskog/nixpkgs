@@ -92,7 +92,7 @@
     bindgenHook = callPackage ({}: makeSetupHook {
       name = "rust-bindgen-hook";
       substitutions = {
-        libclang = (lib.getLib clang.cc);
+        libclang = clang.cc.lib;
         inherit clang;
       };
     }

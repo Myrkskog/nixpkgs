@@ -5,7 +5,7 @@
 }:
 buildFishPlugin {
   pname = "bobthefisher";
-  version = "0-unstable-2023-10-25";
+  version = "unstable-2023-10-25";
 
   src = fetchFromGitHub {
     owner = "Scrumplex";

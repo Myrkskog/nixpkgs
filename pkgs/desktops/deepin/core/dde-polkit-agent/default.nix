@@ -8,7 +8,10 @@
   dde-qt-dbus-factory,
   pkg-config,
   cmake,
-  libsForQt5,
+  qttools,
+  wrapQtAppsHook,
+  polkit-qt,
+  qtbase,
 }:
 
 stdenv.mkDerivation rec {
@@ -25,17 +28,19 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     cmake
     pkg-config
-    libsForQt5.qttools
-    libsForQt5.wrapQtAppsHook
+    qttools
+    wrapQtAppsHook
   ];
 
   buildInputs = [
     dtkwidget
-    qt5integration
     qt5platform-plugins
     dde-qt-dbus-factory
-    libsForQt5.polkit-qt
+    polkit-qt
   ];
+
+  # qt5integration must be placed before qtsvg in QT_PLUGIN_PATH
+  qtWrapperArgs = [ "--prefix QT_PLUGIN_PATH : ${qt5integration}/${qtbase.qtPluginPrefix}" ];
 
   postFixup = ''
     wrapQtApp $out/lib/polkit-1-dde/dde-polkit-agent

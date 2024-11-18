@@ -83,7 +83,7 @@ stdenv.mkDerivation rec {
   # Ensure that FUSE calls the setuid wrapper, not
   # $out/bin/fusermount. It falls back to calling fusermount in
   # $PATH, so it should also work on non-NixOS systems.
-  env.NIX_CFLAGS_COMPILE = ''-DFUSERMOUNT_DIR="/run/wrappers/bin"'';
+  NIX_CFLAGS_COMPILE = ''-DFUSERMOUNT_DIR="/run/wrappers/bin"'';
 
   preConfigure =
     ''

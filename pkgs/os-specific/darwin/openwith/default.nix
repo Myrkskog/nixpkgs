@@ -1,7 +1,7 @@
 { lib, swiftPackages, fetchFromGitHub }:
 
 let
-  inherit (swiftPackages) stdenv swift;
+  inherit (swiftPackages) apple_sdk stdenv swift;
   arch = if stdenv.hostPlatform.isAarch64 then "arm64" else "x86_64";
 in
 stdenv.mkDerivation rec {
@@ -16,6 +16,8 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ swift ];
+
+  buildInputs = with apple_sdk.frameworks; [ AppKit Foundation UniformTypeIdentifiers ];
 
   makeFlags = [ "openwith_${arch}" ];
 

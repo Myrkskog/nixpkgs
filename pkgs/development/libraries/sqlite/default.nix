@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchurl, unzip, zlib, readline, ncurses
+{ lib, stdenv, fetchurl, zlib, readline, ncurses
 , updateAutotoolsGnuConfigScriptsHook
 
 # for tests
@@ -24,15 +24,11 @@ stdenv.mkDerivation rec {
     url = "https://sqlite.org/2024/sqlite-autoconf-${archiveVersion version}.tar.gz";
     hash = "sha256-Z9P+bSaObq3crjcn/OWPzI6cU4ab3Qegxh443fKWUHE=";
   };
-  docsrc = fetchurl {
-    url = "https://sqlite.org/2024/sqlite-doc-${archiveVersion version}.zip";
-    hash = "sha256-6WkTH5PKefvGTVdyShA1c1iBVVpSYA2+acaeq3LJ/NE=";
-  };
 
-  outputs = [ "bin" "dev" "man" "doc" "out" ];
+  outputs = [ "bin" "dev" "out" ];
   separateDebugInfo = stdenv.hostPlatform.isLinux;
 
-  nativeBuildInputs = [ updateAutotoolsGnuConfigScriptsHook unzip ];
+  nativeBuildInputs = [ updateAutotoolsGnuConfigScriptsHook ];
   buildInputs = [ zlib ] ++ lib.optionals interactive [ readline ncurses ];
 
   # required for aarch64 but applied for all arches for simplicity
@@ -86,10 +82,6 @@ stdenv.mkDerivation rec {
   postInstall = ''
     # Do not contaminate dependent libtool-based projects with sqlite dependencies.
     sed -i $out/lib/libsqlite3.la -e "s/dependency_libs=.*/dependency_libs='''/"
-
-    mkdir -p $doc/share/doc
-    unzip $docsrc
-    mv sqlite-doc-${archiveVersion version} $doc/share/doc/sqlite
   '';
 
   doCheck = false; # fails to link against tcl

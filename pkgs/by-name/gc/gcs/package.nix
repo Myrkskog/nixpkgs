@@ -1,6 +1,5 @@
 {
   lib,
-  stdenv,
   buildGoModule,
   buildNpmPackage,
   fetchFromGitHub,
@@ -17,12 +16,13 @@
   mupdf,
   fontconfig,
   freetype,
-  apple-sdk_11,
+  stdenv,
+  darwin,
 }:
 
 buildGoModule rec {
   pname = "gcs";
-  version = "5.28.1";
+  version = "5.27.0";
 
   src = fetchFromGitHub {
     owner = "richardwilkes";
@@ -43,7 +43,7 @@ buildGoModule rec {
       . refresh-pdf.js.sh
     '';
 
-    hash = "sha256-ArJ+GveG2Y1PYeCuIFJoQ3eVyqvAi4HEeAEd4X03yu4=";
+    hash = "sha256-QVkyemBQ7RrV3dpP3n7Pg0XljdxWtCphZIj2T77nKtU=";
   };
 
   modPostBuild = ''
@@ -51,14 +51,14 @@ buildGoModule rec {
     sed -i 's|-lmupdf[^ ]* |-lmupdf |g' vendor/github.com/richardwilkes/pdf/pdf.go
   '';
 
-  vendorHash = "sha256-EmAGkQ+GHzVbSq/nPu0awL79jRmZuMHheBWwanfEgGI=";
+  vendorHash = "sha256-+vCc1g5noAl/iwEYhNZJYPiScKqKGKlsuruoUO/4tiU=";
 
   frontend = buildNpmPackage {
     name = "${pname}-${version}-frontend";
 
     inherit src;
     sourceRoot = "${src.name}/server/frontend";
-    npmDepsHash = "sha256-LqOH3jhp4Mx7JGYSjF29kVUny3xNn7oX0qCYi79SH4w=";
+    npmDepsHash = "sha256-VWTJg/pluRYVVBDiJ+t2uhyodRuIFfHpzCZMte1krDM=";
 
     installPhase = ''
       runHook preInstall
@@ -76,9 +76,6 @@ buildGoModule rec {
 
   buildInputs =
     [
-      mupdf
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isLinux [
       libGL
       libX11
       libXcursor
@@ -86,11 +83,14 @@ buildGoModule rec {
       libXinerama
       libXi
       libXxf86vm
+      mupdf
       fontconfig
       freetype
     ]
     ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      apple-sdk_11
+      darwin.apple_sdk_11_0.frameworks.Carbon
+      darwin.apple_sdk_11_0.frameworks.Cocoa
+      darwin.apple_sdk_11_0.frameworks.Kernel
     ];
 
   # flags are based on https://github.com/richardwilkes/gcs/blob/master/build.sh

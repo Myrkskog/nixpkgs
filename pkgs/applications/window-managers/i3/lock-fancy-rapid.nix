@@ -1,10 +1,4 @@
-{
-  lib,
-  stdenv,
-  fetchFromGitHub,
-  xorg,
-  i3lock,
-}:
+{ lib, stdenv, fetchFromGitHub, xorg, i3lock }:
 
 stdenv.mkDerivation {
   pname = "i3lock-fancy-rapid";
@@ -39,7 +33,6 @@ stdenv.mkDerivation {
     description = "Faster implementation of i3lock-fancy";
     homepage = "https://github.com/yvbbrjdr/i3lock-fancy-rapid";
     maintainers = with maintainers; [ nickhu ];
-    mainProgram = "i3lock-fancy-rapid";
     license = licenses.bsd3;
     platforms = platforms.linux;
   };

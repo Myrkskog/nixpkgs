@@ -21,13 +21,13 @@
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "atlauncher";
-  version = "3.4.38.0";
+  version = "3.4.37.4";
 
   src = fetchFromGitHub {
     owner = "ATLauncher";
     repo = "ATLauncher";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-0cn4qTdNH8VHRuypdRInrmU7gh792NSYL7P2rkz/4xc=";
+    hash = "sha256-3Rs6XtqhD9PKz8ekF0STaANvPQ73KSUS8GIPvn9DmbQ=";
   };
 
   postPatch = ''
@@ -96,7 +96,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     '';
 
   meta = {
-    broken = stdenvNoCC.hostPlatform.isDarwin; # https://github.com/NixOS/nixpkgs/issues/356259
     changelog = "https://github.com/ATLauncher/ATLauncher/blob/v${finalAttrs.version}/CHANGELOG.md";
     description = "Simple and easy to use Minecraft launcher which contains many different modpacks for you to choose from and play";
     downloadPage = "https://atlauncher.com/downloads";

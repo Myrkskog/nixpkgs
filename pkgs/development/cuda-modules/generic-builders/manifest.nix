@@ -215,7 +215,7 @@ backendStdenv.mkDerivation (finalAttrs: {
     # one that is compatible with the rest of nixpkgs, even when
     # nvcc forces us to use an older gcc
     # NB: We don't actually know if this is the right thing to do
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
   ];
 
   # Picked up by autoPatchelf

@@ -68,10 +68,6 @@ mapAliases ({
   awkward0 = throw "awkward0 has been removed, use awkward instead"; # added 2022-12-13
   azure-functions-devops-build = throw "azure-functions-devops-build has been removed, because it is abandoned"; # added 2024-10-04
   Babel = babel; # added 2022-05-06
-  backports-cached-property = throw "backports-cached-property has been removed, since we no longer need to backport to python3.7"; # added 2024-11-12
-  backports-shutil-get-terminal-size = throw "backports-shutil-get-terminal-size has been removed, since we no longer need to backport to python3.2"; # added 2024-11-12
-  backports-shutil-which = throw "backports-shutil-which has been removed, since we no longer need to backport to python3.2"; # added 2024-11-12
-  backports-zoneinfo = throw "backports-zoneinfo has been removed, since we no longer need to backport to python3.8"; # added 2024-11-12
   backports_csv = throw "backports_csv has been removed, since we no longer need to backport to python2"; # added 2023-07-28
   backports_functools_lru_cache = throw "backports_functools_lru_cache has been removed, since we no longer need to backport to python3.2"; # added 2023-07-28
   backports_shutil_get_terminal_size = backports-shutil-get-terminal-size; # added 2024-04-21
@@ -407,7 +403,6 @@ mapAliases ({
   pdfminer = pdfminer-six; # added 2022-05-25
   pdfx = throw "pdfx has been removed because the upstream repository was archived in 2023"; # Added 2024-10-04
   pep257 = pydocstyle; # added 2022-04-12
-  pillow-simd = throw "pillow-simd has been removed for lagging behind pillow upstream, which exposes it to various security issues."; # Added 2024-10-24
   pixelmatch = "pixelmatch has been removed as it was unmaintained"; # Added 2024-08-18
   pkutils = throw "pkutils was removed as it was unused and is not applicable to modern Python build tools"; # added 2024-07-28
   poetry = throw "poetry was promoted to a top-level attribute, use poetry-core to build Python packages"; # added 2023-01-09
@@ -553,8 +548,8 @@ mapAliases ({
   pyuavcan = throw "pyuavcan has been renamed to pycyphal and the old package deprecated, use pycyphal instead"; # added 2024-02-09
   pyunifiprotect = throw "pyunifiprotect has disappeared from GitHub and PyPI, use uiprotect instead"; # added 2024-09-17
   pyutilib = throw "pyutilib has been removed, since it is no longer maintained"; # added 2024-07-28
-  pyvicare-neo = pyvicare; # Added 2024-11-06
   pyvcf = throw "pyvcf has been removed, it was using setuptools 2to3 translation feature, which has been removed in setuptools 58"; # added 2023-05-19
+  pyvicare = pyvicare-neo; # added 2024-08-31
   PyVirtualDisplay = pyvirtualdisplay; # added 2023-02-19
   pywick = throw "pywick has been removed, since it is no longer maintained"; # added 2023-07-01
   pyxb = throw "pyxb has been removed, its last release was in 2017 and it has finally been archived in April 2023."; # added 2024-01-05
@@ -646,7 +641,6 @@ mapAliases ({
   suseapi = throw "suseapi has been removed because it is no longer maintained"; # added 2023-02-27
   synologydsm-api = py-synologydsm-api; # added 2024-07-29
   sysv_ipc = sysv-ipc; # added 2024-01-07
-  telegram = throw "telegram has been removed since it is abandoned"; # added 2024-11-06
   tempita = throw "tempita has been removed because it is unmaintained and the upstream repository is gone"; # added 2024-07-29
   tensorflow-bin_2 = tensorflow-bin; # added 2021-11-25
   tensorflow-build_2 = tensorflow-build; # added 2021-11-25
@@ -708,7 +702,6 @@ mapAliases ({
   WSME = wsme; # added 2023-02-19
   x11_hash = x11-hash; # added 2023-11-05
   xapp = python-xapp; # added 2024-07-19
-  xarray-datatree = throw "Datatree has been merged upstream into pydata/xarray, and released as of xarray version 2024.10.0."; # added 2024-11-02
   xenomapper = throw "xenomapper was moved to pkgs.xenomapper"; # added 2021-12-31
   XlsxWriter = xlsxwriter; # added 2023-02-19
   xsser = "xsser has been removed because it was unmaintained and relies on a archived project"; # added 2024-07-27

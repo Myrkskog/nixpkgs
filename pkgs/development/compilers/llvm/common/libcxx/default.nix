@@ -44,8 +44,6 @@ let
       cp -r ${monorepoSrc}/llvm/utils "$out/llvm"
     '' + (lib.optionalString (lib.versionAtLeast release_version "14") ''
       cp -r ${monorepoSrc}/third-party "$out"
-    '') + (lib.optionalString (lib.versionAtLeast release_version "20") ''
-      cp -r ${monorepoSrc}/libc "$out"
     '') + ''
       cp -r ${monorepoSrc}/runtimes "$out"
     '' + (lib.optionalString (cxxabi == null) ''
@@ -63,8 +61,7 @@ let
   ]) ++ lib.optionals stdenv.hostPlatform.isWasm [
     "-DLIBCXXABI_ENABLE_THREADS=OFF"
     "-DLIBCXXABI_ENABLE_EXCEPTIONS=OFF"
-  ] ++ lib.optionals (!enableShared || stdenv.hostPlatform.isWindows) [
-    # Required on Windows due to https://github.com/llvm/llvm-project/issues/55245
+  ] ++ lib.optionals (!enableShared) [
     "-DLIBCXXABI_ENABLE_SHARED=OFF"
   ];
 
@@ -94,9 +91,6 @@ let
     "-DLIBCXX_ENABLE_THREADS=OFF"
     "-DLIBCXX_ENABLE_FILESYSTEM=OFF"
     "-DLIBCXX_ENABLE_EXCEPTIONS=OFF"
-  ] ++ lib.optionals stdenv.hostPlatform.isWindows [
-    # https://github.com/llvm/llvm-project/issues/55245
-    "-DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON"
   ] ++ lib.optionals (!enableShared) [
     "-DLIBCXX_ENABLE_SHARED=OFF"
   ] ++ lib.optionals (cxxabi != null && cxxabi.libName == "cxxrt") [

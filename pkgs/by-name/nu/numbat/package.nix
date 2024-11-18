@@ -62,6 +62,6 @@ rustPlatform.buildRustPackage rec {
       atemu
     ];
     # Failing tests on Darwin.
-    broken = stdenv.hostPlatform.isDarwin;
+    broken = stdenv.isDarwin;
   };
 }

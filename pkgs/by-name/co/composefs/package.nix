@@ -23,30 +23,22 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "composefs";
-  version = "1.0.7";
+  version = "1.0.6";
 
   src = fetchFromGitHub {
     owner = "containers";
     repo = "composefs";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-kbXmDdyRrtsERkUomjZUWP3QC2q27AWUTc/J2jCSXg4=";
+    hash = "sha256-9YEY7oTjWwVT2KbzTOOc6sJIGEAkdLSKDf1noF1cYuA=";
   };
 
   strictDeps = true;
   outputs = [ "out" "lib" "dev" ];
 
-  postPatch =
-    # 'both_libraries' as an install target always builds both versions.
-    #  This results in double disk usage for normal builds and broken static builds,
-    #  so we replace it with the regular library target.
-    ''
-      substituteInPlace libcomposefs/meson.build \
-        --replace-fail "both_libraries" "library"
-    ''
-    + lib.optionalString installExperimentalTools ''
-      substituteInPlace tools/meson.build \
-        --replace-fail "install : false" "install : true"
-    '';
+  postPatch = lib.optionalString installExperimentalTools ''
+    substituteInPlace tools/meson.build \
+      --replace-fail "install : false" "install : true"
+  '';
 
   nativeBuildInputs = [ meson ninja go-md2man pkg-config ];
   buildInputs = [ openssl ]
@@ -82,7 +74,7 @@ stdenv.mkDerivation (finalAttrs: {
     description = "File system for mounting container images";
     homepage = "https://github.com/containers/composefs";
     changelog = "https://github.com/containers/composefs/releases/tag/v${finalAttrs.version}";
-    license = with lib.licenses; [ gpl2Only asl20 ];
+    license = with lib.licenses; [ gpl3Plus lgpl21Plus ];
     maintainers = with lib.maintainers; [ kiskae ];
     mainProgram = "mkcomposefs";
     pkgConfigModules = [ "composefs" ];

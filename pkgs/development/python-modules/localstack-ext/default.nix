@@ -2,17 +2,13 @@
   lib,
   buildPythonPackage,
   fetchPypi,
-  setuptools,
-  setuptools-scm,
   dill,
   dnslib,
   dnspython,
   plux,
   pyaes,
-  pyotp,
   python-jose,
   requests,
-  python-dateutil,
   tabulate,
 
   # Sensitive downstream dependencies
@@ -22,7 +18,7 @@
 buildPythonPackage rec {
   pname = "localstack-ext";
   version = "3.7.2";
-  pyproject = true;
+  format = "setuptools";
 
   src = fetchPypi {
     pname = "localstack_ext";
@@ -30,31 +26,32 @@ buildPythonPackage rec {
     hash = "sha256-gd+HyZnezgtKrSKJOYtxUZHTPMrrpKWQHGvaIs9FyVs=";
   };
 
-  build-system = [
-    setuptools
-    setuptools-scm
-  ];
-
-  pythonRemoveDeps = [
+  postPatch = ''
     # Avoid circular dependency
-    "localstack"
-    "build"
-  ];
+    sed -i '/localstack>=/d' setup.cfg
 
-  dependencies = [
+    # Pip is unable to resolve attr logic, so it will emit version as 0.0.0
+    substituteInPlace setup.cfg \
+      --replace "version = attr: localstack_ext.__version__" "version = ${version}"
+    cat setup.cfg
+
+    substituteInPlace setup.cfg \
+      --replace "dill==0.3.2" "dill~=0.3.0" \
+      --replace "requests>=2.20.0,<2.26" "requests~=2.20"
+  '';
+
+  propagatedBuildInputs = [
     dill
     dnslib
     dnspython
     plux
     pyaes
-    pyotp
     python-jose
     requests
     tabulate
-    python-dateutil
-  ] ++ python-jose.optional-dependencies.cryptography;
+  ];
 
-  pythonImportsCheck = [ "localstack" ];
+  pythonImportsCheck = [ "localstack_ext" ];
 
   # No tests in repo
   doCheck = false;
@@ -63,10 +60,10 @@ buildPythonPackage rec {
     inherit localstack;
   };
 
-  meta = {
+  meta = with lib; {
     description = "Extensions for LocalStack";
     homepage = "https://github.com/localstack/localstack";
-    license = lib.licenses.asl20;
+    license = licenses.asl20;
     maintainers = [ ];
   };
 }

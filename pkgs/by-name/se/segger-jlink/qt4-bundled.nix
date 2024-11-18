@@ -17,7 +17,7 @@ stdenv.mkDerivation {
   ];
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     fontconfig
     xorg.libXrandr
     xorg.libXfixes

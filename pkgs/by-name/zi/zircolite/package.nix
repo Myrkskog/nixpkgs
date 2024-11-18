@@ -6,14 +6,14 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "zircolite";
-  version = "2.30.1";
+  version = "2.20.0";
   format = "other";
 
   src = fetchFromGitHub {
     owner = "wagga40";
     repo = "Zircolite";
     rev = "refs/tags/${version}";
-    hash = "sha256-9stQa0EMNA/qEN+bU7qBOdcwUR1vMGk70Br6wxRK8cs=";
+    hash = "sha256-a7xwF0amsh2SycOjtZpk3dylcBGG9uYd7vmbnz/f9Ug=";
   };
 
   __darwinAllowLocalNetworking = true;

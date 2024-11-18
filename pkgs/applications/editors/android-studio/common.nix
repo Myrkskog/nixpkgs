@@ -137,7 +137,7 @@ let
           e2fsprogs
 
           # Gradle wants libstdc++.so.6
-          (lib.getLib stdenv.cc.cc)
+          stdenv.cc.cc.lib
           # mksdcard wants 32 bit libstdc++.so.6
           pkgsi686Linux.stdenv.cc.cc.lib
 
@@ -294,7 +294,6 @@ let
         dev = stable;
       }."${channel}";
       mainProgram = pname;
-      sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
     };
   }
   ''

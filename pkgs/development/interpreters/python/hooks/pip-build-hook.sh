@@ -1,27 +1,22 @@
 # Setup hook to use for pip projects
-# shellcheck shell=bash
-
 echo "Sourcing pip-build-hook"
+
+declare -a pipBuildFlags
 
 pipBuildPhase() {
     echo "Executing pipBuildPhase"
     runHook preBuild
 
     mkdir -p dist
-
-    local -a flagsArray=(
-        --verbose
-        --no-index
-        --no-deps
-        --no-clean
-        --no-build-isolation
-        --wheel-dir dist
-    )
-    concatTo flagsArray pipBuildFlags
-
     echo "Creating a wheel..."
-    echoCmd 'pip build flags' "${flagsArray[@]}"
-    @pythonInterpreter@ -m pip wheel "${flagsArray[@]}" .
+    @pythonInterpreter@ -m pip wheel \
+        --verbose \
+        --no-index \
+        --no-deps \
+        --no-clean \
+        --no-build-isolation \
+        --wheel-dir dist \
+        $pipBuildFlags .
     echo "Finished creating a wheel..."
 
     runHook postBuild

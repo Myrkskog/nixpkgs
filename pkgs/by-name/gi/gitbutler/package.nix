@@ -6,7 +6,7 @@
   fetchFromGitHub,
   pnpm_9,
   wrapGAppsHook3,
-  cargo-tauri_1,
+  cargo-tauri,
   darwin,
   desktop-file-utils,
   esbuild,
@@ -55,7 +55,7 @@ rustPlatform.buildRustPackage rec {
   };
 
   nativeBuildInputs = [
-    cargo-tauri_1.hook
+    cargo-tauri.hook
     desktop-file-utils
     jq
     moreutils

@@ -55,7 +55,7 @@ rustPlatform.buildRustPackage {
   '';
 
   env = {
-    LIBCLANG_PATH = "${lib.getLib llvmPackages.libclang}/lib";
+    LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
   };
 
   meta = {

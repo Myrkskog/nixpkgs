@@ -17,7 +17,7 @@
   setproctitle,
 
   pytestCheckHook,
-  pytest-cov-stub,
+  pytest-cov,
 }:
 
 buildPythonPackage rec {
@@ -50,7 +50,7 @@ buildPythonPackage rec {
 
   nativeCheckInputs = [
     pytestCheckHook
-    pytest-cov-stub
+    pytest-cov
   ] ++ lib.flatten (lib.attrValues optional-dependencies);
 
   meta = {

@@ -5,8 +5,11 @@
   dtkwidget,
   qt5integration,
   qt5platform-plugins,
+  qmake,
+  qtbase,
+  qttools,
   pkg-config,
-  libsForQt5,
+  wrapQtAppsHook,
 }:
 
 stdenv.mkDerivation rec {
@@ -21,14 +24,14 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [
-    libsForQt5.qmake
-    libsForQt5.qttools
+    qmake
+    qttools
     pkg-config
-    libsForQt5.wrapQtAppsHook
+    wrapQtAppsHook
   ];
 
   buildInputs = [
-    libsForQt5.qtbase
+    qtbase
     dtkwidget
     qt5integration
     qt5platform-plugins

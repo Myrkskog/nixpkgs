@@ -30,7 +30,7 @@ buildPythonPackage rec {
     hash = "sha256-CXVbw86263JfsH7KVCX0PyNY078I4A0qm3kqGu3RYVk=";
   };
 
-  patches = lib.optionals stdenv.hostPlatform.isLinux [
+  patches = lib.optionals stdenv.isLinux [
     (substituteAll {
       src = ./paths.patch;
       xauth = lib.getExe xorg.xauth;
@@ -40,7 +40,7 @@ buildPythonPackage rec {
 
   build-system = [ setuptools ];
 
-  doCheck = stdenv.hostPlatform.isLinux;
+  doCheck = stdenv.isLinux;
 
   nativeCheckInputs = [
     easyprocess

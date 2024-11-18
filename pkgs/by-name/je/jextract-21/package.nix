@@ -24,7 +24,7 @@ stdenv.mkDerivation {
   ];
 
   gradleFlags = [
-    "-Pllvm_home=${lib.getLib llvmPackages.libclang}"
+    "-Pllvm_home=${llvmPackages.libclang.lib}"
     "-Pjdk21_home=${jdk21}"
   ];
 

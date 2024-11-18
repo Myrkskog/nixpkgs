@@ -45,7 +45,7 @@ stdenv.mkDerivation rec {
       sqlite
       zlib
     ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin (
+    ++ lib.optionals stdenv.isDarwin (
       with darwin.apple_sdk.frameworks;
       [
         AppKit

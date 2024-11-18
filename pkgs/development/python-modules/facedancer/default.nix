@@ -1,57 +1,37 @@
 {
   lib,
   buildPythonPackage,
-  fetchFromGitHub,
-  pythonOlder,
+  fetchPypi,
+  isPy3k,
   pyusb,
   pyserial,
-  prompt-toolkit,
-  libusb1,
-  setuptools,
 }:
 
 buildPythonPackage rec {
   pname = "facedancer";
-  version = "3.0.4";
-  pyproject = true;
-  disabled = pythonOlder "3.8";
+  version = "2019.3.2";
+  format = "setuptools";
 
-  src = fetchFromGitHub {
-    owner = "greatscottgadgets";
-    repo = "facedancer";
-    rev = "refs/tags/${version}";
-    hash = "sha256-Cl6cohelJkpr2Nokfwwm7GQIg7ZipPL3v44JVWsHUNI=";
+  src = fetchPypi {
+    inherit pname version;
+    sha256 = "1zhwnlfksblgp54njd9gjsrr5ibg12cx1x9xxcqkcdfhn3m2kmm0";
   };
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail '"setuptools-git-versioning<2"' "" \
-      --replace-fail 'dynamic = ["version"]' 'version = "${version}"'
-  '';
+  disabled = !isPy3k;
 
-  build-system = [
-    setuptools
-  ];
-
-  dependencies = [
+  propagatedBuildInputs = [
     pyusb
     pyserial
-    prompt-toolkit
-    libusb1
   ];
 
-  pythonImportsCheck = [
-    "facedancer"
-  ];
+  preBuild = ''
+    echo "$version" > VERSION
+  '';
 
-  meta = {
-    changelog = "https://github.com/greatscottgadgets/facedancer/releases/tag/${version}";
-    description = "Implement your own USB device in Python, supported by a hardware peripheral such as Cynthion or GreatFET";
-    homepage = "https://github.com/greatscottgadgets/facedancer";
-    license = lib.licenses.bsd3;
-    maintainers = with lib.maintainers; [
-      mog
-      carlossless
-    ];
+  meta = with lib; {
+    description = "library for emulating usb devices";
+    homepage = "https://greatscottgadgets.com/greatfet/";
+    license = licenses.bsd3;
+    maintainers = with maintainers; [ mog ];
   };
 }

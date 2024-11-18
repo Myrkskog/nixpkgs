@@ -1,6 +1,6 @@
-{ lib, stdenv, fetchFromGitHub, postgresql, postgresqlTestExtension, buildPostgresqlExtension }:
+{ lib, stdenv, fetchFromGitHub, postgresql, postgresqlTestExtension }:
 
-buildPostgresqlExtension (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "plpgsql-check";
   version = "2.7.5";
 
@@ -10,6 +10,14 @@ buildPostgresqlExtension (finalAttrs: {
     rev = "v${finalAttrs.version}";
     hash = "sha256-CD/G/wX6o+mC6gowlpFe1DdJWyh3cB9wxSsW2GXrENE=";
   };
+
+  buildInputs = [ postgresql ];
+
+  installPhase = ''
+    install -D -t $out/lib *${postgresql.dlSuffix}
+    install -D -t $out/share/postgresql/extension *.sql
+    install -D -t $out/share/postgresql/extension *.control
+  '';
 
   passthru.tests.extension = postgresqlTestExtension {
     inherit (finalAttrs) finalPackage;

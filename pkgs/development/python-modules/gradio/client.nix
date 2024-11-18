@@ -105,10 +105,7 @@ buildPythonPackage rec {
   __darwinAllowLocalNetworking = true;
 
   passthru.updateScript = nix-update-script {
-    extraArgs = [
-      "--version-regex"
-      "gradio_client@(.*)"
-    ];
+    extraArgs = [ "--version-regex" "gradio_client@(.*)" ];
   };
 
   meta = {

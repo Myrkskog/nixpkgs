@@ -66,6 +66,7 @@ buildPythonPackage rec {
     maintainers = with maintainers; [
       mazurel
       nixy
+      thiagokokada
     ];
   };
 }

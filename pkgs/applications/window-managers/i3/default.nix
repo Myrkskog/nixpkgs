@@ -1,101 +1,40 @@
-{
-  fetchFromGitHub,
-  lib,
-  stdenv,
-  pkg-config,
-  makeWrapper,
-  meson,
-  ninja,
-  installShellFiles,
-  libxcb,
-  xcbutilkeysyms,
-  xcbutil,
-  xcbutilwm,
-  xcbutilxrm,
-  libstartup_notification,
-  libX11,
-  pcre2,
-  libev,
-  yajl,
-  xcb-util-cursor,
-  perl,
-  pango,
-  perlPackages,
-  libxkbcommon,
-  xorgserver,
-  xvfb-run,
-  xdotool,
-  xorg,
-  which,
-  asciidoc,
-  xmlto,
-  docbook_xml_dtd_45,
-  docbook_xsl,
-  findXMLCatalogs,
-  nixosTests,
-  nix-update-script,
+{ fetchurl, lib, stdenv, pkg-config, makeWrapper, meson, ninja, installShellFiles, libxcb, xcbutilkeysyms
+, xcbutil, xcbutilwm, xcbutilxrm, libstartup_notification, libX11, pcre2, libev
+, yajl, xcb-util-cursor, perl, pango, perlPackages, libxkbcommon
+, xorgserver, xvfb-run, xdotool, xorg, which
+, asciidoc, xmlto, docbook_xml_dtd_45, docbook_xsl, findXMLCatalogs
+, nixosTests
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation rec {
   pname = "i3";
-  version = "4.24";
+  version = "4.23";
 
-  src = fetchFromGitHub {
-    owner = "i3";
-    repo = "i3";
-    rev = "refs/tags/${finalAttrs.version}";
-    hash = "sha256-2tuhfB/SMN+osCBfZtw/yDPhNNEhBH4Qo6dexpqVWYk=";
+  src = fetchurl {
+    url = "https://i3wm.org/downloads/${pname}-${version}.tar.xz";
+    sha256 = "sha256-YQJqcZbJE50POq3ScZfosyDFduOkUOAddMGspIQETEY=";
   };
 
   nativeBuildInputs = [
-    pkg-config
-    makeWrapper
-    meson
-    ninja
-    installShellFiles
-    perl
-    asciidoc
-    xmlto
-    docbook_xml_dtd_45
-    docbook_xsl
-    findXMLCatalogs
+    pkg-config makeWrapper meson ninja installShellFiles perl
+    asciidoc xmlto docbook_xml_dtd_45 docbook_xsl findXMLCatalogs
   ];
 
   mesonFlags = [
-    (lib.mesonBool "docs" true)
-    (lib.mesonBool "mans" true)
+    "-Ddocs=true"
+    "-Dmans=true"
   ];
 
-  buildInputs =
-    [
-      libxcb
-      xcbutilkeysyms
-      xcbutil
-      xcbutilwm
-      xcbutilxrm
-      libxkbcommon
-      libstartup_notification
-      libX11
-      pcre2
-      libev
-      yajl
-      xcb-util-cursor
-      perl
-      pango
-      perlPackages.AnyEventI3
-      perlPackages.X11XCB
-      perlPackages.IPCRun
-      perlPackages.ExtUtilsPkgConfig
-      perlPackages.InlineC
-    ]
-    ++ lib.optionals finalAttrs.doCheck [
-      xorgserver
-      xvfb-run
-      xdotool
-      xorg.setxkbmap
-      xorg.xrandr
-      which
-    ];
+  buildInputs = [
+    libxcb xcbutilkeysyms xcbutil xcbutilwm xcbutilxrm libxkbcommon
+    libstartup_notification libX11 pcre2 libev yajl xcb-util-cursor perl pango
+    perlPackages.AnyEventI3 perlPackages.X11XCB perlPackages.IPCRun
+    perlPackages.ExtUtilsPkgConfig perlPackages.InlineC
+  ] ++ lib.optionals doCheck [
+    xorgserver xvfb-run xdotool xorg.setxkbmap xorg.xrandr which
+  ];
+
+  configureFlags = [ "--disable-builddir" ];
 
   postPatch = ''
     patchShebangs .
@@ -104,7 +43,7 @@ stdenv.mkDerivation (finalAttrs: {
     # patchShebangs can't replace a shebang in the middle of a file.
     if [ -f testcases/t/318-i3-dmenu-desktop.t ]; then
       substituteInPlace testcases/t/318-i3-dmenu-desktop.t \
-        --replace-fail "#!/usr/bin/env perl" "#!${lib.getExe perl}"
+        --replace-fail "#!/usr/bin/env perl" "#!${perl}/bin/perl"
     fi
   '';
 
@@ -112,8 +51,6 @@ stdenv.mkDerivation (finalAttrs: {
   doCheck = stdenv.hostPlatform.isLinux;
 
   checkPhase = ''
-    runHook preCheck
-
     test_failed=
     # "| cat" disables fancy progress reporting which makes the log unreadable.
     ./complete-run.pl -p 1 --keep-xserver-output | cat || test_failed="complete-run.pl returned $?"
@@ -129,8 +66,6 @@ stdenv.mkDerivation (finalAttrs: {
       echo "===== End of test log ====="
       false
     fi
-
-    runHook postCheck
   '';
 
   postInstall = ''
@@ -144,23 +79,16 @@ stdenv.mkDerivation (finalAttrs: {
 
   separateDebugInfo = true;
 
-  passthru = {
-    updateScript = nix-update-script { };
-    tests = {
-      inherit (nixosTests) i3wm;
-    };
-  };
+  passthru.tests = { inherit (nixosTests) i3wm; };
 
-  meta = {
+
+  meta = with lib; {
     description = "Tiling window manager";
-    homepage = "https://i3wm.org";
-    maintainers = with lib.maintainers; [
-      modulistic
-      fpletz
-    ];
+    homepage    = "https://i3wm.org";
+    maintainers = with maintainers; [ modulistic fpletz ];
     mainProgram = "i3";
-    license = lib.licenses.bsd3;
-    platforms = lib.platforms.unix;
+    license     = licenses.bsd3;
+    platforms   = platforms.all;
 
     longDescription = ''
       A tiling window manager primarily targeted at advanced users and
@@ -170,4 +98,5 @@ stdenv.mkDerivation (finalAttrs: {
       UTF-8 clean.
     '';
   };
-})
+
+}

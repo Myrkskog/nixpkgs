@@ -1,10 +1,9 @@
 {
   lib,
   stdenv,
-  fetchurl,
+  fetchzip,
 
   # nativeBuildInputs
-  zstd,
   pkg-config,
   jq,
   cargo,
@@ -31,22 +30,20 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "sile";
-  version = "0.15.6";
+  version = "0.15.5";
 
-  src = fetchurl {
-    url = "https://github.com/sile-typesetter/sile/releases/download/v${finalAttrs.version}/sile-${finalAttrs.version}.tar.zst";
-    sha256 = "sha256-CtPvxbpq2/qwuANPp9XDJQHlxIbFiaNZJvYZeUx/wyE=";
+  src = fetchzip {
+    url = "https://github.com/sile-typesetter/sile/releases/download/v${finalAttrs.version}/sile-${finalAttrs.version}.zip";
+    sha256 = "sha256-zP+MGCXGEg19U6tMrHIdgAAfKQT21vFtmoEROXgxUB0=";
   };
 
   cargoDeps = rustPlatform.fetchCargoTarball {
     inherit (finalAttrs) src;
-    nativeBuildInputs = [ zstd ];
     dontConfigure = true;
-    hash = "sha256-5SheeabI4SqJZ3edAvX2rUEGTdCXHoBTa+rnX7lv9Cg=";
+    hash = "sha256-hmgDG29C5JfQX2acMr8c3lmswa1u5XHauRWFd4QGmOo=";
   };
 
   nativeBuildInputs = [
-    zstd
     pkg-config
     jq
     cargo

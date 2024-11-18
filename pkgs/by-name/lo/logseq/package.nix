@@ -41,7 +41,7 @@ in
   nativeBuildInputs = [ makeWrapper ]
     ++ lib.optionals stdenv.hostPlatform.isLinux [ autoPatchelfHook ]
     ++ lib.optionals stdenv.hostPlatform.isDarwin [ unzip ];
-  buildInputs = [ (lib.getLib stdenv.cc.cc) ];
+  buildInputs = [ stdenv.cc.cc.lib ];
 
   dontUnpack = stdenv.hostPlatform.isLinux;
   dontConfigure = true;

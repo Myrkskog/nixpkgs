@@ -99,7 +99,7 @@ stdenv.mkDerivation {
   buildInputs = optionals isAtLeast50 [ SDL2 SDL2_image SDL2_mixer ]
     ++ optional (!isAtLeast50) SDL
     ++ optional enableUnfuck dwarf-fortress-unfuck
-    ++ [ (lib.getLib stdenv.cc.cc) ];
+    ++ [ stdenv.cc.cc.lib ];
 
   installPhase = ''
     runHook preInstall
@@ -168,6 +168,5 @@ stdenv.mkDerivation {
     license = licenses.unfreeRedistributable;
     platforms = attrNames platforms;
     maintainers = with maintainers; [ a1russell robbinch roconnor abbradar numinit shazow ncfavier ];
-    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
   };
 }

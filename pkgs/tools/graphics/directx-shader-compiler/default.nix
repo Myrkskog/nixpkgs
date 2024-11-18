@@ -56,6 +56,9 @@ stdenv.mkDerivation (finalAttrs: {
     homepage = "https://github.com/microsoft/DirectXShaderCompiler";
     platforms = with lib.platforms; linux ++ darwin;
     license = lib.licenses.ncsa;
-    maintainers = with lib.maintainers; [ Flakebi ];
+    maintainers = with lib.maintainers; [
+      expipiplus1
+      Flakebi
+    ];
   };
 })

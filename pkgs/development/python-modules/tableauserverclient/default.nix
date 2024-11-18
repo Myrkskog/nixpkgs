@@ -15,14 +15,14 @@
 
 buildPythonPackage rec {
   pname = "tableauserverclient";
-  version = "0.34";
+  version = "0.33";
   pyproject = true;
 
-  disabled = pythonOlder "3.9";
+  disabled = pythonOlder "3.7";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-0I0HLPCrA5LoGOnspIDeAp5x7jzR4S9dWitpGw0AzbA=";
+    hash = "sha256-7yj/Ey3mIR2GZ0gtNkrrtoKEmuA5LihZlM9qPhbROQw=";
   };
 
   postPatch = ''
@@ -35,12 +35,12 @@ buildPythonPackage rec {
     "urllib3"
   ];
 
-  build-system = [
+  nativeBuildInputs = [
     setuptools
     versioneer
   ];
 
-  dependencies = [
+  propagatedBuildInputs = [
     defusedxml
     requests
     packaging

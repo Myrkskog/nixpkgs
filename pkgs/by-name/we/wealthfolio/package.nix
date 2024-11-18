@@ -2,7 +2,7 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  cargo-tauri_1,
+  cargo-tauri,
   libsoup,
   nodejs,
   openssl,
@@ -39,7 +39,7 @@ stdenv.mkDerivation (finalAttrs: {
   };
 
   nativeBuildInputs = [
-    cargo-tauri_1.hook
+    cargo-tauri.hook
     nodejs
     pkg-config
     pnpm.configHook

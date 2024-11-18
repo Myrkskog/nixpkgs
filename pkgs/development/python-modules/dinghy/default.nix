@@ -19,7 +19,7 @@
 
 buildPythonPackage rec {
   pname = "dinghy";
-  version = "1.3.3";
+  version = "1.3.2";
   pyproject = true;
 
   disabled = pythonOlder "3.8";
@@ -28,7 +28,7 @@ buildPythonPackage rec {
     owner = "nedbat";
     repo = pname;
     rev = "refs/tags/${version}";
-    hash = "sha256-fn8SRzhFJyyr2Wr9/cp8Sm6kbVARq2LEeKSE0HU9V74=";
+    hash = "sha256-0U08QHQuNm7qaxhU8sNxeN0fZ4S8N0RYRsWjFUqhZSU=";
   };
 
   nativeBuildInputs = [ setuptools ];

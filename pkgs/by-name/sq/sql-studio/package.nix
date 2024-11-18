@@ -42,6 +42,6 @@ rustPlatform.buildRustPackage {
     license = lib.licenses.mit;
     maintainers = [ lib.maintainers.frectonz ];
     platforms = lib.platforms.all;
-    broken = stdenv.hostPlatform.isDarwin;
+    broken = stdenv.isDarwin;
   };
 }

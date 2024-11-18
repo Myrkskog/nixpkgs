@@ -95,7 +95,7 @@ let
             --replace-fail "poetry>=1.0.0b1" "poetry-core" \
             --replace-fail "poetry.masonry" "poetry.core.masonry"
         '';
-        propagatedBuildInputs = (oldAttrs.propagatedBuildInputs or []) ++ [
+        propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [
           self.pytz
         ];
       });
@@ -161,15 +161,6 @@ let
         doCheck = false; # no tests
       });
 
-      plugwise = super.plugwise.overridePythonAttrs (oldAttrs: rec {
-        version = "1.4.4";
-        src = fetchFromGitHub {
-          inherit (oldAttrs.src) owner repo;
-          rev = "refs/tags/v${version}";
-          hash = "sha256-dlDytOSp/7npanxXH5uaDv29AP21UciEzIzDlMf6jf8=";
-        };
-      });
-
       # Pinned due to API changes in 0.1.0
       poolsense = super.poolsense.overridePythonAttrs (oldAttrs: rec {
         version = "0.0.8";
@@ -232,15 +223,6 @@ let
           inherit (oldAttrs.src) owner repo;
           rev = "refs/tags/v${version}";
           hash = "sha256-KM/gtpsQ27QZz2uI1t/yVN5no0zp9LZag1duAJzK55g=";
-        };
-      });
-
-      pymodbus = super.pymodbus.overridePythonAttrs (oldAttrs: rec {
-        version = "3.6.9";
-        src = fetchFromGitHub {
-          inherit (oldAttrs.src) owner repo;
-          rev = "refs/tags/v${version}";
-          hash = "sha256-ScqxDO0hif8p3C6+vvm7FgSEQjCXBwUPOc7Y/3OfkoI=";
         };
       });
 
@@ -353,24 +335,6 @@ let
         ];
       };
 
-      voip-utils = super.voip-utils.overridePythonAttrs (oldAttrs: rec {
-        version = "0.1.0";
-        src = fetchFromGitHub {
-          inherit (oldAttrs.src) owner repo;
-          rev = "refs/tags/v${version}";
-          hash = "sha256-PG4L6KphH9JIZO76cCN8eClFE2CneEIExlXS+x79k3U=";
-        };
-      });
-
-      vulcan-api = super.vulcan-api.overridePythonAttrs (oldAttrs: rec {
-        version = "2.3.2";
-        src = fetchFromGitHub {
-          inherit (oldAttrs.src) owner repo;
-          rev = "refs/tags/v${version}";
-          hash = "sha256-ebWKcRxAAkHVqV2RaftIHBRJe/TYSUxS+5Utxb0yhtw=";
-        };
-      });
-
       # Pinned due to API changes ~1.0
       vultr = super.vultr.overridePythonAttrs (oldAttrs: rec {
         version = "0.1.2";
@@ -439,7 +403,7 @@ let
   extraBuildInputs = extraPackages python.pkgs;
 
   # Don't forget to run update-component-packages.py after updating
-  hassVersion = "2024.11.2";
+  hassVersion = "2024.10.4";
 
 in python.pkgs.buildPythonApplication rec {
   pname = "homeassistant";
@@ -457,13 +421,13 @@ in python.pkgs.buildPythonApplication rec {
     owner = "home-assistant";
     repo = "core";
     rev = "refs/tags/${version}";
-    hash = "sha256-cP9Q700JLnThAPDfeJ8mx+PSI6I62hjA49TpAMHN2Wk=";
+    hash = "sha256-uaGGt5qCdyFXuEtg20MzmFd4PXkdPP8h4HJBvRV6sz8=";
   };
 
   # Secondary source is pypi sdist for translations
   sdist = fetchPypi {
     inherit pname version;
-    hash = "sha256-qBKcY8PybEJeExTjxs9bgiM6YWjyoSLE1dzgrD1Hdtc=";
+    hash = "sha256-al45WS8SIgOM2TqGPIptZU7iNMapYUg+fK2MLh68lxs=";
   };
 
   build-system = with python.pkgs; [
@@ -510,9 +474,12 @@ in python.pkgs.buildPythonApplication rec {
   ];
 
   postPatch = ''
-    substituteInPlace tests/test_core_config.py --replace-fail '"/usr"' "\"$NIX_BUILD_TOP/media\""
+    substituteInPlace tests/test_config.py --replace-fail '"/usr"' "\"$NIX_BUILD_TOP/media\""
+
+    substituteInPlace pyproject.toml --replace-fail "wheel~=0.43.0" wheel
 
     sed -i 's/setuptools[~=]/setuptools>/' pyproject.toml
+    sed -i 's/wheel[~=]/wheel>/' pyproject.toml
   '';
 
   dependencies = with python.pkgs; [
@@ -542,7 +509,6 @@ in python.pkgs.buildPythonApplication rec {
     orjson
     packaging
     pillow
-    propcache
     psutil-home-assistant
     pyjwt
     pyopenssl

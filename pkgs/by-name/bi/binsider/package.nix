@@ -18,9 +18,9 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-EGqoHMkBPIhKV/PozArQ62bH/Gqc92S6ZabTjmIbQeE=";
 
-  buildNoDefaultFeatures = !stdenv.hostPlatform.isLinux;
+  buildNoDefaultFeatures = !stdenv.isLinux;
 
-  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin (
+  buildInputs = lib.optionals stdenv.isDarwin (
     with darwin.apple_sdk.frameworks;
     [
       AppKit

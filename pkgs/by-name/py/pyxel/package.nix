@@ -1,9 +1,12 @@
 {
   lib,
+  stdenv,
   python3,
   fetchFromGitHub,
   rustPlatform,
   SDL2,
+  libiconv,
+  darwin,
 }:
 
 python3.pkgs.buildPythonApplication rec {
@@ -41,7 +44,12 @@ python3.pkgs.buildPythonApplication rec {
     bindgenHook
   ];
 
-  buildInputs = [ SDL2 ];
+  buildInputs =
+    [ SDL2 ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [
+      libiconv
+      darwin.apple_sdk.frameworks.IOKit
+    ];
 
   env.NIX_CFLAGS_COMPILE = "-I${lib.getDev SDL2}/include/SDL2";
 

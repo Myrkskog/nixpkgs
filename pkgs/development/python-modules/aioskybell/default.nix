@@ -47,13 +47,6 @@ buildPythonPackage rec {
     pytestCheckHook
   ];
 
-  disabledTests = [
-    # aiohttp compat issues
-    "test_get_devices"
-    "test_errors"
-    "test_async_change_setting"
-  ];
-
   pythonImportsCheck = [ "aioskybell" ];
 
   meta = with lib; {

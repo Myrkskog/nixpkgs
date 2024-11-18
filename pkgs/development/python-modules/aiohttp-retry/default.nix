@@ -6,26 +6,23 @@
   pytestCheckHook,
   pytest-aiohttp,
   pythonOlder,
-  setuptools,
 }:
 
 buildPythonPackage rec {
   pname = "aiohttp-retry";
-  version = "2.9.0";
-  pyproject = true;
+  version = "2.8.3";
+  format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
   src = fetchFromGitHub {
     owner = "inyutin";
     repo = "aiohttp_retry";
-    rev = "refs/tags/v${version}";
-    hash = "sha256-9riIGQDxC+Ee16itSWJWobPkmuy7Mkn2eyTkevIGse8=";
+    rev = "v${version}";
+    hash = "sha256-Zr68gx8ZR9jKrogmqaFLvpBAIHE9ptHm0zZ/b49cCLw=";
   };
 
-  build-system = [ setuptools ];
-
-  dependencies = [ aiohttp ];
+  propagatedBuildInputs = [ aiohttp ];
 
   __darwinAllowLocalNetworking = true;
 
@@ -41,7 +38,6 @@ buildPythonPackage rec {
   meta = with lib; {
     description = "Retry client for aiohttp";
     homepage = "https://github.com/inyutin/aiohttp_retry";
-    changelog = "https://github.com/inyutin/aiohttp_retry/releases/tag/v${version}";
     license = licenses.mit;
     maintainers = with maintainers; [ fab ];
   };

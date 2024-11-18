@@ -23,19 +23,19 @@
   accelerate,
   datasets,
   pytestCheckHook,
-  pytest-cov-stub,
+  pytest-cov,
 }:
 
 buildPythonPackage rec {
   pname = "sentence-transformers";
-  version = "3.3.0";
+  version = "3.2.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "UKPLab";
     repo = "sentence-transformers";
     rev = "refs/tags/v${version}";
-    hash = "sha256-nF1E0w1OApajeo1bNNPufVC86KQRY0oTSI3pgKnOWrQ=";
+    hash = "sha256-5N5yObR3+3eV65ojFJFhzDbqtjNi/U2IhHlAaKttcVI=";
   };
 
   build-system = [ setuptools ];
@@ -57,7 +57,7 @@ buildPythonPackage rec {
     accelerate
     datasets
     pytestCheckHook
-    pytest-cov-stub
+    pytest-cov
   ];
 
   pythonImportsCheck = [ "sentence_transformers" ];

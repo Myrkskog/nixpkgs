@@ -9,6 +9,14 @@ let
     initArgs: ffmpegVariant:
     callPackage ./generic.nix (
       {
+        inherit (darwin.apple_sdk.frameworks)
+          Accelerate
+          AppKit
+          AudioToolbox
+          AVFoundation
+          CoreImage
+          VideoToolbox
+          ;
         inherit (darwin) xcode;
         inherit (cudaPackages) cuda_cudart cuda_nvcc libnpp;
       }

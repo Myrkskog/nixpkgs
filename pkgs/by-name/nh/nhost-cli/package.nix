@@ -6,13 +6,13 @@
 
 buildGoModule rec {
   pname = "nhost-cli";
-  version = "1.27.0";
+  version = "1.24.5";
 
   src = fetchFromGitHub {
     owner = "nhost";
     repo = "cli";
-    rev = "refs/tags/v${version}";
-    hash = "sha256-XYa7dCAeWS6sc2MovOUnG9j6Bd09JMHzCFpGdvo2nmI=";
+    rev = "v${version}";
+    hash = "sha256-/NkegGp+JoJWPIkO3YKp/aZ6Yp5tcjnRCONY0GHe+HI=";
   };
 
   vendorHash = null;
@@ -27,7 +27,6 @@ buildGoModule rec {
     mv $out/bin/cli $out/bin/nhost
   '';
 
-  # require network access
   checkFlags = [ "-skip=^TestMakeJSONRequest$" ];
 
   meta = {

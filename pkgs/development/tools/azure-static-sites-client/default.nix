@@ -40,7 +40,7 @@ stdenv.mkDerivation {
     libkrb5
     lttng-ust
     openssl
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     zlib
   ];
 

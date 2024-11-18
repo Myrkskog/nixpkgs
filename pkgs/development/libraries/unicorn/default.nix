@@ -24,7 +24,7 @@ stdenv.mkDerivation rec {
       cmake
       pkg-config
     ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    ++ lib.optionals stdenv.isDarwin [
       cctools
     ];
 

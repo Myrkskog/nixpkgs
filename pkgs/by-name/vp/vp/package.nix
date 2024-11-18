@@ -44,6 +44,5 @@ stdenv.mkDerivation (finalAttrs: {
     mainProgram = "vp";
     maintainers = with lib.maintainers; [ AndersonTorres ];
     inherit (SDL.meta) platforms;
-    hydraPlatforms = lib.platforms.linux; # build hangs on both Darwin platforms, needs investigation
   };
 })

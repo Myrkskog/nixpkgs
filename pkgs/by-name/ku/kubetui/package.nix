@@ -21,7 +21,7 @@ rustPlatform.buildRustPackage rec {
     "--skip=workers::kube::store::tests::kubeconfigからstateを生成"
   ];
 
-  buildInputs = lib.optionals (stdenv.hostPlatform.isDarwin) (
+  buildInputs = lib.optionals (stdenv.isDarwin) (
     with darwin.apple_sdk;
     [
       frameworks.CoreGraphics

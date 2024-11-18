@@ -32,7 +32,7 @@ rustPlatform.buildRustPackage rec {
     '';
     homepage = "https://github.com/adamgreig/ecpdap";
     license = licenses.asl20;
-    maintainers = [];
+    maintainers = with maintainers; [ expipiplus1 ];
   };
 }
 

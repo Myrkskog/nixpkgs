@@ -8,7 +8,7 @@
   py-multiaddr,
   requests,
   pytestCheckHook,
-  pytest-cov-stub,
+  pytest-cov,
   pytest-dependency,
   pytest-localserver,
   pytest-mock,
@@ -42,7 +42,7 @@ buildPythonPackage rec {
 
   nativeCheckInputs = [
     pytestCheckHook
-    pytest-cov-stub
+    pytest-cov
     pytest-dependency
     pytest-localserver
     pytest-mock

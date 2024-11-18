@@ -34,11 +34,9 @@ python3.pkgs.buildPythonApplication rec {
     ffmpeg-python
     future
     numpy
-    pkgs.ffmpeg
     pysubs2
     chardet
     rich
-    setuptools
     six
     srt
     tqdm

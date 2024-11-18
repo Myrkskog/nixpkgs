@@ -41,7 +41,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       inherit hash;
     };
 
-  sourceRoot = lib.optional stdenvNoCC.hostPlatform.isDarwin "DBeaver.app";
+  sourceRoot = lib.optional stdenvNoCC.hostPlatform.isDarwin "dbeaver.app";
 
   nativeBuildInputs =
     [ makeWrapper ]
@@ -56,7 +56,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   dontBuild = true;
 
   prePatch = ''
-    substituteInPlace ${lib.optionalString stdenvNoCC.hostPlatform.isDarwin "Contents/Eclipse/"}dbeaver.ini \
+    substituteInPlace dbeaver.ini \
       --replace-fail '-Xmx1024m' '-Xmx${override_xmx}'
   '';
 

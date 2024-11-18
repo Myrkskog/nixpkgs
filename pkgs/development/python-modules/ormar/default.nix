@@ -145,6 +145,5 @@ buildPythonPackage rec {
     changelog = "https://github.com/collerek/ormar/releases/tag/${version}";
     license = licenses.mit;
     maintainers = with maintainers; [ andreasfelix ];
-    broken = true;
   };
 }

@@ -2,7 +2,6 @@
   fetchFromGitHub,
   buildPythonPackage,
   isPy27,
-  setuptools,
   cython,
   portaudio,
   cffi,
@@ -14,7 +13,7 @@
 buildPythonPackage rec {
   pname = "rtmixer";
   version = "0.1.7";
-  pyproject = true;
+  format = "setuptools";
   disabled = isPy27;
 
   src = fetchFromGitHub {
@@ -25,16 +24,10 @@ buildPythonPackage rec {
     fetchSubmodules = true;
   };
 
-  build-system = [ setuptools ];
-
   buildInputs = [ portaudio ];
+  nativeBuildInputs = [ cython ];
 
-  nativeBuildInputs = [
-    cython
-    cffi
-  ];
-
-  dependencies = [
+  propagatedBuildInputs = [
     cffi
     pa-ringbuffer
     sounddevice

@@ -2,8 +2,9 @@
   stdenv,
   lib,
   fetchFromGitHub,
-  libsForQt5,
+  qmake,
   pkg-config,
+  wrapQtAppsHook,
   udisks,
 }:
 
@@ -19,9 +20,9 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [
-    libsForQt5.qmake
+    qmake
     pkg-config
-    libsForQt5.wrapQtAppsHook
+    wrapQtAppsHook
   ];
 
   buildInputs = [ udisks ];

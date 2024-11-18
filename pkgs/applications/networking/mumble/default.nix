@@ -38,6 +38,7 @@ let
 
     meta = with lib; {
       description = "Low-latency, high quality voice chat software";
+      mainProgram = "mumble-server";
       homepage = "https://mumble.info";
       license = licenses.bsd3;
       maintainers = with maintainers; [ felixsinger lilacious ];
@@ -116,6 +117,6 @@ let
     ];
   };
 in {
-  mumble  = lib.recursiveUpdate (client source) {meta.mainProgram = "mumble";};
-  murmur  = lib.recursiveUpdate (server source) {meta.mainProgram = "mumble-server";};
+  mumble  = client source;
+  murmur  = server source;
 }

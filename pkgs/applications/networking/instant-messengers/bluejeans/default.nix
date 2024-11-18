@@ -72,7 +72,7 @@ stdenv.mkDerivation rec {
         freetype
         nspr
         glib
-        stdenv.cc.cc
+        stdenv.cc.cc.lib
         nss
         libX11
         libXrandr

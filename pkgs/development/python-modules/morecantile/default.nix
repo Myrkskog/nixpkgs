@@ -17,15 +17,15 @@
 
 buildPythonPackage rec {
   pname = "morecantile";
-  version = "6.0.0";
+  version = "5.4.2";
   pyproject = true;
   disabled = pythonOlder "3.8";
 
   src = fetchFromGitHub {
     owner = "developmentseed";
     repo = "morecantile";
-    rev = "refs/tags/${version}";
-    hash = "sha256-l+fQQXOrhqRanB695nR4okfmPYP05NdrGOvgG+jK2uo=";
+    rev = version;
+    hash = "sha256-kUAde+6IUu95tFHFCB6kWoYsRf9GxR+gRJki/tvhIaY=";
   };
 
   nativeBuildInputs = [ flit ];

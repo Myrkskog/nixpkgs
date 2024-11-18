@@ -71,7 +71,7 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     alsa-lib
   ];
 

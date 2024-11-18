@@ -1,12 +1,13 @@
 {
   lib,
   stdenv,
+  overrideSDK,
   rustPlatform,
   fetchFromGitHub,
 
   pnpm_9,
   nodejs,
-  cargo-tauri_1,
+  cargo-tauri,
   pkg-config,
   wrapGAppsHook3,
   makeBinaryWrapper,
@@ -15,10 +16,15 @@
   libsoup,
   webkitgtk_4_0,
   gst_all_1,
-  apple-sdk_11,
+  darwin,
 }:
 
-rustPlatform.buildRustPackage rec {
+let
+  buildRustPackage = rustPlatform.buildRustPackage.override {
+    stdenv = if stdenv.hostPlatform.isDarwin then overrideSDK stdenv "11.0" else stdenv;
+  };
+in
+buildRustPackage rec {
   pname = "en-croissant";
   version = "0.11.1";
 
@@ -50,7 +56,7 @@ rustPlatform.buildRustPackage rec {
     [
       pnpm_9.configHook
       nodejs
-      cargo-tauri_1.hook
+      cargo-tauri.hook
       pkg-config
     ]
     ++ lib.optionals stdenv.hostPlatform.isLinux [ wrapGAppsHook3 ]
@@ -66,7 +72,10 @@ rustPlatform.buildRustPackage rec {
       gst_all_1.gst-plugins-bad
       gst_all_1.gst-plugins-good
     ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [ apple-sdk_11 ];
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [
+      darwin.apple_sdk_11_0.frameworks.Cocoa
+      darwin.apple_sdk_11_0.frameworks.WebKit
+    ];
 
   doCheck = false; # many scoring tests fail
 

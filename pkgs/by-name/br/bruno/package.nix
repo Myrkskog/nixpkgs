@@ -5,6 +5,7 @@
   buildNpmPackage,
   nix-update-script,
   electron,
+  writeShellScriptBin,
   makeWrapper,
   copyDesktopItems,
   makeDesktopItem,
@@ -13,29 +14,37 @@
   cairo,
   pango,
   npm-lockfile-fix,
-  apple-sdk_11,
+  overrideSDK,
+  darwin,
 }:
 
-buildNpmPackage rec {
+let
+  # fix for: https://github.com/NixOS/nixpkgs/issues/272156
+  buildNpmPackage' = buildNpmPackage.override {
+    stdenv = if stdenv.hostPlatform.isDarwin then overrideSDK stdenv "11.0" else stdenv;
+  };
+in
+buildNpmPackage' rec {
   pname = "bruno";
-  version = "1.34.2";
+  version = "1.34.0";
 
   src = fetchFromGitHub {
     owner = "usebruno";
     repo = "bruno";
     rev = "v${version}";
-    hash = "sha256-ydb80+FP2IsobvCZiIKzbErAJNakVoSoYrhddmPmYkc=";
+    hash = "sha256-6UcByIiKBAIicH3dNF+6byuj/WsEb4Xi+iPvfjPsQkA=";
 
     postFetch = ''
       ${lib.getExe npm-lockfile-fix} $out/package-lock.json
     '';
   };
 
-  npmDepsHash = "sha256-ODE8GLIgdUEOiniki8jzkHfU5TKHWoIIbjGJjNzMZCI=";
+  npmDepsHash = "sha256-z8d1paC5VQ/XsXJuQ6Z7PjSwC6abN6kRmG0sfI9aCqw=";
   npmFlags = [ "--legacy-peer-deps" ];
 
   nativeBuildInputs =
     [
+      (writeShellScriptBin "phantomjs" "echo 2.1.1")
       pkg-config
     ]
     ++ lib.optionals (!stdenv.hostPlatform.isDarwin) [
@@ -50,8 +59,7 @@ buildNpmPackage rec {
       pango
     ]
     ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      # fix for: https://github.com/NixOS/nixpkgs/issues/272156
-      apple-sdk_11
+      darwin.apple_sdk_11_0.frameworks.CoreText
     ];
 
   desktopItems = [
@@ -78,17 +86,8 @@ buildNpmPackage rec {
 
   ELECTRON_SKIP_BINARY_DOWNLOAD = 1;
 
-  # remove giflib dependency
-  npmRebuildFlags = [ "--ignore-scripts" ];
-  preBuild = ''
-    substituteInPlace node_modules/canvas/binding.gyp \
-      --replace-fail "'with_gif%': '<!(node ./util/has_lib.js gif)'" "'with_gif%': 'false'"
-    npm rebuild
-  '';
-
-  buildPhase = ''
-    runHook preBuild
-
+  dontNpmBuild = true;
+  postBuild = ''
     npm run build --workspace=packages/bruno-common
     npm run build --workspace=packages/bruno-graphql-docs
     npm run build --workspace=packages/bruno-app
@@ -128,8 +127,6 @@ buildNpmPackage rec {
     }
 
     popd
-
-    runHook postBuild
   '';
 
   npmPackFlags = [ "--ignore-scripts" ];
@@ -169,19 +166,19 @@ buildNpmPackage rec {
 
   passthru.updateScript = nix-update-script { };
 
-  meta = {
+  meta = with lib; {
     description = "Open-source IDE For exploring and testing APIs";
     homepage = "https://www.usebruno.com";
-    license = lib.licenses.mit;
-    mainProgram = "bruno";
-    maintainers = with lib.maintainers; [
+    platforms = platforms.linux ++ platforms.darwin;
+    license = licenses.mit;
+    maintainers = with maintainers; [
       gepbird
       kashw2
       lucasew
       mattpolzin
-      redyf
       water-sucks
+      redyf
     ];
-    platforms = lib.platforms.linux ++ lib.platforms.darwin;
+    mainProgram = "bruno";
   };
 }

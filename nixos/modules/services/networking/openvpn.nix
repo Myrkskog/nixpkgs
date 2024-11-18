@@ -73,9 +73,8 @@ let
     openvpn-restart = {
       wantedBy = [ "sleep.target" ];
       path = [ pkgs.procps ];
-      script = let
-        unitNames = map (n: "openvpn-${n}.service") (builtins.attrNames cfg.servers);
-      in "systemctl try-restart ${lib.escapeShellArgs unitNames}";
+      script = "pkill --signal SIGHUP --exact openvpn";
+      #SIGHUP makes openvpn process to self-exit and then it got restarted by systemd because of Restart=always
       description = "Sends a signal to OpenVPN process to trigger a restart after return from sleep";
     };
   };

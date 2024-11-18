@@ -8,6 +8,8 @@
 , curl
 , zlib
 , zstd
+, libiconv
+, CoreServices
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -33,6 +35,9 @@ stdenv.mkDerivation (finalAttrs: {
     curl
     zlib
     zstd
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    libiconv
+    CoreServices
   ];
 
   cargoDeps = rustPlatform.fetchCargoTarball {

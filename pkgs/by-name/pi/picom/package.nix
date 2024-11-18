@@ -1,48 +1,45 @@
-{
-  asciidoctor,
-  dbus,
-  docbook_xml_dtd_45,
-  docbook_xsl,
-  fetchFromGitHub,
-  lib,
-  libconfig,
-  libdrm,
-  libev,
-  libGL,
-  libepoxy,
-  libX11,
-  libxcb,
-  libxdg_basedir,
-  libXext,
-  libxml2,
-  libxslt,
-  makeWrapper,
-  meson,
-  ninja,
-  pcre2,
-  pixman,
-  pkg-config,
-  stdenv,
-  uthash,
-  xcbutil,
-  xcbutilimage,
-  xcbutilrenderutil,
-  xorgproto,
-  xwininfo,
-  withDebug ? false,
-  versionCheckHook,
-  nix-update-script,
+{ asciidoctor
+, dbus
+, docbook_xml_dtd_45
+, docbook_xsl
+, fetchFromGitHub
+, lib
+, libconfig
+, libdrm
+, libev
+, libGL
+, libepoxy
+, libX11
+, libxcb
+, libxdg_basedir
+, libXext
+, libxml2
+, libxslt
+, makeWrapper
+, meson
+, ninja
+, pcre2
+, pixman
+, pkg-config
+, stdenv
+, uthash
+, xcbutil
+, xcbutilimage
+, xcbutilrenderutil
+, xorgproto
+, xwininfo
+, withDebug ? false
 }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "picom";
-  version = "12.5";
+  version = "12.3";
 
   src = fetchFromGitHub {
     owner = "yshui";
     repo = "picom";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-H8IbzzrzF1c63MXbw5mqoll3H+vgcSVpijrlSDNkc+o=";
+    hash = "sha256-FwjMlHP8xNJikkPpz+8BORrqqKYvRpkqm9GbExCoLAU=";
     fetchSubmodules = true;
   };
 
@@ -93,28 +90,15 @@ stdenv.mkDerivation (finalAttrs: {
 
   # In debug mode, also copy src directory to store. If you then run `gdb picom`
   # in the bin directory of picom store path, gdb finds the source files.
-  postInstall =
-    ''
-      wrapProgram $out/bin/picom-trans \
-        --prefix PATH : ${lib.makeBinPath [ xwininfo ]}
-    ''
-    + lib.optionalString withDebug ''
-      cp -r ../src $out/
-    '';
+  postInstall = ''
+    wrapProgram $out/bin/picom-trans \
+      --prefix PATH : ${lib.makeBinPath [ xwininfo ]}
+  '' + lib.optionalString withDebug ''
+    cp -r ../src $out/
+  '';
 
-  nativeInstallCheckInputs = [
-    versionCheckHook
-  ];
-
-  doInstallCheck = true;
-
-  passthru = {
-    updateScript = nix-update-script { };
-  };
-
-  meta = {
+  meta = with lib; {
     description = "Fork of XCompMgr, a sample compositing manager for X servers";
-    license = lib.licenses.mit;
     longDescription = ''
       A fork of XCompMgr, which is a sample compositing manager for X
       servers supporting the XFIXES, DAMAGE, RENDER, and COMPOSITE
@@ -129,14 +113,10 @@ stdenv.mkDerivation (finalAttrs: {
       For gdb to find the source files, you need to run gdb in the bin directory
       of picom package in the nix store.
     '';
+    license = licenses.mit;
     homepage = "https://github.com/yshui/picom";
+    maintainers = with maintainers; [ ertes gepbird twey thiagokokada ];
+    platforms = platforms.linux;
     mainProgram = "picom";
-    maintainers = with lib.maintainers; [
-      ertes
-      gepbird
-      thiagokokada
-      twey
-    ];
-    platforms = lib.platforms.linux;
   };
 })

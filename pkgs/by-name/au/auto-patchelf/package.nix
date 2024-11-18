@@ -1,29 +1,18 @@
 {
-  stdenv,
-  python3,
   lib,
+  python3Packages,
 }:
 
-let
-  pythonEnv = python3.withPackages (ps: [ ps.pyelftools ]);
-
-in
-# Note: Not using python3Packages.buildPythonApplication because of dependency propagation.
-stdenv.mkDerivation {
+python3Packages.buildPythonApplication {
   pname = "auto-patchelf";
   version = "0-unstable-2024-08-14";
-
-  buildInputs = [ pythonEnv ];
+  pyproject = false;
 
   src = ./source;
 
-  buildPhase = ''
-    runHook preBuild
-
-    substituteInPlace auto-patchelf.py --replace-fail "@defaultBintools@" "$NIX_BINTOOLS"
-
-    runHook postBuild
-  '';
+  dependencies = with python3Packages; [
+    pyelftools
+  ];
 
   installPhase = ''
     runHook preInstall
@@ -32,6 +21,10 @@ stdenv.mkDerivation {
 
     runHook postInstall
   '';
+
+  makeWrapperArgs = [
+    "--set DEFAULT_BINTOOLS $NIX_BINTOOLS"
+  ];
 
   meta = {
     description = "Automatically patch ELF binaries using patchelf";

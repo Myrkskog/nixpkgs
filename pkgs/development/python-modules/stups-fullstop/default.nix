@@ -7,7 +7,7 @@
   stups-cli-support,
   stups-zign,
   pytest,
-  pytest-cov-stub,
+  pytest-cov,
   isPy3k,
 }:
 
@@ -36,7 +36,7 @@ buildPythonPackage rec {
 
   nativeCheckInputs = [
     pytest
-    pytest-cov-stub
+    pytest-cov
   ];
 
   meta = with lib; {

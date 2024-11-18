@@ -17,9 +17,6 @@
 , vulkan-headers
 , vulkan-memory-allocator
 , xcbuild
-, cctools
-, zlib
-, apple-sdk_11
 
 , enableVulkan ? !stdenv.hostPlatform.isDarwin
 }:
@@ -49,7 +46,7 @@ stdenv.mkDerivation (finalAttrs: {
     gn
     ninja
     python3
-  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ xcbuild cctools.libtool zlib ];
+  ] ++ lib.optional stdenv.hostPlatform.isDarwin xcbuild;
 
   buildInputs = [
     expat
@@ -64,8 +61,6 @@ stdenv.mkDerivation (finalAttrs: {
   ] ++ lib.optionals enableVulkan [
     vulkan-headers
     vulkan-memory-allocator
-  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
-    apple-sdk_11 # can be removed once x86_64-darwin defaults to a newer SDK
   ];
 
   gnFlags = let
@@ -97,15 +92,13 @@ stdenv.mkDerivation (finalAttrs: {
     "skia_use_vulkan=true"
   ];
 
-  env.NIX_LDFLAGS = lib.optionalString stdenv.hostPlatform.isDarwin "-lz";
-
   # Somewhat arbitrary, but similar to what other distros are doing
   installPhase = ''
     runHook preInstall
 
     # Libraries
     mkdir -p $out/lib
-    cp *.so *.a *.dylib $out/lib
+    cp *.so *.a $out/lib
 
     # Includes
     pushd ../../include
@@ -151,5 +144,7 @@ stdenv.mkDerivation (finalAttrs: {
     maintainers = with lib.maintainers; [ fgaz ];
     platforms = with lib.platforms; arm ++ aarch64 ++ x86 ++ x86_64;
     pkgConfigModules = [ "skia" ];
+    # https://github.com/NixOS/nixpkgs/pull/325871#issuecomment-2220610016
+    broken = stdenv.hostPlatform.isDarwin;
   };
 })

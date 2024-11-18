@@ -5,6 +5,8 @@
   fetchFromGitHub,
   pkg-config,
   openssl,
+  darwin,
+  libiconv,
 }:
 let
   pname = "asm-lsp";
@@ -22,7 +24,12 @@ rustPlatform.buildRustPackage {
 
   nativeBuildInputs = [ pkg-config ];
 
-  buildInputs = lib.optionals (!stdenv.hostPlatform.isDarwin) [ openssl ];
+  buildInputs =
+    [ openssl ]
+    ++ lib.optionals stdenv.buildPlatform.isDarwin [
+      darwin.apple_sdk.frameworks.SystemConfiguration
+      libiconv
+    ];
 
   cargoHash = "sha256-AtCnYOOtViMpg+rz8miuBZg1pENBPaf9kamSPaVUyiw=";
 

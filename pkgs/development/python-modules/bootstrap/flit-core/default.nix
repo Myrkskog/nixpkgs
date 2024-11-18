@@ -13,7 +13,7 @@ stdenv.mkDerivation rec {
     meta
     ;
 
-  postPatch = "cd flit_core";
+  sourceRoot = "${src.name}/flit_core";
 
   buildPhase = ''
     runHook preBuild

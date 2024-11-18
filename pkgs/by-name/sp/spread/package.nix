@@ -61,6 +61,6 @@ buildGoModule {
     description = "Convenient full-system test (task) distribution";
     homepage = "https://github.com/snapcore/spread";
     maintainers = with lib.maintainers; [ jnsgruk ];
-    platforms = lib.platforms.unix;
+    platforms = lib.platforms.linux;
   };
 }

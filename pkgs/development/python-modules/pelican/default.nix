@@ -14,6 +14,7 @@
   typogrify,
 
   # dependencies
+  backports-zoneinfo,
   blinker,
   docutils,
   feedgenerator,

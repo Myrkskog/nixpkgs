@@ -37,7 +37,7 @@ stdenv.mkDerivation ({
     ++ extraNativeBuildInputs;
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc) # libstdc++.so.6
+    stdenv.cc.cc.lib # libstdc++.so.6
     zlib
     libxcrypt-legacy # libcrypt.so.1 (default is .2 now)
   ]

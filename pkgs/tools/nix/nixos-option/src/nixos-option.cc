@@ -1,8 +1,16 @@
+#include <nix/config.h> // for nix/globals.hh's reference to SYSTEM
+
+#include <exception>               // for exception_ptr, current_exception
+#include <functional>              // for function
+#include <iostream>                // for operator<<, basic_ostream, ostrin...
+#include <iterator>                // for next
+#include <list>                    // for _List_iterator
+#include <memory>                  // for allocator, unique_ptr, make_unique
+#include <new>                     // for operator new
 #include <nix/args.hh>             // for argvToStrings, UsageError
-#include <nix/attr-path.hh>        // for findAlongAttrPath, parseAttrPath
+#include <nix/attr-path.hh>        // for findAlongAttrPath
 #include <nix/attr-set.hh>         // for Attr, Bindings, Bindings::iterator
 #include <nix/common-eval-args.hh> // for MixEvalArgs
-#include <nix/eval-gc.hh>          // for initGC, initNix
 #include <nix/eval-inline.hh>      // for EvalState::forceValue
 #include <nix/eval.hh>             // for EvalState, initGC, operator<<
 #include <nix/globals.hh>          // for initPlugins, Settings, settings
@@ -15,6 +23,8 @@
 #include <nix/value.hh>            // for Value, Value::(anonymous), Value:...
 #include <string>                  // for string, operator+, operator==
 #include <utility>                 // for move
+#include <variant>                 // for get, holds_alternative, variant
+#include <vector>                  // for vector<>::iterator, vector
 
 #include "libnix-copy-paste.hh"
 
@@ -109,7 +119,7 @@ Out::Out(Out & o, const std::string & start, const std::string & end, LinePolicy
 
 Value evaluateValue(Context & ctx, Value & v)
 {
-    ctx.state.forceValue(v, v.determinePos(nix::noPos));
+    ctx.state.forceValue(v, [&]() { return v.determinePos(nix::noPos); });
     if (ctx.autoArgs.empty()) {
         return v;
     }
@@ -123,8 +133,8 @@ bool isOption(Context & ctx, const Value & v)
     if (v.type() != nAttrs) {
         return false;
     }
-    const auto & actualType = v.attrs()->find(ctx.underscoreType);
-    if (actualType == v.attrs()->end()) {
+    const auto & actualType = v.attrs->find(ctx.underscoreType);
+    if (actualType == v.attrs->end()) {
         return false;
     }
     try {
@@ -132,7 +142,7 @@ bool isOption(Context & ctx, const Value & v)
         if (evaluatedType.type() != nString) {
             return false;
         }
-        return evaluatedType.string_view() == "option";
+        return static_cast<std::string>(evaluatedType.string.s) == "option";
     } catch (Error &) {
         return false;
     }
@@ -142,17 +152,17 @@ bool isOption(Context & ctx, const Value & v)
 // These are needed for paths like:
 //    fileSystems."/".fsType
 //    systemd.units."dbus.service".text
-std::string quoteAttribute(const std::string_view & attribute)
+std::string quoteAttribute(const std::string & attribute)
 {
     if (isVarName(attribute)) {
-        return std::string(attribute);
+        return attribute;
     }
     std::ostringstream buf;
-    nix::printLiteralString(buf, attribute);
+    printStringValue(buf, attribute.c_str());
     return buf.str();
 }
 
-const std::string appendPath(const std::string & prefix, const std::string_view & suffix)
+const std::string appendPath(const std::string & prefix, const std::string & suffix)
 {
     if (prefix.empty()) {
         return quoteAttribute(suffix);
@@ -164,7 +174,7 @@ bool forbiddenRecursionName(const nix::Symbol symbol, const nix::SymbolTable & s
     // note: this is created from a pointer
     // According to standard, it may never point to null, and hence attempts to check against nullptr are not allowed.
     // However, at the time of writing, I am not certain about the full implications of the omission of a nullptr check here.
-    const std::string_view & name = symbolTable[symbol];
+    const std::string & name = symbolTable[symbol];
     // TODO: figure out why haskellPackages is not recursed here
     return (!name.empty() && name[0] == '_') || name == "haskellPackages";
 }
@@ -188,35 +198,34 @@ void recurse(const std::function<bool(const std::string & path, std::variant<Val
     if (evaluated_value.type() != nAttrs) {
         return;
     }
-    for (const auto & child : evaluated_value.attrs()->lexicographicOrder(ctx.state.symbols)) {
+    for (const auto & child : evaluated_value.attrs->lexicographicOrder(ctx.state.symbols)) {
         if (forbiddenRecursionName(child->name, ctx.state.symbols)) {
             continue;
         }
-        std::string_view name = ctx.state.symbols[child->name];
-        recurse(f, ctx, *child->value, appendPath(path, name));
+        recurse(f, ctx, *child->value, appendPath(path, ctx.state.symbols[child->name]));
     }
 }
 
 bool optionTypeIs(Context & ctx, Value & v, const std::string & soughtType)
 {
     try {
-        const auto & typeLookup = v.attrs()->find(ctx.state.sType);
-        if (typeLookup == v.attrs()->end()) {
+        const auto & typeLookup = v.attrs->find(ctx.state.sType);
+        if (typeLookup == v.attrs->end()) {
             return false;
         }
         Value type = evaluateValue(ctx, *typeLookup->value);
         if (type.type() != nAttrs) {
             return false;
         }
-        const auto & nameLookup = type.attrs()->find(ctx.state.sName);
-        if (nameLookup == type.attrs()->end()) {
+        const auto & nameLookup = type.attrs->find(ctx.state.sName);
+        if (nameLookup == type.attrs->end()) {
             return false;
         }
         Value name = evaluateValue(ctx, *nameLookup->value);
         if (name.type() != nString) {
             return false;
         }
-        return name.string_view() == soughtType;
+        return name.string.s == soughtType;
     } catch (Error &) {
         return false;
     }
@@ -233,7 +242,7 @@ Value getSubOptions(Context & ctx, Value & option)
 {
     Value getSubOptions = evaluateValue(ctx, *findAlongAttrPath(ctx.state, "type.getSubOptions", ctx.autoArgs, option).first);
     if (getSubOptions.isLambda()) {
-        throw OptionPathError(ctx.state, "Option's type.getSubOptions isn't a function");
+        throw OptionPathError("Option's type.getSubOptions isn't a function");
     }
     Value emptyString{};
     emptyString.mkString("");
@@ -251,40 +260,40 @@ struct FindAlongOptionPathRet
 };
 FindAlongOptionPathRet findAlongOptionPath(Context & ctx, const std::string & path)
 {
-    std::vector<Symbol> tokens = nix::parseAttrPath(ctx.state, path);
+    Strings tokens = parseAttrPath(path);
     Value v = ctx.optionsRoot;
     std::string processedPath;
     for (auto i = tokens.begin(); i != tokens.end(); i++) {
-        const std::string_view attr = ctx.state.symbols[*i];
+        const auto & attr = *i;
         try {
             bool lastAttribute = std::next(i) == tokens.end();
             v = evaluateValue(ctx, v);
             if (attr.empty()) {
-                throw OptionPathError(ctx.state, "empty attribute name");
+                throw OptionPathError("empty attribute name");
             }
             if (isOption(ctx, v) && optionTypeIs(ctx, v, "submodule")) {
                 v = getSubOptions(ctx, v);
             }
             if (isOption(ctx, v) && isAggregateOptionType(ctx, v)) {
                 auto subOptions = getSubOptions(ctx, v);
-                if (lastAttribute && subOptions.attrs()->empty()) {
+                if (lastAttribute && subOptions.attrs->empty()) {
                     break;
                 }
                 v = subOptions;
                 // Note that we've consumed attr, but didn't actually use it.  This is the path component that's looked
                 // up in the list or attribute set that doesn't name an option -- the "root" in "users.users.root.name".
             } else if (v.type() != nAttrs) {
-                throw OptionPathError(ctx.state, "Value is %s while a set was expected", showType(v));
+                throw OptionPathError("Value is %s while a set was expected", showType(v));
             } else {
-                const auto & next = v.attrs()->find(ctx.state.symbols.create(attr));
-                if (next == v.attrs()->end()) {
-                    throw OptionPathError(ctx.state, "Attribute not found", attr, path);
+                const auto & next = v.attrs->find(ctx.state.symbols.create(attr));
+                if (next == v.attrs->end()) {
+                    throw OptionPathError("Attribute not found", attr, path);
                 }
                 v = *next->value;
             }
             processedPath = appendPath(processedPath, attr);
         } catch (OptionPathError & e) {
-            throw OptionPathError(ctx.state, "At '%s' in path '%s': %s", attr, path, e.msg());
+            throw OptionPathError("At '%s' in path '%s': %s", attr, path, e.msg());
         }
     }
     return {v, processedPath};
@@ -358,23 +367,21 @@ std::string describeError(const Error & e) { return "«error: " + e.msg() + "»"
 
 void describeDerivation(Context & ctx, Out & out, Value v)
 {
-    // Copy-pasted from nix/src/nix/repl.cc printDerivation()  :(
-    std::optional<nix::StorePath> storePath = std::nullopt;
-    if (auto i = v.attrs()->get(ctx.state.sDrvPath)) {
-        nix::NixStringContext context;
-        storePath = ctx.state.coerceToStorePath(i->pos, *i->value, context, "while evaluating the drvPath of a derivation");
-    }
+    // Copy-pasted from nix/src/nix/repl.cc  :(
     out << "«derivation ";
-    if (storePath) {
-        out << " " << ctx.state.store->printStorePath(*storePath);
-    }
+    Bindings::iterator i = v.attrs->find(ctx.state.sDrvPath);
+    nix::NixStringContext strContext;
+    if (i != v.attrs->end())
+        out << ctx.state.store->printStorePath(ctx.state.coerceToStorePath(i->pos, *i->value, strContext, "while evaluating the drvPath of a derivation"));
+    else
+        out << "???";
     out << "»";
 }
 
 Value parseAndEval(EvalState & state, const std::string & expression, const std::string & path)
 {
     Value v{};
-    state.eval(state.parseExprFromString(expression, state.rootPath(".")), v);
+    state.eval(state.parseExprFromString(expression, nix::SourcePath(nix::CanonPath::fromCwd(path))), v);
     return v;
 }
 
@@ -391,10 +398,10 @@ void printList(Context & ctx, Out & out, Value & v)
 
 void printAttrs(Context & ctx, Out & out, Value & v, const std::string & path)
 {
-    Out attrsOut(out, "{", "}", v.attrs()->size());
-    for (const auto & a : v.attrs()->lexicographicOrder(ctx.state.symbols)) {
+    Out attrsOut(out, "{", "}", v.attrs->size());
+    for (const auto & a : v.attrs->lexicographicOrder(ctx.state.symbols)) {
         if (!forbiddenRecursionName(a->name, ctx.state.symbols)) {
-            std::string_view name = ctx.state.symbols[a->name];
+            const std::string name = ctx.state.symbols[a->name];
             attrsOut << name << " = ";
             printValue(ctx, attrsOut, *a->value, appendPath(path, name));
             attrsOut << ";" << Out::sep;
@@ -402,9 +409,9 @@ void printAttrs(Context & ctx, Out & out, Value & v, const std::string & path)
     }
 }
 
-void multiLineStringEscape(Out & out, const std::string_view & s)
+void multiLineStringEscape(Out & out, const std::string & s)
 {
-    size_t i;
+    int i;
     for (i = 1; i < s.size(); i++) {
         if (s[i - 1] == '$' && s[i] == '{') {
             out << "''${";
@@ -423,7 +430,7 @@ void multiLineStringEscape(Out & out, const std::string_view & s)
 
 void printMultiLineString(Out & out, const Value & v)
 {
-    std::string_view s = v.string_view();
+    std::string s = v.string.s;
     Out strOut(out, "''", "''", Out::MULTI_LINE);
     std::string::size_type begin = 0;
     while (begin < s.size()) {
@@ -451,11 +458,11 @@ void printValue(Context & ctx, Out & out, std::variant<Value, std::exception_ptr
             printList(ctx, out, v);
         } else if (v.type() == nAttrs) {
             printAttrs(ctx, out, v, path);
-        } else if (v.type() == nString && std::string(v.string_view()).find('\n') != std::string::npos) {
+        } else if (v.type() == nString && std::string(v.string.s).find('\n') != std::string::npos) {
             printMultiLineString(out, v);
         } else {
             ctx.state.forceValueDeep(v);
-            v.print(ctx.state, out.ostream);
+            v.print(ctx.state.symbols, out.ostream);
         }
     } catch (ThrownError & e) {
         if (e.msg() == "The option `" + path + "' was accessed but has no value defined. Try setting the option.") {
@@ -553,8 +560,8 @@ void printOption(Context & ctx, Out & out, const std::string & path, Value & opt
 void printListing(Context & ctx, Out & out, Value & v)
 {
     out << "This attribute set contains:\n";
-    for (const auto & a : v.attrs()->lexicographicOrder(ctx.state.symbols)) {
-        const std::string_view & name = ctx.state.symbols[a->name];
+    for (const auto & a : v.attrs->lexicographicOrder(ctx.state.symbols)) {
+        const std::string & name = ctx.state.symbols[a->name];
         if (!name.empty() && name[0] != '_') {
             out << name << "\n";
         }
@@ -623,11 +630,7 @@ int main(int argc, char ** argv)
     nix::initGC();
     nix::settings.readOnlyMode = true;
     auto store = nix::openStore();
-
-    auto evalStore = myArgs.evalStoreUrl ? nix::openStore(*myArgs.evalStoreUrl)
-                                       : nix::openStore();
-    auto state = nix::make_ref<nix::EvalState>(
-        myArgs.lookupPath, evalStore, nix::fetchSettings, nix::evalSettings);
+    auto state = std::make_unique<EvalState>(myArgs.searchPath, store);
 
     Value optionsRoot = parseAndEval(*state, optionsExpr, path);
     Value configRoot = parseAndEval(*state, configExpr, path);
@@ -643,7 +646,7 @@ int main(int argc, char ** argv)
         print(ctx, out, arg);
     }
 
-    ctx.state.maybePrintStats();
+    ctx.state.printStats();
 
     return 0;
 }

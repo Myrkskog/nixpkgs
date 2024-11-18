@@ -1,39 +1,36 @@
-{
-  lib,
-  rustPlatform,
-  fetchCrate,
-  pkg-config,
-  openssl,
-  zlib,
-  stdenv,
-  Security,
-  SystemConfiguration,
+{ lib
+, rustPlatform
+, fetchCrate
+, pkg-config
+, openssl
+, zlib
+, stdenv
+, Security
+, SystemConfiguration
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "cargo-audit";
-  version = "0.21.0";
+  version = "0.20.1";
 
   src = fetchCrate {
     inherit pname version;
-    hash = "sha256-oMXpJE49If4QKE80ZKhRpMRPh3Bl517a2Ez/1VcaQJQ=";
+    hash = "sha256-1HLs7j8opRma3WaHbqeTqG0iJOgD0688/7p/+jrNPAg=";
   };
 
-  cargoHash = "sha256-XefJGAU3NxIyby/0lIx2xnJ00Jv1bNlKWkBe+1hapoU=";
+  cargoHash = "sha256-Cd8K/Y+vWWuneeE52yaYgvg9NdBqW+QjUC5XLVVIgc0=";
 
   nativeBuildInputs = [
     pkg-config
   ];
 
-  buildInputs =
-    [
-      openssl
-      zlib
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      Security
-      SystemConfiguration
-    ];
+  buildInputs = [
+    openssl
+    zlib
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    Security
+    SystemConfiguration
+  ];
 
   buildFeatures = [ "fix" ];
 
@@ -45,14 +42,7 @@ rustPlatform.buildRustPackage rec {
     mainProgram = "cargo-audit";
     homepage = "https://rustsec.org";
     changelog = "https://github.com/rustsec/rustsec/blob/cargo-audit/v${version}/cargo-audit/CHANGELOG.md";
-    license = with licenses; [
-      mit # or
-      asl20
-    ];
-    maintainers = with maintainers; [
-      basvandijk
-      figsoda
-      jk
-    ];
+    license = with licenses; [ mit /* or */ asl20 ];
+    maintainers = with maintainers; [ basvandijk figsoda jk ];
   };
 }

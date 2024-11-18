@@ -26,11 +26,6 @@ buildPythonPackage rec {
     hash = "sha256-dpYOTwVf61Pom1AiODuvyHtj8lusYmWYSwozPRpX94E=";
   };
 
-  postPatch = ''
-    substituteInPlace lime/tests/test_scikit_image.py \
-      --replace-fail "random_seed" "rng"
-  '';
-
   propagatedBuildInputs = [
     matplotlib
     numpy
@@ -55,11 +50,11 @@ buildPythonPackage rec {
     "lime.lime_text"
   ];
 
-  meta = {
+  meta = with lib; {
     description = "Local Interpretable Model-Agnostic Explanations for machine learning classifiers";
     homepage = "https://github.com/marcotcr/lime";
     changelog = "https://github.com/marcotcr/lime/releases/tag/${version}";
-    license = lib.licenses.bsd2;
+    license = licenses.bsd2;
     maintainers = with lib.maintainers; [ khaser ];
   };
 }

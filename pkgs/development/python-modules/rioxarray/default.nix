@@ -20,7 +20,7 @@
 
 buildPythonPackage rec {
   pname = "rioxarray";
-  version = "0.18.1";
+  version = "0.17.0";
   pyproject = true;
   disabled = pythonOlder "3.10";
 
@@ -28,7 +28,7 @@ buildPythonPackage rec {
     owner = "corteva";
     repo = "rioxarray";
     rev = "refs/tags/${version}";
-    hash = "sha256-0YsGu8JuYrb6lWuC3RQ4jCkulxxFpnd0eaRajCwtFHo=";
+    hash = "sha256-mOXyfkreQ55vWmPCG2U/ijcKZqzHoQQLfKArSh2fDmA=";
   };
 
   build-system = [ setuptools ];

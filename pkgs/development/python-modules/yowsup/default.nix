@@ -26,18 +26,12 @@ buildPythonPackage rec {
   src = fetchFromGitHub {
     owner = "tgalal";
     repo = "yowsup";
-    rev = "refs/tags/v${version}";
+    rev = "v${version}";
     sha256 = "1pz0r1gif15lhzdsam8gg3jm6zsskiv2yiwlhaif5rl7lv3p0v7q";
   };
 
   pythonRelaxDeps = true;
   pythonRemoveDeps = [ "argparse" ];
-
-  env = {
-    # make protobuf compatible with old versions
-    # https://developers.google.com/protocol-buffers/docs/news/2022-05-06#python-updates
-    PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION = "python";
-  };
 
   build-system = [ setuptools ];
 
@@ -51,11 +45,11 @@ buildPythonPackage rec {
     six
   ] ++ lib.optionals (!pythonOlder "3.12") [ pyasyncore ];
 
-  meta = {
+  meta = with lib; {
     homepage = "https://github.com/tgalal/yowsup";
     description = "Python WhatsApp library";
     mainProgram = "yowsup-cli";
-    license = lib.licenses.gpl3Plus;
+    license = licenses.gpl3Plus;
     maintainers = [ ];
   };
 }

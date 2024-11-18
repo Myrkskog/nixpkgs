@@ -29,7 +29,7 @@ rustPlatform.buildRustPackage {
   ];
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
   ];
 
   runtimeDependencies = [

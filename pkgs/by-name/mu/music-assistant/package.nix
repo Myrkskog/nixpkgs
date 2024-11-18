@@ -24,14 +24,14 @@ in
 
 python.pkgs.buildPythonApplication rec {
   pname = "music-assistant";
-  version = "2.3.2";
+  version = "2.2.7";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "music-assistant";
     repo = "server";
     rev = "refs/tags/${version}";
-    hash = "sha256-q71LczFsJAvZaWCQg4Lgzg2XX4XDFvA3x255Re00D9Q=";
+    hash = "sha256-GMjeNX8C027F+Wl/HfluWap9pDOeQwlM9qOs0Sp5tTI=";
   };
 
   patches = [

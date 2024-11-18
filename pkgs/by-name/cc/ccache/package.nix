@@ -122,7 +122,7 @@ stdenv.mkDerivation (finalAttrs: {
           isGNU = unwrappedCC.isGNU or false;
           isCcache = true;
         };
-        lib = lib.getLib unwrappedCC;
+        inherit (unwrappedCC) lib;
         nativeBuildInputs = [ makeWrapper ];
         # Unwrapped clang does not have a targetPrefix because it is multi-target
         # target is decided with argv0.

@@ -8,7 +8,7 @@ in rec {
     version = builtins.head (builtins.match ".*/linux-recordreplay-(.*).tgz"
       metadata.recordreplay.url);
     nativeBuildInputs = [ autoPatchelfHook ];
-    buildInputs = [ (lib.getLib stdenv.cc.cc) openssl zlib ];
+    buildInputs = [ stdenv.cc.cc.lib openssl zlib ];
 
     src = (fetchzip metadata.recordreplay);
     dontBuild = true;
@@ -73,7 +73,7 @@ in rec {
     version = builtins.head
       (builtins.match ".*/linux-node-(.*)" metadata.replay-node.url);
     nativeBuildInputs = [ autoPatchelfHook makeWrapper ];
-    buildInputs = [ (lib.getLib stdenv.cc.cc) ];
+    buildInputs = [ stdenv.cc.cc.lib ];
 
     src = (fetchurl metadata.replay-node);
     dontUnpack = true;
@@ -114,7 +114,7 @@ in rec {
     };
 
     nativeBuildInputs = [ makeWrapper ];
-    buildInputs = [ (lib.getLib stdenv.cc.cc) nodejs ];
+    buildInputs = [ stdenv.cc.cc.lib nodejs ];
     dontBuild = true;
     installPhase = ''
       runHook preInstall
@@ -141,7 +141,6 @@ in rec {
       license = lib.licenses.bsd3;
       maintainers = with maintainers; [ phryneas ];
       platforms = [ "x86_64-linux" ];
-      sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
     };
   };
 }

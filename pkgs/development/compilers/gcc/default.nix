@@ -226,8 +226,7 @@ pipe ((callFile ./common/builder.nix {}) ({
         libc = if libcCross != null then libcCross else stdenv.cc.libc;
       in
         (
-        ''
-           echo "fixing the {GLIBC,UCLIBC,MUSL}_DYNAMIC_LINKER macros..."
+        '' echo "fixing the {GLIBC,UCLIBC,MUSL}_DYNAMIC_LINKER macros..."
            for header in "gcc/config/"*-gnu.h "gcc/config/"*"/"*.h
            do
              grep -q _DYNAMIC_LINKER "$header" || continue

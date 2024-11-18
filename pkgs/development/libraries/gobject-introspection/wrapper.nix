@@ -94,10 +94,7 @@ else
         unwrapped = overriddenUnwrappedGir;
       };
       dontStrip = true;
-      # Conditional is for `pkgsCross.x86_64-freebsd.pkgsBuildHost.gobject-introspection` `error: Don't know how to run x86_64-unknown-freebsd executables.`
-      # `pkgsCross.x86_64-freebsd.buildPackages.python3.withPackages (pp: [ pp.pygobject3 ])`
-      # Using the python module does not need this propagation
-      depsTargetTargetPropagated = lib.optionals (stdenv.targetPlatform.emulatorAvailable buildPackages) [ overridenTargetUnwrappedGir ];
+      depsTargetTargetPropagated = [ overridenTargetUnwrappedGir ];
       buildCommand = ''
         eval fixupPhase
         ${lib.concatMapStrings (output: ''

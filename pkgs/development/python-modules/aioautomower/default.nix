@@ -9,16 +9,14 @@
   poetry-core,
   pyjwt,
   pytest-asyncio,
-  pytest-cov-stub,
   pytestCheckHook,
   pythonOlder,
   syrupy,
-  tzlocal,
 }:
 
 buildPythonPackage rec {
   pname = "aioautomower";
-  version = "2024.10.3";
+  version = "2024.10.0";
   pyproject = true;
 
   disabled = pythonOlder "3.11";
@@ -27,13 +25,14 @@ buildPythonPackage rec {
     owner = "Thomas55555";
     repo = "aioautomower";
     rev = "refs/tags/${version}";
-    hash = "sha256-kLsHJBmNxh+PmJQ9Y9Ve/CACovzsRZyzVjor/VKUmYk=";
+    hash = "sha256-qWXFkz1yIpSDGFilVZK0n+hEUs7osfO+2xfknr2cOZY=";
   };
 
   postPatch = ''
     # Upstream doesn't set a version
     substituteInPlace pyproject.toml \
-      --replace-fail 'version = "0.0.0"' 'version = "${version}"'
+      --replace-fail 'version = "0.0.0"' 'version = "${version}"' \
+      --replace-fail "--cov" ""
   '';
 
   build-system = [ poetry-core ];
@@ -43,13 +42,11 @@ buildPythonPackage rec {
     ical
     mashumaro
     pyjwt
-    tzlocal
   ];
 
   nativeCheckInputs = [
     freezegun
     pytest-asyncio
-    pytest-cov-stub
     pytestCheckHook
     syrupy
   ];

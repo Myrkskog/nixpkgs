@@ -30,25 +30,17 @@ python3Packages.buildPythonApplication rec {
     hatchling
   ];
 
-  # expose optional-dependencies, but provide all features
-  dependencies = lib.flatten (lib.attrValues optional-dependencies);
-
-  optional-dependencies = {
-    default = with python3Packages; [
-      brotli
-      certifi
-      mutagen
-      pycryptodomex
-      requests
-      urllib3
-      websockets
-    ];
-    curl-cffi = [ python3Packages.curl-cffi ];
-    secretstorage = with python3Packages; [
-      cffi
-      secretstorage
-    ];
-  };
+  dependencies = with python3Packages; [
+    brotli
+    certifi
+    curl-cffi
+    mutagen
+    pycryptodomex
+    requests
+    secretstorage # "optional", as in not in requirements.txt, needed for `--cookies-from-browser`
+    urllib3
+    websockets
+  ];
 
   pythonRelaxDeps = [ "websockets" ];
 

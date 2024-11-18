@@ -49,7 +49,7 @@ stdenv.mkDerivation rec {
       pkg-config
       cmake
     ]
-    ++ lib.optionals stdenv.hostPlatform.isLinux [
+    ++ lib.optionals stdenv.isLinux [
       copyDesktopItems
       imagemagick
     ];
@@ -60,12 +60,12 @@ stdenv.mkDerivation rec {
       openssl
       zlib
     ]
-    ++ lib.optionals stdenv.hostPlatform.isLinux [
+    ++ lib.optionals stdenv.isLinux [
       xterm
       udev
       pcsclite
     ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    ++ lib.optionals stdenv.isDarwin [
       libuv
       libsolv
       libcouchbase
@@ -80,23 +80,23 @@ stdenv.mkDerivation rec {
       substituteInPlace ./src/libfido2.pc.in \
         --replace-fail "\''${prefix}/@CMAKE_INSTALL_LIBDIR@" "@CMAKE_INSTALL_FULL_LIBDIR@"
     ''
-    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+    + lib.optionalString stdenv.isDarwin ''
       substituteInPlace ./CMakeLists.txt \
         --replace-fail "/\''${CMAKE_INSTALL_LIBDIR}" "/lib"
     '';
 
   postInstall =
-    lib.optionalString stdenv.hostPlatform.isLinux ''
+    lib.optionalString stdenv.isLinux ''
       install $src/fido2-manage.sh $out/bin/fido2-manage
       magick ${icon} -background none -gravity center -extent 512x512 token2.png
       install -Dm444 token2.png $out/share/icons/hicolor/512x512/apps/token2.png
       install $src/gui.py $out/bin/fido2-manage-gui
     ''
-    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+    + lib.optionalString stdenv.isDarwin ''
       install $src/fido2-manage-mac.sh $out/bin/fido2-manage
     '';
 
-  desktopItems = lib.optionals stdenv.hostPlatform.isLinux [
+  desktopItems = lib.optionals stdenv.isLinux [
     (makeDesktopItem rec {
       desktopName = "Fido2 Manager";
       name = "fido2-manage";
@@ -116,7 +116,7 @@ stdenv.mkDerivation rec {
         --replace-fail "./fido2-manage.sh" "fido2-manage" \
         --replace-fail "awk" "${gawk}/bin/awk"
     ''
-    + lib.optionalString stdenv.hostPlatform.isLinux ''
+    + lib.optionalString stdenv.isLinux ''
       substituteInPlace $out/bin/fido2-manage-gui \
         --replace-fail "./fido2-manage.sh" "$out/bin/fido2-manage" \
         --replace-fail "x-terminal-emulator" "${xterm}/bin/xterm" \
@@ -128,7 +128,7 @@ stdenv.mkDerivation rec {
 
       sed -i '1i #!${pythonEnv.interpreter}' $out/bin/fido2-manage-gui
     ''
-    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+    + lib.optionalString stdenv.isDarwin ''
       substituteInPlace $out/bin/fido2-manage \
         --replace-fail "ggrep" "${gnugrep}/bin/grep"
     '';

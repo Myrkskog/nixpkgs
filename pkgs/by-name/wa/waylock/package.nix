@@ -15,7 +15,7 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "waylock";
-  version = "1.3.0";
+  version = "1.2.1";
 
   src = fetchFromGitea {
     domain = "codeberg.org";
@@ -23,7 +23,7 @@ stdenv.mkDerivation (finalAttrs: {
     repo = "waylock";
     rev = "v${finalAttrs.version}";
     fetchSubmodules = true;
-    hash = "sha256-jfMSar+Y3inu1Cly6rIDw+akBJIQ6huL0smAstgQmEo=";
+    hash = "sha256-i1Nd39666xrkzi7r08ZRIXJXvK9wmzb8zdmvmWEQaHE=";
   };
 
   deps = callPackage ./build.zig.zon.nix { };
@@ -52,7 +52,7 @@ stdenv.mkDerivation (finalAttrs: {
     substituteInPlace pam.d/waylock --replace-fail "system-auth" "login"
   '';
 
-  passthru.updateScript = ./update.sh;
+  passthru.updateScript = ./update.nu;
 
   meta = {
     homepage = "https://codeberg.org/ifreund/waylock";

@@ -8,18 +8,26 @@
 }:
 stdenv.mkDerivation {
   pname = "msi-ec-kmods";
-  version = "0-unstable-2024-11-04";
+  version = "0-unstable-2024-09-19";
 
   src = fetchFromGitHub {
     owner = "BeardOverflow";
     repo = "msi-ec";
-    rev = "be6f7156cd15f6ecf9d48dfcc30cbd1f693916b8";
-    hash = "sha256-gImiP4OaBt80n+qgVnbhd0aS/zW+05o3DzGCw0jq+0g=";
+    rev = "94c2a45c04a07096e10d7cb1240e1a201a025dc0";
+    hash = "sha256-amJUoIf5Sl62BLyHLeam2fzN1s+APoWh2dH5QVfJhCs=";
   };
 
   dontMakeSourcesWritable = false;
 
-  patches = [ ./patches/makefile.patch ];
+  postPatch =
+    let
+      targets = builtins.filter (v: v != "") [
+        (lib.strings.optionalString (kernel.kernelOlder "6.2") "older-kernel-patch")
+        (lib.strings.optionalString (kernel.kernelAtLeast "6.11") "6.11-kernel-patch")
+      ];
+      commands = builtins.map (target: "make ${target}") targets;
+    in
+    lib.concatStringsSep "\n" ([ "cp ${./patches/Makefile} ./Makefile" ] ++ commands);
 
   hardeningDisable = [ "pic" ];
 
@@ -40,6 +48,6 @@ stdenv.mkDerivation {
     license = lib.licenses.gpl2Plus;
     maintainers = [ lib.maintainers.m1dugh ];
     platforms = lib.platforms.linux;
-    broken = kernel.kernelOlder "5.5";
+    broken = kernel.kernelOlder "6.2";
   };
 }

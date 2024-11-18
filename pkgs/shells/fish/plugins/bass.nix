@@ -2,7 +2,7 @@
 
 buildFishPlugin rec {
   pname = "bass";
-  version = "1.0-unstable-2021-02-18";
+  version = "unstable-2021-02-18";
 
   src = fetchFromGitHub {
     owner = "edc";

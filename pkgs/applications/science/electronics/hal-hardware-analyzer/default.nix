@@ -8,7 +8,6 @@
 , igraph
 , llvmPackages
 , ninja
-, nlohmann_json
 , pkg-config
 , python3Packages
 , qtbase
@@ -16,36 +15,75 @@
 , quazip
 , rapidjson
 , spdlog
-, verilator
+, suitesparse
 , wrapQtAppsHook
 , z3
 }:
 
-stdenv.mkDerivation rec {
-  version = "4.4.1";
+let
+  # hal doesn't work with igraph 0.10.x yet https://github.com/emsec/hal/pull/487
+  igraph' = igraph.overrideAttrs (final: prev: {
+    version = "0.9.10";
+    src = fetchFromGitHub {
+      owner = "igraph";
+      repo = final.pname;
+      rev = final.version;
+      hash = "sha256-prDadHsNhDRkNp1i0niKIYxE0g85Zs0ngvUy6uK8evk=";
+    };
+    patches = (prev.patches or []) ++ [
+      # needed by clang
+      (fetchpatch {
+        name = "libxml2-2.11-compat.patch";
+        url = "https://github.com/igraph/igraph/commit/5ad464be5ae2f6ebb69c97cb0140c800cc8d97d6.patch";
+        hash = "sha256-adU5SctH+H54UaAmr5BZInytD3wjUzLtQbCwngAWs4o=";
+      })
+    ];
+    postPatch = prev.postPatch + lib.optionalString stdenv.hostPlatform.isAarch64 ''
+      # https://github.com/igraph/igraph/issues/1694
+      substituteInPlace tests/CMakeLists.txt \
+        --replace "igraph_scg_grouping3" "" \
+        --replace "igraph_scg_semiprojectors2" ""
+    '';
+    NIX_CFLAGS_COMPILE = (prev.NIX_CFLAGS_COMPILE or []) ++ lib.optionals stdenv.cc.isClang [
+      "-Wno-strict-prototypes"
+      "-Wno-unused-but-set-parameter"
+      "-Wno-unused-but-set-variable"
+    ];
+    # general options brought back from the old 0.9.x package
+    buildInputs = prev.buildInputs ++ [ suitesparse ];
+    cmakeFlags = prev.cmakeFlags ++ [ "-DIGRAPH_USE_INTERNAL_CXSPARSE=OFF" ];
+  });
+
+in stdenv.mkDerivation rec {
+  version = "4.2.0";
   pname = "hal-hardware-analyzer";
 
   src = fetchFromGitHub {
     owner = "emsec";
     repo = "hal";
     rev = "v${version}";
-    sha256 = "sha256-8kmYeqsmqR7tY044rZb3KuEAVGv37IObX6k1qjXWG0A=";
+    sha256 = "sha256-Yl86AClE3vWygqj1omCOXX8koJK2SjTkMZFReRThez0=";
   };
 
   patches = [
     (fetchpatch {
-      name = "de-vendor-nlohmann-json.patch";
-      # https://github.com/emsec/hal/pull/596
-      url = "https://github.com/emsec/hal/commit/f8337d554d80cfa2588512696696fd4c878dd7a3.patch";
-      hash = "sha256-QjgvcduwbFccC807JFOevlTfO3KiL9T3HSqYmh3sXAQ=";
+      name = "cmake-add-no-vendored-options.patch";
+      # https://github.com/emsec/hal/pull/529
+      url = "https://github.com/emsec/hal/commit/37d5c1a0eacb25de57cc552c13e74f559a5aa6e8.patch";
+      hash = "sha256-a30VjDt4roJOTntisixqnH17wwCgWc4VWeh1+RgqFuY=";
     })
     (fetchpatch {
-      name = "fix-vendored-igraph-regression.patch";
-      # https://github.com/emsec/hal/pull/596
-      url = "https://github.com/emsec/hal/commit/fe1fe74719ab4fef873a22e2b28cce0c57d570e0.patch";
-      hash = "sha256-bjbW4pr04pP0TCuSdzPcV8h6LbLWMvdGSf61RL9Ju6E=";
+      name = "hal-fix-fmt-10.1-compat.patch";
+      # https://github.com/emsec/hal/pull/530
+      url = "https://github.com/emsec/hal/commit/b639a56b303141afbf6731b70b7cc7452551f024.patch";
+      hash = "sha256-a7AyDEKkqdbiHpa4OHTRuP9Yewb3Nxs/j6bwez5m0yU=";
     })
-    ./4.4.1-newer-spdlog-fmt-compat.patch
+    (fetchpatch {
+      name = "fix-gcc-13-build.patch";
+      # https://github.com/emsec/hal/pull/557
+      url = "https://github.com/emsec/hal/commit/831b1a7866aa9aabd55ff288c084862dc6a138d8.patch";
+      hash = "sha256-kB/sJJtLGl5PUv+mmWVpee/okkJzp5HF0BCiCRCcTKw=";
+    })
   ];
 
   # make sure bundled dependencies don't get in the way - install also otherwise
@@ -67,11 +105,9 @@ stdenv.mkDerivation rec {
     qtsvg
     boost
     rapidjson
-    igraph
-    nlohmann_json
+    igraph'
     spdlog
     graphviz
-    verilator
     z3
     quazip
   ]
@@ -93,15 +129,11 @@ stdenv.mkDerivation rec {
     "-DUSE_VENDORED_SPDLOG=off"
     "-DUSE_VENDORED_QUAZIP=off"
     "-DUSE_VENDORED_IGRAPH=off"
-    "-DUSE_VENDORED_NLOHMANN_JSON=off"
     "-DBUILD_ALL_PLUGINS=on"
   ];
   # needed for macos build - this is why we use wrapQtAppsHook instead of
   # the qt mkDerivation - the latter forcibly overrides this.
   cmakeBuildType = "MinSizeRel";
-
-  # https://github.com/emsec/hal/issues/598
-  NIX_CFLAGS_COMPILE = lib.optional stdenv.hostPlatform.isAarch64 "-flax-vector-conversions";
 
   # some plugins depend on other plugins and need to be able to load them
   postFixup = lib.optionalString stdenv.hostPlatform.isLinux ''

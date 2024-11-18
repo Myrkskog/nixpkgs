@@ -64,7 +64,7 @@
   openjpeg,
   openpgl,
   opensubdiv,
-  openvdb_11,
+  openvdb,
   openxr-loader,
   pkg-config,
   potrace,
@@ -276,7 +276,7 @@ stdenv.mkDerivation (finalAttrs: {
       openjpeg
       openpgl
       (opensubdiv.override { inherit cudaSupport; })
-      openvdb_11
+      openvdb
       potrace
       pugixml
       python3

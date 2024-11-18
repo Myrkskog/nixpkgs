@@ -12,7 +12,7 @@ makeGaugePlugin {
   releasePrefix = "gauge-dotnet-";
   isCrossArch = true;
 
-  buildInputs = [ (lib.getLib stdenv.cc.cc) ];
+  buildInputs = [ stdenv.cc.cc.lib ];
 
   meta = {
     description = "Gauge plugin that lets you write tests in C#";

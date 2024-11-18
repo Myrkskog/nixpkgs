@@ -41,8 +41,8 @@ let
   # use clean up the `cmakeFlags` rats nest below.
   haveLibcxx = stdenv.cc.libcxx != null;
   isDarwinStatic = stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isStatic && lib.versionAtLeast release_version "16";
-  inherit (stdenv.hostPlatform) isMusl isAarch64 isWindows;
-  noSanitizers = !haveLibc || bareMetal || isMusl || isDarwinStatic || isWindows;
+  inherit (stdenv.hostPlatform) isMusl isAarch64;
+  noSanitizers = !haveLibc || bareMetal || isMusl || isDarwinStatic;
 
   baseName = "compiler-rt";
   pname = baseName + lib.optionalString (haveLibc) "-libc";
@@ -188,13 +188,6 @@ stdenv.mkDerivation ({
     substituteInPlace ../libcxx/utils/merge_archives.py \
       --replace-fail "import distutils.spawn" "from shutil import which as find_executable" \
       --replace-fail "distutils.spawn." ""
-  '' + lib.optionalString (lib.versionAtLeast release_version "19")
-    # codesign in sigtool doesn't support the various options used by the build
-    # and is present in the bootstrap-tools. Removing find_program prevents the
-    # build from trying to use it and failing.
-    ''
-    substituteInPlace cmake/Modules/AddCompilerRT.cmake \
-      --replace-fail 'find_program(CODESIGN codesign)' ""
   '';
 
   # Hack around weird upsream RPATH bug

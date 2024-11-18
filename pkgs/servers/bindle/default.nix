@@ -1,4 +1,4 @@
-{ lib, rustPlatform, fetchFromGitHub, pkg-config, openssl }:
+{ lib, rustPlatform, fetchFromGitHub, stdenv, Security, pkg-config, openssl }:
 
 rustPlatform.buildRustPackage rec {
   pname = "bindle";
@@ -18,7 +18,7 @@ rustPlatform.buildRustPackage rec {
   doCheck = false; # Tests require a network
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ openssl ];
+  buildInputs = [ openssl ] ++ lib.optional stdenv.hostPlatform.isDarwin Security;
 
   cargoHash = "sha256-RECEeo0uoGO5bBe+r++zpTjYYX3BIkT58uht2MLYkN0=";
 

@@ -5,10 +5,9 @@
 , h3_4
 , postgresql
 , postgresqlTestExtension
-, buildPostgresqlExtension
 }:
 
-buildPostgresqlExtension (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "h3-pg";
   version = "4.1.3";
 
@@ -33,7 +32,15 @@ buildPostgresqlExtension (finalAttrs: {
 
   buildInputs = [
     h3_4
+    postgresql
   ];
+
+  installPhase = ''
+    install -D -t $out/lib h3/h3.so
+    install -D -t $out/share/postgresql/extension h3/h3-*.sql h3/h3.control
+    install -D -t $out/lib h3_postgis/h3_postgis.so
+    install -D -t $out/share/postgresql/extension h3_postgis/h3_postgis-*.sql h3_postgis/h3_postgis.control
+  '';
 
   passthru.tests.extension = postgresqlTestExtension {
     inherit (finalAttrs) finalPackage;

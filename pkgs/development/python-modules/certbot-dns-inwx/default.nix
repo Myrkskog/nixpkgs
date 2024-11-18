@@ -24,7 +24,7 @@ buildPythonPackage rec {
   # Doesn't have any tests
   doCheck = false;
 
-  pytestImportsCheck = [ "certbot_dns_inwx" ];
+  pytestCheckHook = [ "certbot_dns_inwx" ];
 
   meta = with lib; {
     description = "INWX DNS Authenticator plugin for Certbot";

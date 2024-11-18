@@ -71,7 +71,7 @@ vscode-utils.buildVscodeMarketplaceExtension {
     lttng-ust
     libkrb5
     zlib
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
   ];
 
   dontAutoPatchelf = isx86Linux;
@@ -129,6 +129,5 @@ vscode-utils.buildVscodeMarketplaceExtension {
       "x86_64-linux"
       "aarch64-linux"
     ];
-    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
   };
 }

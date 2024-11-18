@@ -120,9 +120,8 @@ stdenv.mkDerivation (
           echo
           echo "ERROR: The Cargo.lock contains git dependencies"
           echo
-          echo "This is not supported in the default fixed-output derivation fetcher."
-          echo "Set \`useFetchCargoVendor = true\` / use fetchCargoVendor"
-          echo "or use cargoLock.lockFile / importCargoLock instead."
+          echo "This is currently not supported in the fixed-output derivation fetcher."
+          echo "Use cargoLock.lockFile / importCargoLock instead."
           echo
 
           exit 1

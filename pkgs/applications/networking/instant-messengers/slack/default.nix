@@ -138,7 +138,7 @@ let
       xorg.libXtst
       xorg.libxkbfile
       xorg.libxshmfence
-    ] + ":${lib.getLib stdenv.cc.cc}/lib64";
+    ] + ":${stdenv.cc.cc.lib}/lib64";
 
     buildInputs = [
       gtk3 # needed for GSETTINGS_SCHEMAS_PATH

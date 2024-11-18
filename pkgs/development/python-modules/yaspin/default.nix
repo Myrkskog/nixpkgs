@@ -12,24 +12,20 @@
 buildPythonPackage rec {
   pname = "yaspin";
   version = "3.1.0";
-  pyproject = true;
+  format = "pyproject";
 
   disabled = pythonOlder "3.7";
 
   src = fetchFromGitHub {
     owner = "pavdmyt";
-    repo = "yaspin";
+    repo = pname;
     rev = "refs/tags/v${version}";
     hash = "sha256-4IWaAPqzGri7V8X2gL607F5GlWfIFDlBBpDwSe4sz9I=";
   };
 
-  build-system = [ poetry-core ];
+  nativeBuildInputs = [ poetry-core ];
 
-  dependencies = [ termcolor ];
-
-  pythonRelaxDeps = [
-    "termcolor"
-  ];
+  propagatedBuildInputs = [ termcolor ];
 
   nativeCheckInputs = [
     pytest-xdist

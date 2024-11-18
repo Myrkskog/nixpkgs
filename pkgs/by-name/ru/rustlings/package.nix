@@ -12,7 +12,7 @@
 }:
 let
   pname = "rustlings";
-  version = "6.4.0";
+  version = "6.3.0";
 in
 rustPlatform.buildRustPackage {
   inherit pname version;
@@ -20,10 +20,10 @@ rustPlatform.buildRustPackage {
     owner = "rust-lang";
     repo = "rustlings";
     rev = "v${version}";
-    hash = "sha256-VdIIcpyoCuid3MECVc9aKeIOUlxGlxcG7znqbqo9pjc=";
+    hash = "sha256-te7DYgbEtWWSSvO28ajkJucRb3c9L8La1wfGW0WSxW0=";
   };
 
-  cargoHash = "sha256-AU6OUGSWuxKmdoQLk+UiFzA7NRviDAgXrBDMdkjxOpA=";
+  cargoHash = "sha256-Vq4Os4CKkEz4HggIZhlbIo9Cu+BVJPdybL1CNvz5wEQ=";
 
   # Disabled test that does not work well in an isolated environment
   checkFlags = [

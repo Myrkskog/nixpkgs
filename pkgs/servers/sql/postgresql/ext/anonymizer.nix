@@ -1,16 +1,23 @@
-{ lib, stdenv, pg-dump-anon, postgresql, runtimeShell, jitSupport, llvm, buildPostgresqlExtension, nixosTests }:
+{ lib, stdenv, pg-dump-anon, postgresql, runtimeShell, jitSupport, llvm }:
 
-buildPostgresqlExtension (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "postgresql_anonymizer";
 
-  inherit (pg-dump-anon) version src;
+  inherit (pg-dump-anon) version src passthru;
 
+  buildInputs = [ postgresql ];
   nativeBuildInputs = [ postgresql ] ++ lib.optional jitSupport llvm;
 
   strictDeps = true;
 
-  # Needs to be after postInstall, where removeNestedNixStore runs
-  preFixup = ''
+  makeFlags = [
+    "BINDIR=${placeholder "out"}/bin"
+    "datadir=${placeholder "out"}/share/postgresql"
+    "pkglibdir=${placeholder "out"}/lib"
+    "DESTDIR="
+  ];
+
+  postInstall = ''
     cat >$out/bin/pg_dump_anon.sh <<'EOF'
     #!${runtimeShell}
     echo "This script is deprecated by upstream. To use the new script,"
@@ -18,8 +25,6 @@ buildPostgresqlExtension (finalAttrs: {
     exit 1
     EOF
   '';
-
-  passthru.tests = nixosTests.postgresql.anonymizer.passthru.override postgresql;
 
   meta = lib.getAttrs [ "homepage" "maintainers" "license" ] pg-dump-anon.meta // {
     description = "Extension to mask or replace personally identifiable information (PII) or commercially sensitive data from a PostgreSQL database";

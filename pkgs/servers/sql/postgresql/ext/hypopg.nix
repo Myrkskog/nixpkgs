@@ -1,6 +1,6 @@
-{ lib, stdenv, fetchFromGitHub, postgresql, gitUpdater, buildPostgresqlExtension }:
+{ lib, stdenv, fetchFromGitHub, postgresql, gitUpdater }:
 
-buildPostgresqlExtension rec {
+stdenv.mkDerivation rec {
   pname = "hypopg";
   version = "1.4.1";
 
@@ -10,6 +10,14 @@ buildPostgresqlExtension rec {
     rev = version;
     hash = "sha256-88uKPSnITRZ2VkelI56jZ9GWazG/Rn39QlyHKJKSKMM=";
   };
+
+  buildInputs = [ postgresql ];
+
+  installPhase = ''
+    install -D -t $out/lib *${postgresql.dlSuffix}
+    install -D -t $out/share/postgresql/extension *.control
+    install -D -t $out/share/postgresql/extension *.sql
+  '';
 
   passthru = {
     updateScript = gitUpdater {

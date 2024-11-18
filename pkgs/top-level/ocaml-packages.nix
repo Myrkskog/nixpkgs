@@ -1691,8 +1691,6 @@ let
 
     rresult = callPackage ../development/ocaml-modules/rresult { };
 
-    rtop = callPackage ../development/compilers/reason/rtop.nix { };
-
     rusage = callPackage ../development/ocaml-modules/rusage { };
 
     ### S ###

@@ -7,6 +7,7 @@
   python3,
   makeWrapper,
   writeScriptBin,
+  darwin,
   which,
   nix-update-script,
   versionCheckHook,
@@ -14,13 +15,13 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "pylyzer";
-  version = "0.0.70";
+  version = "0.0.69";
 
   src = fetchFromGitHub {
     owner = "mtshiba";
     repo = "pylyzer";
     rev = "refs/tags/v${version}";
-    hash = "sha256-jj9r5npClLY9mhDHFI92825RYvwn6m9KlngfFL0bqCw=";
+    hash = "sha256-3Ufige1OQWriJ6qQXjpfzL1tlA/9Sa8BEmhMDdpYlAQ=";
   };
 
   cargoLock = {
@@ -38,10 +39,10 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = [
     python3
-  ];
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ darwin.apple_sdk.frameworks.Security ];
 
   preBuild = ''
-    export HOME=$(mktemp -d)
+    export HOME=$TMPDIR
   '';
 
   postInstall = ''
@@ -51,17 +52,11 @@ rustPlatform.buildRustPackage rec {
 
   nativeCheckInputs = [ which ];
 
-  checkFlags =
-    [
-      # this test causes stack overflow
-      # > thread 'exec_import' has overflowed its stack
-      "--skip=exec_import"
-    ]
-    ++ lib.optionals (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isx86_64) [
-      # Dict({Str..Obj: Int}) does not implement Iterable(Str..Obj..Obj) and Indexable({"a"}..Obj, Int)
-      # https://github.com/mtshiba/pylyzer/issues/114
-      "--skip=exec_casting"
-    ];
+  checkFlags = [
+    # this test causes stack overflow
+    # > thread 'exec_import' has overflowed its stack
+    "--skip=exec_import"
+  ];
 
   postFixup = ''
     wrapProgram $out/bin/pylyzer --set ERG_PATH $out/lib/erg

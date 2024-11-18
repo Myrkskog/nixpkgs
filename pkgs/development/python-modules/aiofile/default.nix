@@ -37,7 +37,7 @@ buildPythonPackage rec {
   pythonImportsCheck = [ "aiofile" ];
 
   disabledTests = [
-    # Tests (SystemError) fails randomly during nixpkgs-review
+    # Tests (SystemError) fails randomly during nix-review
     "test_async_open_fp"
     "test_async_open_iter_chunked"
     "test_async_open_iter_chunked"

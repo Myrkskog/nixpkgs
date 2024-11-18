@@ -17,7 +17,7 @@
 
 buildPythonPackage rec {
   pname = "google-cloud-bigtable";
-  version = "2.27.0";
+  version = "2.26.0";
   pyproject = true;
 
   disabled = pythonOlder "3.7";
@@ -25,7 +25,7 @@ buildPythonPackage rec {
   src = fetchPypi {
     pname = "google_cloud_bigtable";
     inherit version;
-    hash = "sha256-pqIZgoO9fRHkPD+Ydnqa9DeJs4mvhadhoFsI/dn1e6s=";
+    hash = "sha256-g88QrbMzNISzme+uWk0kEhfBiFxj/bmwTCaTAXYrGLc=";
   };
 
   build-system = [ setuptools ];

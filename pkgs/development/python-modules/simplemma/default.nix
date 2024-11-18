@@ -1,19 +1,18 @@
 {
   lib,
   buildPythonPackage,
+  pythonOlder,
   fetchFromGitHub,
-  setuptools,
-  marisa-trie,
-  platformdirs,
-  pytest,
-  pytest-cov-stub,
+
   pytestCheckHook,
 }:
 
 buildPythonPackage rec {
   pname = "simplemma";
   version = "1.1.1";
-  pyproject = true;
+  format = "setuptools";
+
+  disabled = pythonOlder "3.6";
 
   src = fetchFromGitHub {
     owner = "adbar";
@@ -22,28 +21,14 @@ buildPythonPackage rec {
     hash = "sha256-X0mqFPdCo0/sTexv4bi4bND7LFHOJvlOPH6tB39ybZY=";
   };
 
-  build-system = [
-    setuptools
-  ];
-
-  optional-dependencies = {
-    marisa-trie = [
-      marisa-trie
-      platformdirs
-    ];
-  };
-
-  nativeCheckInputs = [
-    pytest-cov-stub
-    pytestCheckHook
-  ];
+  nativeCheckInputs = [ pytestCheckHook ];
 
   pythonImportsCheck = [ "simplemma" ];
 
-  meta = {
+  meta = with lib; {
     description = "Simple multilingual lemmatizer for Python, especially useful for speed and efficiency";
     homepage = "https://github.com/adbar/simplemma";
-    license = lib.licenses.mit;
+    license = licenses.mit;
     maintainers = [ ];
   };
 }

@@ -1,46 +1,36 @@
-{
-  stdenv,
-  lib,
-  fetchFromGitLab,
-  gitUpdater,
-  substituteAll,
-  testers,
-  dbus-test-runner,
-  dpkg,
-  gdb,
-  glib,
-  lttng-ust,
-  perl,
-  pkg-config,
-  python3,
-  qmake,
-  qtbase,
-  qtdeclarative,
-  qtfeedback,
-  qtgraphicaleffects,
-  qtpim,
-  qtquickcontrols2,
-  qtsvg,
-  qtsystems,
-  qttools,
-  suru-icon-theme,
-  validatePkgConfig,
-  wrapQtAppsHook,
-  xvfb-run,
+{ stdenv
+, lib
+, fetchFromGitLab
+, gitUpdater
+, substituteAll
+, testers
+, dbus-test-runner
+, dpkg
+, gdb
+, glib
+, lttng-ust
+, perl
+, pkg-config
+, python3
+, qmake
+, qtbase
+, qtdeclarative
+, qtfeedback
+, qtgraphicaleffects
+, qtpim
+, qtquickcontrols2
+, qtsvg
+, qtsystems
+, suru-icon-theme
+, validatePkgConfig
+, wrapQtAppsHook
+, xvfb-run
 }:
 
 let
   listToQtVar = suffix: lib.makeSearchPathOutput "bin" suffix;
-  qtPluginPaths = listToQtVar qtbase.qtPluginPrefix [
-    qtbase
-    qtpim
-    qtsvg
-  ];
-  qtQmlPaths = listToQtVar qtbase.qtQmlPrefix [
-    qtdeclarative
-    qtfeedback
-    qtgraphicaleffects
-  ];
+  qtPluginPaths = listToQtVar qtbase.qtPluginPrefix [ qtbase qtpim qtsvg ];
+  qtQmlPaths = listToQtVar qtbase.qtQmlPrefix [ qtdeclarative qtfeedback qtgraphicaleffects ];
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "lomiri-ui-toolkit";
@@ -53,15 +43,10 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-r+wUCl+ywFcgFYo7BjBoXiulQptd1Zd3LJchXiMtx4I=";
   };
 
-  outputs = [
-    "out"
-    "dev"
-    "doc"
-  ];
+  outputs = [ "out" "dev" ];
 
   patches = [
     ./2001-Mark-problematic-tests.patch
-
     (substituteAll {
       src = ./2002-Nixpkgs-versioned-QML-path.patch.in;
       name = "2002-Nixpkgs-versioned-QML-path.patch";
@@ -81,10 +66,6 @@ stdenv.mkDerivation (finalAttrs: {
     # Install apicheck tool into bin
     substituteInPlace apicheck/apicheck.pro \
       --replace-fail "\''$\''$[QT_INSTALL_LIBS]/lomiri-ui-toolkit" "$out/bin"
-
-    substituteInPlace documentation/documentation.pro \
-      --replace-fail '/usr/share/doc' '$$PREFIX/share/doc' \
-      --replace-fail '$$[QT_INSTALL_DOCS]' '$$PREFIX/share/doc/lomiri-ui-toolkit'
 
     # Causes redefinition error with our own fortify hardening
     sed -i '/DEFINES += _FORTIFY_SOURCE/d' features/lomiri_common.prf
@@ -124,7 +105,6 @@ stdenv.mkDerivation (finalAttrs: {
     pkg-config
     python3
     qmake
-    qttools # qdoc, qhelpgenerator
     validatePkgConfig
     wrapQtAppsHook
   ];
@@ -153,6 +133,8 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   qmakeFlags = [
+    # docs require Qt5's qdoc, which we don't have before https://github.com/NixOS/nixpkgs/pull/245379
+    "CONFIG+=no_docs"
     # Ubuntu UITK compatibility, for older / not-yet-migrated applications
     "CONFIG+=ubuntu-uitk-compat"
     "QMAKE_PKGCONFIG_PREFIX=${placeholder "out"}"
@@ -219,7 +201,7 @@ stdenv.mkDerivation (finalAttrs: {
     updateScript = gitUpdater { };
   };
 
-  meta = {
+  meta = with lib; {
     description = "QML components to ease the creation of beautiful applications in QML";
     longDescription = ''
       This project consists of a set of QML components to ease the creation of beautiful applications in QML for Lomiri.
@@ -237,12 +219,9 @@ stdenv.mkDerivation (finalAttrs: {
     '';
     homepage = "https://gitlab.com/ubports/development/core/lomiri-ui-toolkit";
     changelog = "https://gitlab.com/ubports/development/core/lomiri-ui-toolkit/-/blob/${finalAttrs.version}/ChangeLog";
-    license = with lib.licenses; [
-      gpl3Only
-      cc-by-sa-30
-    ];
-    maintainers = lib.teams.lomiri.members;
-    platforms = lib.platforms.linux;
+    license = with licenses; [ gpl3Only cc-by-sa-30 ];
+    maintainers = teams.lomiri.members;
+    platforms = platforms.linux;
     pkgConfigModules = [
       "LomiriGestures"
       "LomiriMetrics"

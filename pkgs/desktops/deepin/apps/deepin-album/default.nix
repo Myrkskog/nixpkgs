@@ -4,15 +4,18 @@
   fetchFromGitHub,
   cmake,
   pkg-config,
-  libsForQt5,
+  qttools,
+  wrapQtAppsHook,
   dtkwidget,
   dtkdeclarative,
   qt5integration,
   qt5platform-plugins,
+  qtbase,
+  qtsvg,
   udisks2-qt5,
   gio-qt,
   freeimage,
-  ffmpeg_6,
+  ffmpeg,
   ffmpegthumbnailer,
 }:
 
@@ -30,8 +33,8 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     cmake
     pkg-config
-    libsForQt5.qttools
-    libsForQt5.wrapQtAppsHook
+    qttools
+    wrapQtAppsHook
   ];
 
   buildInputs = [
@@ -39,12 +42,12 @@ stdenv.mkDerivation rec {
     dtkdeclarative
     qt5integration
     qt5platform-plugins
-    libsForQt5.qtbase
-    libsForQt5.qtsvg
+    qtbase
+    qtsvg
     udisks2-qt5
     gio-qt
     freeimage
-    ffmpeg_6
+    ffmpeg
     ffmpegthumbnailer
   ];
 

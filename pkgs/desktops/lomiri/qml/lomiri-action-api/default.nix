@@ -1,18 +1,15 @@
-{
-  stdenv,
-  lib,
-  fetchFromGitLab,
-  gitUpdater,
-  testers,
-  cmake,
-  dbus,
-  dbus-test-runner,
-  doxygen,
-  pkg-config,
-  qtbase,
-  qtdeclarative,
-  qttools,
-  validatePkgConfig,
+{ stdenv
+, lib
+, fetchFromGitLab
+, gitUpdater
+, testers
+, cmake
+, dbus
+, dbus-test-runner
+, pkg-config
+, qtbase
+, qtdeclarative
+, validatePkgConfig
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -29,27 +26,20 @@ stdenv.mkDerivation (finalAttrs: {
   outputs = [
     "out"
     "dev"
-    "doc"
   ];
 
   postPatch = ''
     # Queries QMake for broken Qt variable: '/build/qtbase-<commit>/$(out)/$(qtQmlPrefix)'
     substituteInPlace qml/Lomiri/Action/CMakeLists.txt \
-      --replace-fail 'exec_program(''${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_QML" OUTPUT_VARIABLE QT_IMPORTS_DIR)' 'set(QT_IMPORTS_DIR "''${CMAKE_INSTALL_PREFIX}/${qtbase.qtQmlPrefix}")'
-
-    # Fix section labels
-    substituteInPlace documentation/qml/pages/* \
-      --replace-warn '\part' '\section1'
+      --replace 'exec_program(''${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_QML" OUTPUT_VARIABLE QT_IMPORTS_DIR)' 'set(QT_IMPORTS_DIR "''${CMAKE_INSTALL_PREFIX}/${qtbase.qtQmlPrefix}")'
   '';
 
   strictDeps = true;
 
   nativeBuildInputs = [
     cmake
-    doxygen
     pkg-config
     qtdeclarative
-    qttools # qdoc
     validatePkgConfig
   ];
 
@@ -65,9 +55,10 @@ stdenv.mkDerivation (finalAttrs: {
 
   cmakeFlags = [
     (lib.cmakeBool "ENABLE_TESTING" finalAttrs.finalPackage.doCheck)
-    (lib.cmakeBool "GENERATE_DOCUMENTATION" true)
     # Use vendored libhud2, TODO package libhud2 separately?
     (lib.cmakeBool "use_libhud2" false)
+    # QML docs need qdoc, https://github.com/NixOS/nixpkgs/pull/245379
+    (lib.cmakeBool "GENERATE_DOCUMENTATION" false)
   ];
 
   dontWrapQtApps = true;
@@ -91,6 +82,8 @@ stdenv.mkDerivation (finalAttrs: {
     license = licenses.lgpl3Only;
     maintainers = teams.lomiri.members;
     platforms = platforms.linux;
-    pkgConfigModules = [ "lomiri-action-qt-1" ];
+    pkgConfigModules = [
+      "lomiri-action-qt-1"
+    ];
   };
 })

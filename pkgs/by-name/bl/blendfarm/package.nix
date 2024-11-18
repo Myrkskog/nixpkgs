@@ -64,7 +64,7 @@ buildDotnetModule rec {
     ];
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     fontconfig
     openssl
     libkrb5

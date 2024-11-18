@@ -2,12 +2,16 @@
   stdenv,
   lib,
   fetchFromGitHub,
+  qmake,
   pkg-config,
-  libsForQt5,
+  qttools,
+  wrapQtAppsHook,
   dtkwidget,
   qt5integration,
   qt5platform-plugins,
   dde-qt-dbus-factory,
+  qtwebengine,
+  karchive,
   poppler,
   libchardet,
   libspectre,
@@ -38,10 +42,10 @@ stdenv.mkDerivation rec {
   '';
 
   nativeBuildInputs = [
-    libsForQt5.qmake
+    qmake
     pkg-config
-    libsForQt5.qttools
-    libsForQt5.wrapQtAppsHook
+    qttools
+    wrapQtAppsHook
   ];
 
   buildInputs = [
@@ -49,8 +53,8 @@ stdenv.mkDerivation rec {
     qt5integration
     qt5platform-plugins
     dde-qt-dbus-factory
-    libsForQt5.qtwebengine
-    libsForQt5.karchive
+    qtwebengine
+    karchive
     poppler
     libchardet
     libspectre

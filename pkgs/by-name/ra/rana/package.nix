@@ -6,16 +6,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "rana";
-  version = "0.5.5";
+  version = "0.5.4";
 
   src = fetchFromGitHub {
     owner = "grunch";
     repo = "rana";
     rev = "refs/tags/v${version}";
-    hash = "sha256-gzyjOCGh45zEJvc0xFkp8gAH9Kxwfc2oPeMzbrTjnk8=";
+    hash = "sha256-NgbWRuwD+nfNbB6WRbDjUPJneysb85z5eqXmU31U6Mo=";
   };
 
-  cargoHash = "sha256-+3QbqAGQzGT4yuGPHmT2BJkcnNmwhLTpQERTl4Ri2bk=";
+  cargoHash = "sha256-FMJisCR1bomswFHjIIu/24ywvQn1pv/7QHiEmaBV4a8=";
 
   meta = {
     description = "Nostr public key mining tool";

@@ -4,6 +4,7 @@
   azure-identity,
   azure-servicebus,
   azure-storage-queue,
+  backports-zoneinfo,
   boto3,
   buildPythonPackage,
   confluent-kafka,

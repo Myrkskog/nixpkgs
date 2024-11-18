@@ -6,7 +6,7 @@
   gtk3,
   xcursorgen,
   papirus-icon-theme,
-  libsForQt5,
+  breeze-icons,
   hicolor-icon-theme,
   deepin-icon-theme,
 }:
@@ -31,7 +31,7 @@ stdenv.mkDerivation rec {
   ];
 
   propagatedBuildInputs = [
-    libsForQt5.breeze-icons
+    breeze-icons
     papirus-icon-theme
     hicolor-icon-theme
     deepin-icon-theme

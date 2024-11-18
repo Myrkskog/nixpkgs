@@ -49,7 +49,7 @@ let
       composerNoScripts = previousAttrs.composerNoScripts or true;
       composerStrictValidation = previousAttrs.composerStrictValidation or true;
 
-      name = "${previousAttrs.pname}-composer-repository-${previousAttrs.version}";
+      name = "${previousAttrs.pname}-${previousAttrs.version}-composer-repository";
 
       # See https://github.com/NixOS/nix/issues/6660
       dontPatchShebangs = previousAttrs.dontPatchShebangs or true;

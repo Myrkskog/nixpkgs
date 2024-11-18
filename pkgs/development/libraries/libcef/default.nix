@@ -31,7 +31,7 @@
 
 let
   gl_rpath = lib.makeLibraryPath [
-    stdenv.cc.cc
+    stdenv.cc.cc.lib
   ];
 
   rpath = lib.makeLibraryPath [

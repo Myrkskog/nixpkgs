@@ -34,8 +34,6 @@ mkDerivation {
     sed -i -E \
       -e 's|/usr/lib|\$\{LIBDIR\}|' \
       share/mk/bsd.prog.mk
-
-    substituteInPlace share/mk/bsd.obj.mk --replace-fail /bin/pwd pwd
   '';
 
   installPhase = ''

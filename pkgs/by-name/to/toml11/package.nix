@@ -40,7 +40,8 @@ stdenv.mkDerivation (finalAttrs: {
         and Windows.
     '';
     license = licenses.mit;
-    maintainers = with maintainers; [ ];
+    maintainers = with maintainers; [ AndersonTorres ];
     platforms = platforms.unix ++ platforms.windows;
   };
 })
+# TODO [ AndersonTorres ]: tests

@@ -1,6 +1,6 @@
-{ lib, stdenv, fetchFromGitHub, postgresql, postgresqlTestHook, buildPostgresqlExtension }:
+{ lib, stdenv, fetchFromGitHub, postgresql, postgresqlTestHook }:
 
-buildPostgresqlExtension (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "pg_roaringbitmap";
   version = "0.5.4";
 
@@ -10,6 +10,16 @@ buildPostgresqlExtension (finalAttrs: {
     rev = "v${finalAttrs.version}";
     hash = "sha256-E6vqawnsRsAIajGDgJcTUWV1H8GFFboTjhmVfemUGbs=";
   };
+
+  buildInputs = [
+    postgresql
+  ];
+
+  installPhase = ''
+    install -D -t $out/lib roaringbitmap${postgresql.dlSuffix}
+    install -D -t $out/share/postgresql/extension roaringbitmap-*.sql
+    install -D -t $out/share/postgresql/extension roaringbitmap.control
+  '';
 
   meta = with lib; {
     description = "RoaringBitmap extension for PostgreSQL";

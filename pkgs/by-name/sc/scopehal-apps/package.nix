@@ -21,13 +21,9 @@
   glslang,
   spirv-tools,
   ffts,
-  moltenvk,
-  apple-sdk_11,
-  darwinMinVersionHook,
-  llvmPackages,
 }:
 
-stdenv.mkDerivation {
+stdenv.mkDerivation rec {
   pname = "scopehal-apps";
   version = "0-unstable-2024-09-16";
 
@@ -41,42 +37,30 @@ stdenv.mkDerivation {
 
   strictDeps = true;
 
-  nativeBuildInputs =
-    [
-      cmake
-      pkg-config
-      shaderc
-      spirv-tools
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isLinux [
-      wrapGAppsHook4
-    ];
+  nativeBuildInputs = [
+    cmake
+    pkg-config
+    shaderc
+    spirv-tools
+    wrapGAppsHook4
+  ];
 
-  buildInputs =
-    [
-      cairomm
-      glew
-      glfw
-      glslang
-      liblxi
-      libsigcxx
-      vulkan-headers
-      vulkan-loader
-      vulkan-tools
-      yaml-cpp
-      zstd
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isLinux [
-      ffts
-      gtkmm3
-      libtirpc
-    ]
-    ++ lib.optionals stdenv.cc.isClang [ llvmPackages.openmp ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      apple-sdk_11
-      (darwinMinVersionHook "10.15")
-      moltenvk
-    ];
+  buildInputs = [
+    cairomm
+    ffts
+    glew
+    glfw
+    glslang
+    gtkmm3
+    liblxi
+    libsigcxx
+    libtirpc
+    vulkan-headers
+    vulkan-loader
+    vulkan-tools
+    yaml-cpp
+    zstd
+  ];
 
   # Targets InitializeSearchPaths
   postPatch = ''
@@ -84,19 +68,12 @@ stdenv.mkDerivation {
       --replace-fail '"/share/' '"/../share/'
   '';
 
-  cmakeFlags = lib.optionals stdenv.hostPlatform.isDarwin [
-    "-DCMAKE_INSTALL_RPATH=${lib.strings.makeLibraryPath [ vulkan-loader ]}"
-  ];
-
   meta = {
     description = "Advanced test & measurement remote control and analysis suite";
     homepage = "https://www.ngscopeclient.org/";
     license = lib.licenses.bsd3;
     mainProgram = "ngscopeclient";
-    maintainers = with lib.maintainers; [
-      bgamari
-      carlossless
-    ];
-    platforms = lib.platforms.linux ++ lib.platforms.darwin;
+    maintainers = with lib.maintainers; [ bgamari ];
+    platforms = lib.platforms.linux;
   };
 }

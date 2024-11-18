@@ -27,7 +27,7 @@ in
 
   config = lib.mkIf cfg.enable {
     # for cli usage
-    environment.systemPackages = [ cfg.package ];
+    environment.systemPackages = [ pkgs.vector ];
 
     systemd.services.vector = {
       description = "Vector event and log aggregator";
@@ -40,7 +40,7 @@ in
           conf = format.generate "vector.toml" cfg.settings;
           validateConfig = file:
           pkgs.runCommand "validate-vector-conf" {
-            nativeBuildInputs = [ cfg.package ];
+            nativeBuildInputs = [ pkgs.vector ];
           } ''
               vector validate --no-environment "${file}"
               ln -s "${file}" "$out"

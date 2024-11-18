@@ -1,61 +1,54 @@
 {
   lib,
   stdenv,
+  fetchFromGitLab,
+  rustPlatform,
+  cargo,
+  rustc,
   appstream,
   blueprint-compiler,
-  cargo,
   dav1d,
   desktop-file-utils,
-  fetchFromGitLab,
-  glib,
   gst_all_1,
   gtk4,
-  lcms,
   libadwaita,
-  libseccomp,
   libwebp,
   meson,
   ninja,
-  nix-update-script,
   pkg-config,
-  rustPlatform,
-  rustc,
-  versionCheckHook,
+  nix-update-script,
   wrapGAppsHook4,
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation rec {
   pname = "identity";
-  version = "0.7.0";
+  version = "0.6.0";
 
   src = fetchFromGitLab {
     domain = "gitlab.gnome.org";
     owner = "YaLTeR";
     repo = "identity";
-    rev = "refs/tags/v${finalAttrs.version}";
-    hash = "sha256-h8/mWGuosBiQRpoW8rINJht/7UBVEnUnTKY5HBCAyw4=";
+    rev = "v${version}";
+    hash = "sha256-AiOaTjYOc7Eo+9kl1H91TKAkCKNUJNWobmBENZlHBhQ=";
   };
 
-  cargoDeps = rustPlatform.fetchCargoTarball {
-    inherit (finalAttrs) pname version src;
-    hash = "sha256-oO7l4zVKR93fFLqkY67DfzrAA9kUN06ov9ogwDuaVlE=";
+  cargoDeps = rustPlatform.importCargoLock {
+    lockFile = ./Cargo.lock;
+    outputHashes = {
+      "gst-plugin-gtk4-0.12.0-alpha.1" = "sha256-JSw9yZ4oy7m6c9pqOT+fnYEbTlneLTtWQf3/Jbek/ps=";
+    };
   };
-
-  strictDeps = true;
 
   nativeBuildInputs = [
     appstream
     blueprint-compiler
     cargo
-    desktop-file-utils # for `desktop-file-validate`
-    glib # for `glib-compile-schemas`
-    gtk4 # for `gtk-update-icon-cache`
+    desktop-file-utils
     meson
     ninja
     pkg-config
-    rustPlatform.cargoCheckHook
-    rustPlatform.cargoSetupHook
     rustc
+    rustPlatform.cargoSetupHook
     wrapGAppsHook4
   ];
 
@@ -67,38 +60,18 @@ stdenv.mkDerivation (finalAttrs: {
     gst_all_1.gst-plugins-good
     gst_all_1.gstreamer
     gtk4
-    lcms
     libadwaita
-    libseccomp
     libwebp
   ];
-
-  mesonBuildType = "release";
-
-  doCheck = stdenv.buildPlatform.canExecute stdenv.hostPlatform;
-  cargoCheckType = if (finalAttrs.mesonBuildType != "debug") then "release" else "debug";
-
-  nativeInstallCheckInputs = [ versionCheckHook ];
-  doInstallCheck = true;
-
-  checkPhase = ''
-    runHook preCheck
-
-    cargoCheckHook
-    mesonCheckPhase
-
-    runHook postCheck
-  '';
 
   passthru.updateScript = nix-update-script { };
 
   meta = {
     description = "Program for comparing multiple versions of an image or video";
     homepage = "https://gitlab.gnome.org/YaLTeR/identity";
-    changelog = "https://gitlab.gnome.org/YaLTeR/identity/-/releases/v${finalAttrs.version}";
     license = lib.licenses.gpl3Plus;
     maintainers = with lib.maintainers; [ getchoo ];
     mainProgram = "identity";
     platforms = lib.platforms.linux;
   };
-})
+}

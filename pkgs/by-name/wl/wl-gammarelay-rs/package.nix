@@ -5,13 +5,13 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "wl-gammarelay-rs";
-  version = "1.0.0";
+  version = "0.4.1";
 
   src = fetchFromGitHub {
     owner = "MaxVerevkin";
     repo = "wl-gammarelay-rs";
     rev = "v${version}";
-    hash = "sha256-zmtC4xNNAK/TiB5TU6qsY5y0Z3roaEnTwHMZPjq6SbE=";
+    hash = "sha256-36u2s+Yv+0/lZErHonVvzyBuZ2xES2MGMG4PRjaM74k=";
   };
 
   cargoLock = {
@@ -28,7 +28,6 @@ rustPlatform.buildRustPackage rec {
     license = lib.licenses.gpl3Plus;
     mainProgram = "wl-gammarelay-rs";
     maintainers = with lib.maintainers; [ quantenzitrone ];
-    platforms = lib.platforms.unix;
-    badPlatforms = lib.platforms.darwin;
+    platforms = lib.platforms.linux;
   };
 }

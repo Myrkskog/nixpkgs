@@ -1,158 +1,103 @@
-{
-  lib,
-  stdenv,
-  fetchurl,
-  buildPackages,
-  alsa-lib,
-  at-spi2-atk,
-  at-spi2-core,
-  atk,
-  cairo,
-  cups,
-  dbus,
-  dpkg,
-  expat,
-  fontconfig,
-  freetype,
-  gdk-pixbuf,
-  glib,
-  adwaita-icon-theme,
-  gsettings-desktop-schemas,
-  gtk3,
-  gtk4,
-  qt6,
-  libX11,
-  libXScrnSaver,
-  libXcomposite,
-  libXcursor,
-  libXdamage,
-  libXext,
-  libXfixes,
-  libXi,
-  libXrandr,
-  libXrender,
-  libXtst,
-  libdrm,
-  libkrb5,
-  libuuid,
-  libxkbcommon,
-  libxshmfence,
-  mesa,
-  nspr,
-  nss,
-  pango,
-  pipewire,
-  snappy,
-  udev,
-  wayland,
-  xdg-utils,
-  coreutils,
-  xorg,
-  zlib,
+{ lib, stdenv, fetchurl, buildPackages
+, alsa-lib
+, at-spi2-atk
+, at-spi2-core
+, atk
+, cairo
+, cups
+, dbus
+, dpkg
+, expat
+, fontconfig
+, freetype
+, gdk-pixbuf
+, glib
+, adwaita-icon-theme
+, gsettings-desktop-schemas
+, gtk3
+, gtk4
+, qt6
+, libX11
+, libXScrnSaver
+, libXcomposite
+, libXcursor
+, libXdamage
+, libXext
+, libXfixes
+, libXi
+, libXrandr
+, libXrender
+, libXtst
+, libdrm
+, libkrb5
+, libuuid
+, libxkbcommon
+, libxshmfence
+, mesa
+, nspr
+, nss
+, pango
+, pipewire
+, snappy
+, udev
+, wayland
+, xdg-utils
+, coreutils
+, xorg
+, zlib
 
-  # Darwin dependencies
-  unzip,
-  makeWrapper,
+# command line arguments which are always set e.g "--disable-gpu"
+, commandLineArgs ? ""
 
-  # command line arguments which are always set e.g "--disable-gpu"
-  commandLineArgs ? "",
+# Necessary for USB audio devices.
+, pulseSupport ? stdenv.hostPlatform.isLinux
+, libpulseaudio
 
-  # Necessary for USB audio devices.
-  pulseSupport ? stdenv.hostPlatform.isLinux,
-  libpulseaudio,
+# For GPU acceleration support on Wayland (without the lib it doesn't seem to work)
+, libGL
 
-  # For GPU acceleration support on Wayland (without the lib it doesn't seem to work)
-  libGL,
+# For video acceleration via VA-API (--enable-features=VaapiVideoDecoder,VaapiVideoEncoder)
+, libvaSupport ? stdenv.hostPlatform.isLinux
+, libva
+, enableVideoAcceleration ? libvaSupport
 
-  # For video acceleration via VA-API (--enable-features=VaapiVideoDecoder,VaapiVideoEncoder)
-  libvaSupport ? stdenv.hostPlatform.isLinux,
-  libva,
-  enableVideoAcceleration ? libvaSupport,
-
-  # For Vulkan support (--enable-features=Vulkan); disabled by default as it seems to break VA-API
-  vulkanSupport ? false,
-  addDriverRunpath,
-  enableVulkan ? vulkanSupport,
+# For Vulkan support (--enable-features=Vulkan); disabled by default as it seems to break VA-API
+, vulkanSupport ? false
+, addDriverRunpath
+, enableVulkan ? vulkanSupport
 }:
 
-{
-  pname,
-  version,
-  hash,
-  url,
+{ pname
+, version
+, hash
+, url
+, platform
 }:
 
 let
-  inherit (lib)
-    optional
-    optionals
-    makeLibraryPath
-    makeSearchPathOutput
-    makeBinPath
-    optionalString
-    strings
-    escapeShellArg
-    ;
+  inherit (lib) optional optionals makeLibraryPath makeSearchPathOutput makeBinPath
+    optionalString strings escapeShellArg;
 
   deps = [
-    alsa-lib
-    at-spi2-atk
-    at-spi2-core
-    atk
-    cairo
-    cups
-    dbus
-    expat
-    fontconfig
-    freetype
-    gdk-pixbuf
-    glib
-    gtk3
-    gtk4
-    libdrm
-    libX11
-    libGL
-    libxkbcommon
-    libXScrnSaver
-    libXcomposite
-    libXcursor
-    libXdamage
-    libXext
-    libXfixes
-    libXi
-    libXrandr
-    libXrender
-    libxshmfence
-    libXtst
-    libuuid
-    mesa
-    nspr
-    nss
-    pango
-    pipewire
-    udev
-    wayland
-    xorg.libxcb
-    zlib
-    snappy
-    libkrb5
-    qt6.qtbase
-  ] ++ optional pulseSupport libpulseaudio ++ optional libvaSupport libva;
+    alsa-lib at-spi2-atk at-spi2-core atk cairo cups dbus expat
+    fontconfig freetype gdk-pixbuf glib gtk3 gtk4 libdrm libX11 libGL
+    libxkbcommon libXScrnSaver libXcomposite libXcursor libXdamage
+    libXext libXfixes libXi libXrandr libXrender libxshmfence
+    libXtst libuuid mesa nspr nss pango pipewire udev wayland
+    xorg.libxcb zlib snappy libkrb5 qt6.qtbase
+  ]
+    ++ optional pulseSupport libpulseaudio
+    ++ optional libvaSupport libva;
 
   rpath = makeLibraryPath deps + ":" + makeSearchPathOutput "lib" "lib64" deps;
   binpath = makeBinPath deps;
 
-  enableFeatures =
-    optionals enableVideoAcceleration [
-      "VaapiVideoDecoder"
-      "VaapiVideoEncoder"
-    ]
+  enableFeatures = optionals enableVideoAcceleration [ "VaapiVideoDecoder" "VaapiVideoEncoder" ]
     ++ optional enableVulkan "Vulkan";
 
-  disableFeatures =
-    [ "OutdatedBuildDetector" ] # disable automatic updates
+  disableFeatures = [ "OutdatedBuildDetector" ] # disable automatic updates
     # The feature disable is needed for VAAPI to work correctly: https://github.com/brave/brave-browser/issues/20935
-    ++ optionals enableVideoAcceleration [ "UseChromeOSDirectVideoDecoder" ];
+    ++ optionals enableVideoAcceleration  [ "UseChromeOSDirectVideoDecoder" ];
 in
 stdenv.mkDerivation {
   inherit pname version;
@@ -164,39 +109,26 @@ stdenv.mkDerivation {
   dontConfigure = true;
   dontBuild = true;
   dontPatchELF = true;
-  doInstallCheck = stdenv.hostPlatform.isLinux;
+  doInstallCheck = true;
 
-  nativeBuildInputs =
-    lib.optionals stdenv.hostPlatform.isLinux [
-      dpkg
-      # override doesn't preserve splicing https://github.com/NixOS/nixpkgs/issues/132651
-      # Has to use `makeShellWrapper` from `buildPackages` even though `makeShellWrapper` from the inputs is spliced because `propagatedBuildInputs` would pick the wrong one because of a different offset.
-      (buildPackages.wrapGAppsHook3.override { makeWrapper = buildPackages.makeShellWrapper; })
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      unzip
-      makeWrapper
-    ];
+  nativeBuildInputs = [
+    dpkg
+    # override doesn't preserve splicing https://github.com/NixOS/nixpkgs/issues/132651
+    # Has to use `makeShellWrapper` from `buildPackages` even though `makeShellWrapper` from the inputs is spliced because `propagatedBuildInputs` would pick the wrong one because of a different offset.
+    (buildPackages.wrapGAppsHook3.override { makeWrapper = buildPackages.makeShellWrapper; })
+  ];
 
-  buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
+  buildInputs = [
     # needed for GSETTINGS_SCHEMAS_PATH
-    glib
-    gsettings-desktop-schemas
-    gtk3
-    gtk4
+    glib gsettings-desktop-schemas gtk3 gtk4
 
     # needed for XDG_ICON_DIRS
     adwaita-icon-theme
   ];
 
-  unpackPhase =
-    if stdenv.hostPlatform.isLinux then
-      "dpkg-deb --fsys-tarfile $src | tar -x --no-same-permissions --no-same-owner"
-    else
-      "unzip $src";
+  unpackPhase = "dpkg-deb --fsys-tarfile $src | tar -x --no-same-permissions --no-same-owner";
 
-  installPhase =
-    lib.optionalString stdenv.hostPlatform.isLinux ''
+  installPhase = ''
       runHook preInstall
 
       mkdir -p $out $out/bin
@@ -242,43 +174,23 @@ stdenv.mkDerivation {
       ln -sf ${xdg-utils}/bin/xdg-mime $out/opt/brave.com/brave/xdg-mime
 
       runHook postInstall
-    ''
-    + lib.optionalString stdenv.hostPlatform.isDarwin ''
-      runHook preInstall
+  '';
 
-      mkdir -p $out/{Applications,bin}
-
-      cp -r "Brave Browser.app" $out/Applications/
-
-      makeWrapper "$out/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" $out/bin/brave
-
-      runHook postInstall
-    '';
-
-  preFixup = lib.optionalString stdenv.hostPlatform.isLinux ''
+  preFixup = ''
     # Add command line args to wrapGApp.
     gappsWrapperArgs+=(
       --prefix LD_LIBRARY_PATH : ${rpath}
       --prefix PATH : ${binpath}
-      --suffix PATH : ${
-        lib.makeBinPath [
-          xdg-utils
-          coreutils
-        ]
-      }
-      ${
-        optionalString (enableFeatures != [ ]) ''
-          --add-flags "--enable-features=${strings.concatStringsSep "," enableFeatures}\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+,WaylandWindowDecorations}}"
-        ''
-      }
-      ${
-        optionalString (disableFeatures != [ ]) ''
-          --add-flags "--disable-features=${strings.concatStringsSep "," disableFeatures}"
-        ''
-      }
+      --suffix PATH : ${lib.makeBinPath [ xdg-utils coreutils ]}
+      ${optionalString (enableFeatures != []) ''
+      --add-flags "--enable-features=${strings.concatStringsSep "," enableFeatures}\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+,WaylandWindowDecorations}}"
+      ''}
+      ${optionalString (disableFeatures != []) ''
+      --add-flags "--disable-features=${strings.concatStringsSep "," disableFeatures}"
+      ''}
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto}}"
       ${optionalString vulkanSupport ''
-        --prefix XDG_DATA_DIRS  : "${addDriverRunpath.driverLink}/share"
+      --prefix XDG_DATA_DIRS  : "${addDriverRunpath.driverLink}/share"
       ''}
       --add-flags ${escapeShellArg commandLineArgs}
     )
@@ -294,9 +206,7 @@ stdenv.mkDerivation {
   meta = {
     homepage = "https://brave.com/";
     description = "Privacy-oriented browser for Desktop and Laptop computers";
-    changelog =
-      "https://github.com/brave/brave-browser/blob/master/CHANGELOG_DESKTOP.md#"
-      + lib.replaceStrings [ "." ] [ "" ] version;
+    changelog = "https://github.com/brave/brave-browser/blob/master/CHANGELOG_DESKTOP.md#" + lib.replaceStrings [ "." ] [ "" ] version;
     longDescription = ''
       Brave browser blocks the ads and trackers that slow you down,
       chew up your bandwidth, and invade your privacy. Brave lets you
@@ -304,20 +214,8 @@ stdenv.mkDerivation {
     '';
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
     license = lib.licenses.mpl20;
-    maintainers = with lib.maintainers; [
-      uskudnik
-      rht
-      jefflabonte
-      nasirhm
-      buckley310
-      matteopacini
-    ];
-    platforms = [
-      "aarch64-linux"
-      "x86_64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-    ];
+    maintainers = with lib.maintainers; [ uskudnik rht jefflabonte nasirhm buckley310 ];
+    platforms = [ "aarch64-linux" "x86_64-linux" ];
     mainProgram = "brave";
   };
 }

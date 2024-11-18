@@ -3,6 +3,7 @@
   stdenv,
   buildPythonPackage,
   fetchFromGitHub,
+  fetchpatch,
   isPyPy,
   substituteAll,
 
@@ -97,21 +98,15 @@ buildPythonPackage rec {
     "tests/test_swf.py"
   ];
 
-  disabledTests =
-    [
-      # Pillow 11.0.0 compat
-      # https://github.com/imageio/imageio/issues/1104
-      "test_gif"
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      # Segmentation fault
-      "test_bayer_write"
-      # RuntimeError: No valid H.264 encoder was found with the ffmpeg installation
-      "test_writer_file_properly_closed"
-      "test_writer_pixelformat_size_verbose"
-      "test_writer_ffmpeg_params"
-      "test_reverse_read"
-    ];
+  disabledTests = lib.optionals stdenv.hostPlatform.isDarwin [
+    # Segmentation fault
+    "test_bayer_write"
+    # RuntimeError: No valid H.264 encoder was found with the ffmpeg installation
+    "test_writer_file_properly_closed"
+    "test_writer_pixelformat_size_verbose"
+    "test_writer_ffmpeg_params"
+    "test_reverse_read"
+  ];
 
   meta = {
     description = "Library for reading and writing a wide range of image, video, scientific, and volumetric data formats";

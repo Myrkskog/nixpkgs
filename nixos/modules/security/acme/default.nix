@@ -183,6 +183,7 @@ let
   certToConfig = cert: data: let
     acmeServer = data.server;
     useDns = data.dnsProvider != null;
+    useDnsOrS3 = useDns || data.s3Bucket != null;
     destPath = "/var/lib/acme/${cert}";
     selfsignedDeps = lib.optionals (cfg.preliminarySelfsigned) [ "acme-selfsigned-${cert}.service" ];
 
@@ -216,7 +217,7 @@ let
 
     protocolOpts = if useDns then (
       [ "--dns" data.dnsProvider ]
-      ++ lib.optionals (!data.dnsPropagationCheck) [ "--dns.propagation-disable-ans" ]
+      ++ lib.optionals (!data.dnsPropagationCheck) [ "--dns.disable-cp" ]
       ++ lib.optionals (data.dnsResolver != null) [ "--dns.resolvers" data.dnsResolver ]
     ) else if data.s3Bucket != null then [ "--http" "--http.s3-bucket" data.s3Bucket ]
     else if data.listenHTTP != null then [ "--http" "--http.port" data.listenHTTP ]
@@ -366,11 +367,13 @@ let
           "/var/lib/acme/.lego/${cert}/${certDir}:/tmp/certificates"
         ];
 
-        EnvironmentFile = lib.mkIf (data.environmentFile != null) data.environmentFile;
+        EnvironmentFile = lib.mkIf useDnsOrS3 data.environmentFile;
 
-        Environment = lib.mapAttrsToList (k: v: ''"${k}=%d/${k}"'') data.credentialFiles;
+        Environment = lib.mkIf useDnsOrS3
+          (lib.mapAttrsToList (k: v: ''"${k}=%d/${k}"'') data.credentialFiles);
 
-        LoadCredential = lib.mapAttrsToList (k: v: "${k}:${v}") data.credentialFiles;
+        LoadCredential = lib.mkIf useDnsOrS3
+          (lib.mapAttrsToList (k: v: "${k}:${v}") data.credentialFiles);
 
         # Run as root (Prefixed with +)
         ExecStartPost = "+" + (pkgs.writeShellScript "acme-postrun" ''

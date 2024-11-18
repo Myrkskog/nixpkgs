@@ -12,7 +12,6 @@ let
 
   mopidyEnv = buildEnv {
     name = "mopidy-with-extensions-${mopidy.version}";
-    ignoreCollisions = true;
     paths = closePropagation cfg.extensionPackages;
     pathsToLink = [ "/${mopidyPackages.python.sitePackages}" ];
     nativeBuildInputs = [ makeWrapper ];

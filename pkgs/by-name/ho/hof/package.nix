@@ -1,24 +1,23 @@
-{
-  lib,
-  buildGo122Module,
-  fetchFromGitHub,
-  installShellFiles,
+{ lib
+, buildGoModule
+, fetchFromGitHub
+, installShellFiles
 }:
 
-buildGo122Module rec {
+buildGoModule rec {
   pname = "hof";
-  version = "0.6.9";
+  version = "0.6.9-beta.1";
 
   src = fetchFromGitHub {
     owner = "hofstadter-io";
     repo = "hof";
     rev = "v${version}";
-    hash = "sha256-okY+CkPnlndy5H4M1+T1CY21+63+KPBinHoa5+8kQ2M=";
+    hash = "sha256-4yVP6DRHrsp52VxBhr7qppPhInYEsvPbIfxxQcRwHTw=";
   };
 
   nativeBuildInputs = [ installShellFiles ];
 
-  vendorHash = "sha256-SmUEVWIyV6k5Lu5zeKGqpij3zUNRZQmIgtf8/Hf7UUs=";
+  vendorHash = "sha256-cDUcYwcxPn+9TEP5lhVJXofijCZX94Is+Qt41PqUgjI=";
 
   subPackages = [ "./cmd/hof/main.go" ];
 

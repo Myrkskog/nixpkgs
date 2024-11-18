@@ -36,7 +36,7 @@ stdenv.mkDerivation rec {
     let
       libPath = {
         intune = lib.makeLibraryPath [
-          stdenv.cc.cc
+          stdenv.cc.cc.lib
           libuuid
           xorg.libX11
           curlMinimal
@@ -109,6 +109,5 @@ stdenv.mkDerivation rec {
     license = licenses.unfree;
     platforms = [ "x86_64-linux" ];
     maintainers = with lib.maintainers; [ rhysmdnz ];
-    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
   };
 }

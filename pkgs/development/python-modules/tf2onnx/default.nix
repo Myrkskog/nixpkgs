@@ -14,7 +14,7 @@
   pytestCheckHook,
   graphviz,
   parameterized,
-  pytest-cov-stub,
+  pytest-cov,
   pyyaml,
   timeout-decorator,
   onnxruntime,
@@ -57,7 +57,7 @@ buildPythonPackage rec {
     pytestCheckHook
     graphviz
     parameterized
-    pytest-cov-stub
+    pytest-cov
     pyyaml
     timeout-decorator
     keras

@@ -37,7 +37,7 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     alsa-lib
     atk
     at-spi2-atk

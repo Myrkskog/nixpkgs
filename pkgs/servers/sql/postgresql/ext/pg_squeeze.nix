@@ -1,6 +1,6 @@
-{ lib, stdenv, fetchFromGitHub, postgresql, postgresqlTestExtension, buildPostgresqlExtension }:
+{ lib, stdenv, fetchFromGitHub, postgresql, postgresqlTestExtension }:
 
-buildPostgresqlExtension (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "pg_squeeze";
   version = "1.7.0";
 
@@ -10,6 +10,20 @@ buildPostgresqlExtension (finalAttrs: {
     rev = "REL${builtins.replaceStrings ["."] ["_"] finalAttrs.version}";
     hash = "sha256-Kh1wSOvV5Rd1CG/na3yzbWzvaR8SJ6wmTZOnM+lbgik=";
   };
+
+  buildInputs = [
+    postgresql
+  ];
+
+  installPhase = ''
+    runHook preInstall
+
+    install -D -t $out/lib pg_squeeze${postgresql.dlSuffix}
+    install -D -t $out/share/postgresql/extension pg_squeeze-*.sql
+    install -D -t $out/share/postgresql/extension pg_squeeze.control
+
+    runHook postInstall
+  '';
 
   passthru.tests.extension = postgresqlTestExtension {
     inherit (finalAttrs) finalPackage;

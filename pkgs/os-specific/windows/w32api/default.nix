@@ -1,8 +1,4 @@
-{
-  stdenv,
-  fetchurl,
-  lib,
-}:
+{ stdenv, fetchurl, lib }:
 
 stdenv.mkDerivation rec {
   pname = "w32api";

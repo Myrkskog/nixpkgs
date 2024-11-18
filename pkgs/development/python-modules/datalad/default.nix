@@ -221,9 +221,6 @@ buildPythonPackage rec {
 
     # pbcopy not found
     "test_wtf"
-
-    # CommandError: 'git -c diff.ignoreSubmodules=none -c core.quotepath=false ls-files -z -m -d' failed with exitcode 128
-    "test_subsuperdataset_save"
   ];
 
   nativeCheckInputs = [

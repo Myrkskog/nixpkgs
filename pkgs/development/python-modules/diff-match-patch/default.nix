@@ -8,16 +8,15 @@
 
 buildPythonPackage rec {
   pname = "diff-match-patch";
-  version = "20241021";
-  pyproject = true;
+  version = "20230430";
+  format = "pyproject";
 
   src = fetchPypi {
-    pname = "diff_match_patch";
-    inherit version;
-    hash = "sha256-vq5XqZ+kgIRTKTXuKWi4Zh24YYYuyCxvIfSs3W2DUHM=";
+    inherit pname version;
+    hash = "sha256-lTAZzbnJ0snke1sSvP889HRvxFmOtAYHb6H8J+ah8Vw=";
   };
 
-  dependencies = [ flit-core ];
+  nativeBuildInputs = [ flit-core ];
 
   nativeCheckInputs = [ unittestCheckHook ];
 

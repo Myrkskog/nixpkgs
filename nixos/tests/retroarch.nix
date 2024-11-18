@@ -1,14 +1,10 @@
-import ./make-test-python.nix (
-  { pkgs, ... }:
+import ./make-test-python.nix ({ pkgs, ... }:
 
   {
     name = "retroarch";
-    meta = with pkgs.lib; {
-      maintainers = teams.libretro.members ++ [ maintainers.j0hax ];
-    };
+    meta = with pkgs.lib; { maintainers = teams.libretro.members ++ [ maintainers.j0hax ]; };
 
-    nodes.machine =
-      { ... }:
+    nodes.machine = { ... }:
 
       {
         imports = [ ./common/user-account.nix ];
@@ -27,13 +23,11 @@ import ./make-test-python.nix (
         };
       };
 
-    testScript =
-      { nodes, ... }:
+    testScript = { nodes, ... }:
       let
         user = nodes.machine.config.users.users.alice;
         xdo = "${pkgs.xdotool}/bin/xdotool";
-      in
-      ''
+      in ''
         with subtest("Wait for login"):
             start_all()
             machine.wait_for_file("/tmp/xauth_*")
@@ -41,7 +35,7 @@ import ./make-test-python.nix (
 
         with subtest("Check RetroArch started"):
             machine.wait_until_succeeds("pgrep retroarch")
-            machine.wait_for_window("^RetroArch")
+            machine.wait_for_window("^RetroArch ")
 
         with subtest("Check configuration created"):
             machine.wait_for_file("${user.home}/.config/retroarch/retroarch.cfg")
@@ -52,5 +46,4 @@ import ./make-test-python.nix (
             )
             machine.screenshot("screen")
       '';
-  }
-)
+  })

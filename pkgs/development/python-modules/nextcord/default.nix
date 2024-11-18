@@ -13,13 +13,13 @@
   faust-cchardet,
   orjson,
   pynacl,
-  setuptools,
 }:
 
 buildPythonPackage rec {
   pname = "nextcord";
   version = "2.6.1";
-  pyproject = true;
+
+  format = "setuptools";
 
   disabled = pythonOlder "3.8";
 
@@ -38,18 +38,13 @@ buildPythonPackage rec {
     })
   ];
 
-  build-system = [
-    setuptools
-  ];
-
-  dependencies = [
+  propagatedBuildInputs = [
     aiodns
     aiohttp
     brotli
     faust-cchardet
     orjson
     pynacl
-    setuptools # for pkg_resources, remove with next release
   ];
 
   # upstream has no tests

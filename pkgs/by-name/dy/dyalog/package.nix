@@ -76,7 +76,7 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc) # Used by Conga and .NET Bridge
+    stdenv.cc.cc.lib # Used by Conga and .NET Bridge
     ncurses5 # Used by the dyalog binary to correctly display in the terminal
   ]
   ++ lib.optionals htmlRendererSupport [

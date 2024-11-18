@@ -5,12 +5,8 @@ with lib;
 let
   cfg = config.services.caddy;
 
-  certs = config.security.acme.certs;
   virtualHosts = attrValues cfg.virtualHosts;
-  acmeEnabledVhosts = filter (hostOpts: hostOpts.useACMEHost != null) virtualHosts;
-  vhostCertNames = unique (map (hostOpts: hostOpts.useACMEHost) acmeEnabledVhosts);
-  dependentCertNames = filter (cert: certs.${cert}.dnsProvider == null) vhostCertNames; # those that might depend on the HTTP server
-  independentCertNames = filter (cert: certs.${cert}.dnsProvider != null) vhostCertNames; # those that don't depend on the HTTP server
+  acmeVHosts = filter (hostOpts: hostOpts.useACMEHost != null) virtualHosts;
 
   mkVHostConf = hostOpts:
     let
@@ -55,7 +51,9 @@ let
 
   configPath = "/etc/${etcConfigFile}";
 
-  mkCertOwnershipAssertion = import ../../../security/acme/mk-cert-ownership-assertion.nix lib;
+  acmeHosts = unique (catAttrs "useACMEHost" acmeVHosts);
+
+  mkCertOwnershipAssertion = import ../../../security/acme/mk-cert-ownership-assertion.nix;
 in
 {
   imports = [
@@ -331,10 +329,10 @@ in
         message = "To specify an adapter other than 'caddyfile' please provide your own configuration via `services.caddy.configFile`";
       }
     ] ++ map (name: mkCertOwnershipAssertion {
+      inherit (cfg) group user;
       cert = config.security.acme.certs.${name};
       groups = config.users.groups;
-      services = [ config.systemd.services.caddy ];
-    }) vhostCertNames;
+    }) acmeHosts;
 
     services.caddy.globalConfig = ''
       ${optionalString (cfg.email != null) "email ${cfg.email}"}
@@ -350,10 +348,9 @@ in
 
     systemd.packages = [ cfg.package ];
     systemd.services.caddy = {
-      wants = map (certName: "acme-finished-${certName}.target") vhostCertNames;
-      after = map (certName: "acme-selfsigned-${certName}.service") vhostCertNames
-        ++ map (certName: "acme-${certName}.service") independentCertNames; # avoid loading self-signed key w/ real cert, or vice-versa
-      before = map (certName: "acme-${certName}.service") dependentCertNames;
+      wants = map (hostOpts: "acme-finished-${hostOpts.useACMEHost}.target") acmeVHosts;
+      after = map (hostOpts: "acme-selfsigned-${hostOpts.useACMEHost}.service") acmeVHosts;
+      before = map (hostOpts: "acme-${hostOpts.useACMEHost}.service") acmeVHosts;
 
       wantedBy = [ "multi-user.target" ];
       startLimitIntervalSec = 14400;
@@ -400,10 +397,10 @@ in
 
     security.acme.certs =
       let
-        certCfg = map (certName: nameValuePair certName {
+        certCfg = map (useACMEHost: nameValuePair useACMEHost {
           group = mkDefault cfg.group;
           reloadServices = [ "caddy.service" ];
-        }) vhostCertNames;
+        }) acmeHosts;
       in
         listToAttrs certCfg;
 

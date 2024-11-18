@@ -2,27 +2,25 @@
   lib,
   buildPythonPackage,
   fetchFromGitHub,
-  setuptools,
-  pytestCheckHook,
 }:
 
 buildPythonPackage rec {
   pname = "pygtail";
-  version = "0.14.0";
-  pyproject = true;
+  version = "0.8.0";
+  format = "setuptools";
 
   src = fetchFromGitHub {
     owner = "bgreenlee";
-    repo = "pygtail";
+    repo = pname;
     rev = version;
-    hash = "sha256-TlXTlxeGDd+elGpMjxcJCmRuJmp5k9xj6MrViRzcST4=";
+    sha256 = "1f8qlijiwn10jxg1bsi6q42fznbg8rw039yaxfh6rzbaj2gaxbz1";
   };
 
-  build-system = [ setuptools ];
-
-  pythonImportsCheck = [ "pygtail" ];
-
-  nativeCheckInputs = [ pytestCheckHook ];
+  # remove at next bump, tag is one commit early for 0.8.0
+  postPatch = ''
+    substituteInPlace pygtail/core.py \
+      --replace 0.7.0 0.8.0
+  '';
 
   meta = with lib; {
     description = "Library for reading log file lines that have not been read";

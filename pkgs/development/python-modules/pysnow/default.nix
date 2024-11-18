@@ -9,7 +9,6 @@
   poetry-core,
   python-magic,
   pytz,
-  six,
   pytestCheckHook,
   requests-oauthlib,
 }:
@@ -26,8 +25,6 @@ buildPythonPackage rec {
     hash = "sha256-nKOPCkS2b3ObmBnk/7FTv4o4vwUX+tOtZI5OQQ4HSTY=";
   };
 
-  pythonRelaxDeps = [ "requests-oauthlib" ];
-
   nativeBuildInputs = [ poetry-core ];
 
   propagatedBuildInputs = [
@@ -35,7 +32,6 @@ buildPythonPackage rec {
     ijson
     python-magic
     pytz
-    six
     requests-oauthlib
   ];
 
@@ -58,10 +54,6 @@ buildPythonPackage rec {
       --replace 'ijson = "^2.5.1"' 'ijson = "*"' \
       --replace 'pytz = "^2019.3"' 'pytz = "*"' \
       --replace 'oauthlib = "^3.1.0"' 'oauthlib = "*"'
-
-    # https://github.com/rbw/pysnow/pull/201 doesn't apply via fetchpatch, so we recreate it
-    substituteInPlace tests/test_client.py tests/test_oauth_client.py tests/test_params_builder.py tests/test_resource.py \
-      --replace-fail "self.assertEquals" "self.assertEqual"
   '';
 
   pythonImportsCheck = [ "pysnow" ];

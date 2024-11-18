@@ -4,12 +4,15 @@
   fetchFromGitHub,
   cmake,
   pkg-config,
-  libsForQt5,
+  qttools,
+  wrapQtAppsHook,
+  qtbase,
   dtkwidget,
   qt5integration,
   qt5platform-plugins,
   dde-tray-loader,
   gsettings-qt,
+  qtx11extras,
   gtest,
 }:
 
@@ -39,22 +42,28 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     cmake
     pkg-config
-    libsForQt5.qttools
-    libsForQt5.wrapQtAppsHook
+    qttools
+    wrapQtAppsHook
   ];
 
   buildInputs = [
-    libsForQt5.qtbase
+    qtbase
     dtkwidget
     qt5platform-plugins
-    qt5integration
     dde-tray-loader
     gsettings-qt
-    libsForQt5.qtx11extras
+    qtx11extras
     gtest
   ];
 
   cmakeFlags = [ "-DDISABLE_SYS_UPDATE=ON" ];
+
+  # qt5integration must be placed before qtsvg in QT_PLUGIN_PATH
+  qtWrapperArgs = [ "--prefix QT_PLUGIN_PATH : ${qt5integration}/${qtbase.qtPluginPrefix}" ];
+
+  preFixup = ''
+    qtWrapperArgs+=("''${gappsWrapperArgs[@]}")
+  '';
 
   postFixup = ''
     for binary in $out/lib/deepin-daemon/*; do

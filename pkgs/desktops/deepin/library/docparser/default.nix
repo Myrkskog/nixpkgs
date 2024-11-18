@@ -3,7 +3,9 @@
   lib,
   fetchFromGitHub,
   pkg-config,
-  libsForQt5,
+  qmake,
+  qttools,
+  wrapQtAppsHook,
   poppler,
   pugixml,
   libzip,
@@ -23,10 +25,10 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [
-    libsForQt5.qmake
-    libsForQt5.qttools
+    qmake
+    qttools
     pkg-config
-    libsForQt5.wrapQtAppsHook
+    wrapQtAppsHook
   ];
 
   buildInputs = [

@@ -1,66 +1,54 @@
 {
   lib,
   buildPythonPackage,
-  fetchFromGitHub,
-
-  # dependencies
   cloudpickle,
   dill,
   fasteners,
+  fetchFromGitLab,
+  qgrid,
   ipynbname,
   ipywidgets,
-  notebook,
-  numpy,
   odfpy,
-  plotly,
-  pyyaml,
-  qgrid,
   scipy,
-  six,
+  plotly,
+  pytestCheckHook,
+  pyyaml,
   tabulate,
   tensorboard,
-
-  # tests
-  pytestCheckHook,
   torch,
 }:
 
 buildPythonPackage rec {
   pname = "experiment-utilities";
-  version = "0.3.8";
-  pyproject = true;
+  version = "0.3.6";
+  format = "setuptools";
 
-  src = fetchFromGitHub {
-    owner = "ChrisReinke";
+  src = fetchFromGitLab {
+    owner = "creinke";
     repo = "exputils";
-    rev = "refs/tags/v${version}";
-    hash = "sha256-fo8kwxm5/oEuLXVKhBrvKg18S0Yh6SkkNRaHUGJfdw4=";
+    domain = "gitlab.inria.fr";
+    rev = "refs/tags/version_${version}";
+    hash = "sha256-jo0CBSpUc/F1lJ2vagocngDM1Lopw5/AJnt1QwCunA8=";
   };
 
-  pythonRelaxDeps = [
-    "notebook"
-    "ipywidgets"
-  ];
+  # This dependency constraint (<=7.6.5) was due to a bug in qgrid that has been patched in its
+  # owned derivation
+  postPatch = ''
+    substituteInPlace setup.cfg \
+      --replace "ipywidgets >= 7.5.1,<= 7.6.5" "ipywidgets >= 7.5.1"
+  '';
 
-  pythonRemoveDeps = [
-    # Not available anymore in nixpkgs
-    "jupyter-contrib-nbextensions"
-  ];
-
-  dependencies = [
+  propagatedBuildInputs = [
     cloudpickle
     dill
     fasteners
     ipynbname
     ipywidgets
-    notebook
-    numpy
     odfpy
     plotly
     pyyaml
     qgrid
     scipy
-    six
     tabulate
     tensorboard
   ];
@@ -74,11 +62,10 @@ buildPythonPackage rec {
 
   pythonImportsCheck = [ "exputils" ];
 
-  meta = {
+  meta = with lib; {
     description = "Various tools to run scientific computer experiments";
     homepage = "https://gitlab.inria.fr/creinke/exputils";
-    license = lib.licenses.gpl3Plus;
-    changelog = "https://github.com/ChrisReinke/exputils/releases/tag/v${version}";
-    maintainers = with lib.maintainers; [ GaetanLepage ];
+    license = licenses.gpl3Plus;
+    maintainers = with maintainers; [ GaetanLepage ];
   };
 }

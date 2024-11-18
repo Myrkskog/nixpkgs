@@ -100,7 +100,7 @@ stdenv.mkDerivation {
           pango
           systemd
         ]
-        + ":${lib.getLib stdenv.cc.cc}/lib64";
+        + ":${stdenv.cc.cc.lib}/lib64";
     in
     ''
       runHook preInstall

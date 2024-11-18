@@ -415,17 +415,11 @@ in
     ];
   });
 
-  luaprompt = prev.luaprompt.overrideAttrs (oa: {
+  luaprompt = prev.luaprompt.overrideAttrs (_: {
     externalDeps = [
       { name = "READLINE"; dep = readline; }
       { name = "HISTORY"; dep = readline; }
     ];
-
-    nativeBuildInputs = oa.nativeBuildInputs ++ [ installShellFiles ];
-
-    postInstall = ''
-      installManPage luap.1
-    '';
   });
 
   # As a nix user, use this derivation instead of "luarocks_bootstrap"
@@ -561,7 +555,7 @@ in
   });
 
   neotest  = prev.neotest.overrideAttrs(oa: {
-    doCheck = stdenv.hostPlatform.isLinux;
+    doCheck = stdenv.isLinux;
     nativeCheckInputs = oa.nativeCheckInputs ++ [
       final.nlua final.busted neovim-unwrapped
     ];
@@ -837,7 +831,7 @@ in
 
     cargoDeps = rustPlatform.fetchCargoTarball {
       src = oa.src;
-      hash = "sha256-lguGj8fDqztrvqvEYVcJLmiuxPDaCpXU8aztInKjF+E=";
+      hash = "sha256-2WN5RoM1G2SE6H3g5pmEQvOoSCoaw3xMG8cDdfU2DAo=";
     };
 
     NIX_LDFLAGS = lib.optionalString stdenv.hostPlatform.isDarwin

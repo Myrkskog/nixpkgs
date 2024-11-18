@@ -38,7 +38,7 @@ stdenv.mkDerivation rec {
       mbedtls
       cacert
     ]
-    ++ lib.optionals (stdenv.hostPlatform.isDarwin) [
+    ++ lib.optionals (stdenv.isDarwin) [
       darwin.apple_sdk_11_0.frameworks.CoreServices
     ];
 

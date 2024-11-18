@@ -11,7 +11,10 @@
   docparser,
   dde-tray-loader,
   cmake,
-  libsForQt5,
+  qttools,
+  qtx11extras,
+  qtmultimedia,
+  kcodecs,
   pkg-config,
   ffmpegthumbnailer,
   libsecret,
@@ -19,13 +22,16 @@
   mediainfo,
   libzen,
   poppler,
+  polkit-qt,
   polkit,
+  wrapQtAppsHook,
   wrapGAppsHook3,
   lucenepp,
   boost,
   taglib,
   cryptsetup,
   glib,
+  qtbase,
   util-dfm,
   deepin-pdfium,
   libuuid,
@@ -50,9 +56,9 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [
     cmake
-    libsForQt5.qttools
+    qttools
     pkg-config
-    libsForQt5.wrapQtAppsHook
+    wrapQtAppsHook
     wrapGAppsHook3
   ];
   dontWrapGApps = true;
@@ -103,7 +109,6 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     dtkwidget
-    qt5integration
     qt5platform-plugins
     deepin-pdfium
     util-dfm
@@ -111,15 +116,15 @@ stdenv.mkDerivation rec {
     glibmm
     docparser
     dde-tray-loader
-    libsForQt5.qtx11extras
-    libsForQt5.qtmultimedia
-    libsForQt5.kcodecs
+    qtx11extras
+    qtmultimedia
+    kcodecs
     ffmpegthumbnailer
     libsecret
     libmediainfo
     mediainfo
     poppler
-    libsForQt5.polkit-qt
+    polkit-qt
     polkit
     lucenepp
     boost
@@ -140,6 +145,9 @@ stdenv.mkDerivation rec {
   ];
 
   enableParallelBuilding = true;
+
+  # qt5integration must be placed before qtsvg in QT_PLUGIN_PATH
+  qtWrapperArgs = [ "--prefix QT_PLUGIN_PATH : ${qt5integration}/${qtbase.qtPluginPrefix}" ];
 
   preFixup = ''
     qtWrapperArgs+=("''${gappsWrapperArgs[@]}")

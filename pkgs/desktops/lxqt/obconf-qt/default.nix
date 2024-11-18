@@ -1,6 +1,7 @@
 { lib
 , stdenv
 , fetchFromGitHub
+, fetchpatch
 , cmake
 , libSM
 , libXdmcp
@@ -18,13 +19,13 @@
 
 stdenv.mkDerivation rec {
   pname = "obconf-qt";
-  version = "0.16.5";
+  version = "0.16.4";
 
   src = fetchFromGitHub {
     owner = "lxqt";
-    repo = "obconf-qt";
+    repo = pname;
     rev = version;
-    hash = "sha256-C7s312DeLiustPBBY4OdjYvN7X6noktLA8LuhlOaVRo=";
+    hash = "sha256-uF90v56BthEts/Jy+a6kH2b1QFHCtft4ZLxyi/K/Vnc=";
   };
 
   nativeBuildInputs = [
@@ -45,14 +46,22 @@ stdenv.mkDerivation rec {
     qtwayland
   ];
 
+  patches = [
+    (fetchpatch {
+      name = "obconf-qt.port-to-qt6";
+      url = "https://patch-diff.githubusercontent.com/raw/lxqt/obconf-qt/pull/230.patch";
+      hash = "sha256-XLt8+/4oMXeli07qTAGc73U9RD1fGYqxTX0QdhuXpII=";
+    })
+  ];
+
   passthru.updateScript = gitUpdater { };
 
-  meta = {
+  meta = with lib; {
     homepage = "https://github.com/lxqt/obconf-qt";
     description = "Qt port of obconf, the Openbox configuration tool";
     mainProgram = "obconf-qt";
-    license = lib.licenses.gpl2Plus;
-    platforms = lib.platforms.unix;
-    maintainers = lib.teams.lxqt.members;
+    license = licenses.gpl2Plus;
+    platforms = with platforms; unix;
+    maintainers = teams.lxqt.members;
   };
 }

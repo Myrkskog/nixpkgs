@@ -7,8 +7,12 @@
   qt5integration,
   qt5platform-plugins,
   cmake,
-  libsForQt5,
+  qtbase,
+  qtsvg,
+  qttools,
+  qtx11extras,
   pkg-config,
+  wrapQtAppsHook,
   libsecret,
   chrpath,
   lxqt,
@@ -16,32 +20,32 @@
 
 stdenv.mkDerivation rec {
   pname = "deepin-terminal";
-  version = "6.0.15";
+  version = "6.0.14";
 
   src = fetchFromGitHub {
     owner = "linuxdeepin";
     repo = pname;
     rev = version;
-    hash = "sha256-Xcvdv58gJNhrdznQ09Nz/nMkM4IFIgQnapuhIdYHG0g=";
+    hash = "sha256-qSInmsGsMTZS9f2vDtWh8amQ7QaUyu0mifolUGdrs4Q=";
   };
 
   cmakeFlags = [ "-DVERSION=${version}" ];
 
   nativeBuildInputs = [
     cmake
-    libsForQt5.qttools
+    qttools
     pkg-config
-    libsForQt5.wrapQtAppsHook
+    wrapQtAppsHook
     lxqt.lxqt-build-tools_0_13
   ];
 
   buildInputs = [
     qt5integration
     qt5platform-plugins
-    libsForQt5.qtbase
-    libsForQt5.qtsvg
+    qtbase
+    qtsvg
     dtkwidget
-    libsForQt5.qtx11extras
+    qtx11extras
     libsecret
     chrpath
   ];

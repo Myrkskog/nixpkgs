@@ -5,8 +5,6 @@
   pytest,
   pytestCheckHook,
   pythonOlder,
-  setuptools-scm,
-  setuptools,
   six,
   voluptuous,
 }:
@@ -14,7 +12,7 @@
 buildPythonPackage rec {
   pname = "pytest-voluptuous";
   version = "1.2.0";
-  pyproject = true;
+  format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
@@ -25,14 +23,9 @@ buildPythonPackage rec {
     hash = "sha256-xdj4qCSSJQI9Rb1WyUYrAg1I5wQ5o6IJyIjJAafP/LY=";
   };
 
-  build-system = [
-    setuptools
-    setuptools-scm
-  ];
-
   buildInputs = [ pytest ];
 
-  dependencies = [ voluptuous ];
+  propagatedBuildInputs = [ voluptuous ];
 
   nativeCheckInputs = [
     pytestCheckHook

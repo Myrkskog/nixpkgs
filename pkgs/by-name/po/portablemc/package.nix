@@ -35,7 +35,7 @@ let
     libGL
     glfw
     openal
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
 
     # oshi
     udev

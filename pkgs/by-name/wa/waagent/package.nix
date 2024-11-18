@@ -2,12 +2,13 @@
   coreutils,
   fetchFromGitHub,
   lib,
-  python3,
+  python39,
   bash,
 }:
 
 let
-  python = python3;
+  # the latest python version that waagent test against according to https://github.com/Azure/WALinuxAgent/blob/28345a55f9b21dae89472111635fd6e41809d958/.github/workflows/ci_pr.yml#L75
+  python = python39;
 
 in
 python.pkgs.buildPythonApplication rec {

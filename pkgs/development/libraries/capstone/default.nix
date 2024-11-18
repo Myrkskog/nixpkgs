@@ -7,18 +7,16 @@
 
 stdenv.mkDerivation rec {
   pname = "capstone";
-  version = "5.0.3";
+  version = "5.0.1";
 
   src = fetchFromGitHub {
     owner = "capstone-engine";
     repo = "capstone";
     rev = version;
-    hash = "sha256-LZ10czBn5oaKMHQ8xguC6VZa7wvEgPRu6oWt/22QaDs=";
+    sha256 = "sha256-kKmL5sae9ruWGu1gas1mel9qM52qQOD+zLj8cRE3isg=";
   };
 
-  cmakeFlags = [
-    (lib.cmakeBool "BUILD_SHARED_LIBS" true)
-  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ (lib.cmakeBool "CAPSTONE_BUILD_MACOS_THIN" true) ];
+  cmakeFlags = [ "-DBUILD_SHARED_LIBS=ON" ];
 
   nativeBuildInputs = [
     cmake

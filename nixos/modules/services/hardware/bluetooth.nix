@@ -62,10 +62,7 @@ in
             ControllerMode = "bredr";
           };
         };
-        description = ''
-          Set configuration for system-wide bluetooth (/etc/bluetooth/main.conf).
-          See <https://github.com/bluez/bluez/blob/master/src/main.conf> for full list of options.
-        '';
+        description = "Set configuration for system-wide bluetooth (/etc/bluetooth/main.conf).";
       };
 
       input = mkOption {
@@ -77,10 +74,7 @@ in
             ClassicBondedOnly = true;
           };
         };
-        description = ''
-          Set configuration for the input service (/etc/bluetooth/input.conf).
-          See <https://github.com/bluez/bluez/blob/master/profiles/input/input.conf> for full list of options.
-        '';
+        description = "Set configuration for the input service (/etc/bluetooth/input.conf).";
       };
 
       network = mkOption {
@@ -91,10 +85,7 @@ in
             DisableSecurity = true;
           };
         };
-        description = ''
-          Set configuration for the network service (/etc/bluetooth/network.conf).
-          See <https://github.com/bluez/bluez/blob/master/profiles/network/network.conf> for full list of options.
-        '';
+        description = "Set configuration for the network service (/etc/bluetooth/network.conf).";
       };
     };
   };

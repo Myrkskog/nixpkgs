@@ -28,8 +28,6 @@
 , go_1_23
 , buildGo123Module
 , nix-update-script
-, makeBinaryWrapper
-, autoSignDarwinBinariesHook
 }:
 
 with python3Packages;
@@ -87,11 +85,9 @@ buildPythonApplication rec {
     sphinx-inline-tabs
     go_1_23
     fontconfig
-    makeBinaryWrapper
   ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
     imagemagick
     libicns  # For the png2icns tool.
-    autoSignDarwinBinariesHook
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [
     wayland-scanner
   ];

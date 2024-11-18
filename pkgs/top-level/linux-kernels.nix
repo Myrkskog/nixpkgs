@@ -189,14 +189,6 @@ in {
       ];
     };
 
-    linux_6_12 = callPackage ../os-specific/linux/kernel/mainline.nix {
-      branch = "6.12";
-      kernelPatches = [
-        kernelPatches.bridge_stp_helper
-        kernelPatches.request_key_helper
-      ];
-    };
-
     linux_testing = let
       testing = callPackage ../os-specific/linux/kernel/mainline.nix {
         # A special branch that tracks the kernel under the release process
@@ -211,10 +203,6 @@ in {
     in if latest.kernelAtLeast testing.baseVersion
        then latest
        else testing;
-
-    linux_default = packageAliases.linux_default.kernel;
-
-    linux_latest = packageAliases.linux_latest.kernel;
 
     # Using zenKernels like this due lqx&zen came from one source, but may have different base kernel version
     # https://github.com/NixOS/nixpkgs/pull/161773#discussion_r820134708
@@ -275,7 +263,6 @@ in {
     linux_5_15_hardened = hardenedKernelFor kernels.linux_5_15 { };
     linux_6_1_hardened = hardenedKernelFor kernels.linux_6_1 { };
     linux_6_6_hardened = hardenedKernelFor kernels.linux_6_6 { };
-    linux_6_11_hardened = hardenedKernelFor kernels.linux_6_11 { };
 
   } // lib.optionalAttrs config.allowAliases {
     linux_4_14 = throw "linux 4.14 was removed because it will reach its end of life within 23.11";
@@ -322,8 +309,6 @@ in {
     acpi_call = callPackage ../os-specific/linux/acpi-call {};
 
     akvcam = callPackage ../os-specific/linux/akvcam { };
-
-    amneziawg = callPackage ../os-specific/linux/amneziawg { };
 
     apfs = callPackage ../os-specific/linux/apfs { };
 
@@ -634,7 +619,6 @@ in {
     linux_6_1 = recurseIntoAttrs (packagesFor kernels.linux_6_1);
     linux_6_6 = recurseIntoAttrs (packagesFor kernels.linux_6_6);
     linux_6_11 = recurseIntoAttrs (packagesFor kernels.linux_6_11);
-    linux_6_12 = recurseIntoAttrs (packagesFor kernels.linux_6_12);
   } // lib.optionalAttrs config.allowAliases {
     linux_4_14 = throw "linux 4.14 was removed because it will reach its end of life within 23.11"; # Added 2023-10-11
     linux_4_19 = throw "linux 4.19 was removed because it will reach its end of life within 24.11"; # Added 2024-09-21
@@ -674,7 +658,6 @@ in {
     linux_5_15_hardened = recurseIntoAttrs (packagesFor kernels.linux_5_15_hardened);
     linux_6_1_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_1_hardened);
     linux_6_6_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_6_hardened);
-    linux_6_11_hardened = recurseIntoAttrs (packagesFor kernels.linux_6_11_hardened);
 
     linux_zen = recurseIntoAttrs (packagesFor kernels.linux_zen);
     linux_lqx = recurseIntoAttrs (packagesFor kernels.linux_lqx);
@@ -700,7 +683,7 @@ in {
   packageAliases = {
     linux_default = packages.linux_6_6;
     # Update this when adding the newest kernel major version!
-    linux_latest = packages.linux_6_12;
+    linux_latest = packages.linux_6_11;
     linux_mptcp = throw "'linux_mptcp' has been moved to https://github.com/teto/mptcp-flake";
     linux_rt_default = packages.linux_rt_5_15;
     linux_rt_latest = packages.linux_rt_6_6;

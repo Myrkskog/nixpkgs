@@ -1,6 +1,4 @@
-self: super: let
-  inherit (self) lib config;
-in {
+self: super: {
 
     age = super.callPackage ./age.nix { };
 
@@ -27,6 +25,8 @@ in {
     pg_bigm = super.callPackage ./pg_bigm.nix { };
 
     pg_ed25519 = super.callPackage ./pg_ed25519.nix { };
+
+    pg_embedding = super.callPackage ./pg_embedding.nix { };
 
     pg_hint_plan = super.callPackage ./pg_hint_plan.nix { };
 
@@ -72,8 +72,6 @@ in {
 
     pg_net = super.callPackage ./pg_net.nix { };
 
-    pg-semver = super.callPackage ./pg-semver.nix { };
-
     pgtap = super.callPackage ./pgtap.nix { };
 
     smlar = super.callPackage ./smlar.nix { };
@@ -109,11 +107,7 @@ in {
 
     rum = super.callPackage ./rum.nix { };
 
-    sqlite_fdw = super.callPackage ./sqlite_fdw.nix { };
-
     tsja = super.callPackage ./tsja.nix { };
 
     wal2json = super.callPackage ./wal2json.nix { };
-} // lib.optionalAttrs config.allowAliases {
-  pg_embedding = throw "PostgreSQL extension `pg_embedding` has been removed since the project has been abandoned. Upstream's recommendation is to use pgvector instead (https://neon.tech/docs/extensions/pg_embedding#migrate-from-pg_embedding-to-pgvector)";
 }

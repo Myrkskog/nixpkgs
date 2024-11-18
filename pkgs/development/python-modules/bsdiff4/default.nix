@@ -7,14 +7,14 @@
 
 buildPythonPackage rec {
   pname = "bsdiff4";
-  version = "1.2.5";
+  version = "1.2.4";
   format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-zdg/gg7Ljx72ek5fCxUsYdMnyver81qpp2NBORWyE2g=";
+    hash = "sha256-HXEpqBIYYHMejM4pAdMYPhSuxwJE9k6PdFYyddw4gGc=";
   };
 
   pythonImportsCheck = [ "bsdiff4" ];

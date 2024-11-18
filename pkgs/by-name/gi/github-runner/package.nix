@@ -119,7 +119,7 @@ buildDotnetModule rec {
       darwin.autoSignDarwinBinariesHook
     ];
 
-  buildInputs = [ (lib.getLib stdenv.cc.cc) ];
+  buildInputs = [ stdenv.cc.cc.lib ];
 
   dotnet-sdk = dotnetCorePackages.sdk_6_0;
   dotnet-runtime = dotnetCorePackages.runtime_6_0;

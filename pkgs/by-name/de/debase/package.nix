@@ -1,5 +1,5 @@
 {
-  apple-sdk_11,
+  darwin,
   fetchFromGitHub,
   fetchpatch, # Delete at next version bump.
   lib,
@@ -53,7 +53,7 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     libgit2
-  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ apple-sdk_11 ];
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ darwin.apple_sdk_11_0.frameworks.Foundation ];
 
   installPhase = ''
     runHook preInstall

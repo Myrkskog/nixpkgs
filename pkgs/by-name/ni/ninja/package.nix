@@ -11,29 +11,18 @@
 , buildPackages
 , buildDocs ? true
 , nix-update-script
-, ninjaRelease ? "latest"
 }:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "ninja";
-  version = lib.removePrefix "v" finalAttrs.src.rev;
+  version = "1.12.1";
 
-  src = {
-    # TODO: Remove Ninja 1.11 as soon as possible.
-    "1.11" = fetchFromGitHub {
-      owner = "ninja-build";
-      repo = "ninja";
-      rev = "v1.11.1";
-      hash = "sha256-LvV/Fi2ARXBkfyA1paCRmLUwCh/rTyz+tGMg2/qEepI=";
-    };
-
-    latest = fetchFromGitHub {
-      owner = "ninja-build";
-      repo = "ninja";
-      rev = "v1.12.1";
-      hash = "sha256-RT5u+TDvWxG5EVQEYj931EZyrHUSAqK73OKDAascAwA=";
-    };
-  }.${ninjaRelease} or (throw "Unsupported Ninja release: ${ninjaRelease}");
+  src = fetchFromGitHub {
+    owner = "ninja-build";
+    repo = "ninja";
+    rev = "v${finalAttrs.version}";
+    hash = "sha256-RT5u+TDvWxG5EVQEYj931EZyrHUSAqK73OKDAascAwA=";
+  };
 
   depsBuildBuild = [ buildPackages.stdenv.cc ];
 

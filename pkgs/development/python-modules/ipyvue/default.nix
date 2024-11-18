@@ -9,12 +9,12 @@
 
 buildPythonPackage rec {
   pname = "ipyvue";
-  version = "1.11.2";
+  version = "1.11.1";
   pyproject = true;
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-OxOBvRIBhPlwpdZt6sM7hZKmZsjhq3pa/TPs/zQuCpU=";
+    hash = "sha256-AwgE/5GgRK0/oHrjTjlSo9IxmDdnhDSqqZrkiLp0mls=";
   };
 
   build-system = [ setuptools ];

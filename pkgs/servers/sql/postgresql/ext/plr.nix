@@ -1,6 +1,6 @@
-{ lib, stdenv, fetchFromGitHub, pkg-config, R, postgresql, buildPostgresqlExtension }:
+{ lib, stdenv, fetchFromGitHub, pkg-config, R, postgresql }:
 
-buildPostgresqlExtension rec {
+stdenv.mkDerivation rec {
   pname = "plr";
   version = "8.4.7";
 
@@ -12,9 +12,14 @@ buildPostgresqlExtension rec {
   };
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ R ];
+  buildInputs = [ R postgresql ];
 
   makeFlags = [ "USE_PGXS=1" ];
+
+  installPhase = ''
+    install -D plr${postgresql.dlSuffix} -t $out/lib/
+    install -D {plr--*.sql,plr.control} -t $out/share/postgresql/extension
+  '';
 
   meta = with lib; {
     description = "PL/R - R Procedural Language for PostgreSQL";

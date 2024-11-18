@@ -24,7 +24,7 @@ buildPythonApplication rec {
   };
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     click
     coloredlogs
     psutil

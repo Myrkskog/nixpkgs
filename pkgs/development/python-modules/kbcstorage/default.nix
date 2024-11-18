@@ -12,8 +12,6 @@
   setuptools-git-versioning,
   setuptools-scm,
   urllib3,
-  google-auth,
-  google-cloud-storage,
 }:
 
 buildPythonPackage rec {
@@ -35,26 +33,19 @@ buildPythonPackage rec {
       --replace-fail "urllib3<2.0.0" "urllib3"
   '';
 
-  build-system = [
+  nativeBuildInputs = [
     setuptools
     setuptools-git-versioning
     setuptools-scm
   ];
 
-  pythonRelaxDeps = [
-    "google-cloud-storage"
-    "google-auth"
-  ];
-
-  dependencies = [
+  propagatedBuildInputs = [
     azure-storage-blob
     boto3
     python-dotenv
     requests
     responses
     urllib3
-    google-auth
-    google-cloud-storage
   ];
 
   # Requires API token and an active Keboola bucket
@@ -68,11 +59,11 @@ buildPythonPackage rec {
     "kbcstorage.tables"
   ];
 
-  meta = {
+  meta = with lib; {
     description = "Keboola Connection Storage API client";
     homepage = "https://github.com/keboola/sapi-python-client";
     changelog = "https://github.com/keboola/sapi-python-client/releases/tag/${version}";
-    license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ mrmebelman ];
+    license = licenses.mit;
+    maintainers = with maintainers; [ mrmebelman ];
   };
 }

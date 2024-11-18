@@ -7,19 +7,18 @@
   fetchFromGitHub,
   filelock,
   mock,
+  numpy,
   protobuf,
   pytestCheckHook,
   pythonOlder,
   six,
-  setuptools,
-  numpy,
   typing-extensions,
 }:
 
 buildPythonPackage rec {
   pname = "chainer";
   version = "7.8.1.post1";
-  build-system = [ setuptools ];
+  format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
@@ -30,18 +29,12 @@ buildPythonPackage rec {
     hash = "sha256-epwnExmyCWmwaOz+mJnAl1peEeHLBdQGC62BlLfSTQQ=";
   };
 
-  postPatch = ''
-    substituteInPlace chainer/_environment_check.py \
-      --replace-fail "import numpy.distutils.system_info" "import numpy" \
-      --replace-fail "numpy.distutils.system_info" "numpy.__config__.get_info"
-  '';
-
-  dependencies = [
+  propagatedBuildInputs = [
     filelock
+    numpy
     protobuf
     six
     typing-extensions
-    numpy
   ] ++ lib.optionals cudaSupport [ cupy ];
 
   nativeCheckInputs = [
@@ -67,10 +60,10 @@ buildPythonPackage rec {
 
   pythonImportsCheck = [ "chainer" ];
 
-  meta = {
+  meta = with lib; {
     description = "Flexible framework of neural networks for deep learning";
     homepage = "https://chainer.org/";
-    license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ hyphon81 ];
+    license = licenses.mit;
+    maintainers = with maintainers; [ hyphon81 ];
   };
 }

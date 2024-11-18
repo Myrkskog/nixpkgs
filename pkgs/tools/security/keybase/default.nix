@@ -36,7 +36,7 @@ buildGoModule rec {
     homepage = "https://www.keybase.io/";
     description = "Keybase official command-line utility and service";
     platforms = platforms.linux ++ platforms.darwin;
-    maintainers = with maintainers; [ avaq np rvolosatovs Br1ght0ne shofius ryand56 ];
+    maintainers = with maintainers; [ avaq np rvolosatovs Br1ght0ne shofius ];
     license = licenses.bsd3;
   };
 }

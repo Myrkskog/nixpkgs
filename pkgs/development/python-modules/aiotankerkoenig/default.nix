@@ -8,7 +8,6 @@
   orjson,
   poetry-core,
   pytest-asyncio,
-  pytest-cov-stub,
   pytestCheckHook,
   pythonOlder,
   syrupy,
@@ -31,12 +30,12 @@ buildPythonPackage rec {
 
   postPatch = ''
     substituteInPlace pyproject.toml \
-      --replace-fail 'version = "0.0.0"' 'version = "${version}"'
+      --replace-fail "--cov" ""
   '';
 
-  build-system = [ poetry-core ];
+  nativeBuildInputs = [ poetry-core ];
 
-  dependencies = [
+  propagatedBuildInputs = [
     aiohttp
     mashumaro
     orjson
@@ -46,7 +45,6 @@ buildPythonPackage rec {
   nativeCheckInputs = [
     aioresponses
     pytest-asyncio
-    pytest-cov-stub
     pytestCheckHook
     syrupy
   ];

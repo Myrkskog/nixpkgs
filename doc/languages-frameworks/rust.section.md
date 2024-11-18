@@ -64,18 +64,10 @@ hash using `nix-hash --to-sri --type sha256 "<original sha256>"`.
 ```
 
 Exception: If the application has cargo `git` dependencies, the `cargoHash`
-approach will not work by default. In this case, you can set `useFetchCargoVendor = true`
-to use an improved fetcher that supports handling `git` dependencies.
+approach will not work, and you will need to copy the `Cargo.lock` file of the application
+to nixpkgs and continue with the next section for specifying the options of the `cargoLock`
+section.
 
-```nix
-{
-  useFetchCargoVendor = true;
-  cargoHash = "sha256-RqPVFovDaD2rW31HyETJfQ0qVwFxoGEvqkIgag3H6KU=";
-}
-```
-
-If this method still does not work, you can resort to copying the `Cargo.lock` file into nixpkgs
-and importing it as described in the [next section](#importing-a-cargo.lock-file).
 
 Both types of hashes are permitted when contributing to nixpkgs. The
 Cargo hash is obtained by inserting a fake checksum into the
@@ -170,10 +162,9 @@ rustPlatform.buildRustPackage {
 }
 ```
 
-If the upstream source repository lacks a `Cargo.lock` file, you must add one
-to `src`, as it is essential for building a Rust package. Setting
-`cargoLock.lockFile` or `cargoLock.lockFileContents` will not automatically add
-a `Cargo.lock` file to `src`. A straightforward solution is to use:
+Note that setting `cargoLock.lockFile` or `cargoLock.lockFileContents`
+doesn't add a `Cargo.lock` to your `src`, and a `Cargo.lock` is still
+required to build a rust package. A simple fix is to use:
 
 ```nix
 {
@@ -469,17 +460,6 @@ also be used:
 * `patches`: patches to apply before vendoring. This is useful when
   the `Cargo.lock`/`Cargo.toml` files need to be patched before
   vendoring.
-
-In case the lockfile contains cargo `git` dependencies, you can use
-`fetchCargoVendor` instead.
-```nix
-{
-  cargoDeps = rustPlatform.fetchCargoVendor {
-    inherit src;
-    hash = "sha256-RqPVFovDaD2rW31HyETJfQ0qVwFxoGEvqkIgag3H6KU=";
-  };
-}
-```
 
 If a `Cargo.lock` file is available, you can alternatively use the
 `importCargoLock` function. In contrast to `fetchCargoTarball`, this

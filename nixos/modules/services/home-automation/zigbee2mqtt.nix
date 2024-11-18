@@ -76,7 +76,9 @@ in
 
         # Hardening
         CapabilityBoundingSet = "";
-        DeviceAllow = lib.optionals (lib.hasPrefix "/" cfg.settings.serial.port) [ cfg.settings.serial.port ];
+        DeviceAllow = [
+          config.services.zigbee2mqtt.settings.serial.port
+        ];
         DevicePolicy = "closed";
         LockPersonality = true;
         MemoryDenyWriteExecute = false;

@@ -9,7 +9,7 @@
   six,
   varint,
   pytestCheckHook,
-  pytest-cov-stub,
+  pytest-cov,
   responses,
 }:
 
@@ -44,7 +44,7 @@ buildPythonPackage rec {
 
   nativeCheckInputs = [
     pytestCheckHook
-    pytest-cov-stub
+    pytest-cov
     responses
   ];
 

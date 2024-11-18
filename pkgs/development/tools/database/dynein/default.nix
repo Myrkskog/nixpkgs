@@ -1,8 +1,10 @@
 { fetchFromGitHub
 , lib
+, Security
 , openssl
 , pkg-config
 , rustPlatform
+, stdenv
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -13,7 +15,7 @@ rustPlatform.buildRustPackage rec {
     owner = "awslabs";
     repo = "dynein";
     rev = "v${version}";
-    hash = "sha256-QhasTFGOFOjzNKdQtA+eBhKy51O4dFt6vpeIAIOM2rQ=";
+    sha256 = "sha256-QhasTFGOFOjzNKdQtA+eBhKy51O4dFt6vpeIAIOM2rQ=";
   };
 
   # Use system openssl.
@@ -25,7 +27,7 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = [
     openssl
-  ];
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ Security ];
 
   preBuild = ''
     export OPENSSL_DIR=${lib.getDev openssl}

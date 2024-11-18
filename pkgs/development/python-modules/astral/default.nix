@@ -7,6 +7,9 @@
   # build
   poetry-core,
 
+  # runtime
+  backports-zoneinfo,
+
   # tests
   pytestCheckHook,
   freezegun,
@@ -25,6 +28,8 @@ buildPythonPackage rec {
   };
 
   nativeBuildInputs = [ poetry-core ];
+
+  propagatedBuildInputs = lib.optionals (pythonOlder "3.9") [ backports-zoneinfo ];
 
   nativeCheckInputs = [
     freezegun

@@ -6,10 +6,12 @@
   gio-qt,
   cmake,
   extra-cmake-modules,
-  libsForQt5,
+  qttools,
   wayland,
+  kwayland,
   dwayland,
   pkg-config,
+  wrapQtAppsHook,
   glibmm,
   gtest,
 }:
@@ -29,14 +31,15 @@ stdenv.mkDerivation rec {
     cmake
     extra-cmake-modules
     pkg-config
-    libsForQt5.qttools
-    libsForQt5.wrapQtAppsHook
+    qttools
+    wrapQtAppsHook
   ];
 
   buildInputs = [
     dtkwidget
     gio-qt
     wayland
+    kwayland
     dwayland
     glibmm
     gtest

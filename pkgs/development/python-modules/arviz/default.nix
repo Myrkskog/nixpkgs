@@ -101,7 +101,7 @@ buildPythonPackage rec {
   ];
 
   # Tests segfault on darwin
-  doCheck = !stdenv.hostPlatform.isDarwin;
+  doCheck = !stdenv.isDarwin;
 
   pythonImportsCheck = [ "arviz" ];
 

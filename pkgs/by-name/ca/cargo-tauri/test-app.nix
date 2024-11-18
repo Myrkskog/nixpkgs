@@ -1,67 +1,54 @@
 {
   lib,
   stdenv,
+  rustPlatform,
   cargo-tauri,
+  darwin,
   glib-networking,
-  libayatana-appindicator,
-  nodejs,
+  libsoup,
   openssl,
   pkg-config,
-  pnpm_9,
-  rustPlatform,
-  webkitgtk_4_1,
-  wrapGAppsHook4,
+  webkitgtk_4_0,
+  wrapGAppsHook3,
 }:
 
-let
-  pnpm = pnpm_9;
-in
-stdenv.mkDerivation (finalAttrs: {
+rustPlatform.buildRustPackage rec {
   pname = "test-app";
   inherit (cargo-tauri) version src;
 
-  postPatch = lib.optionalString stdenv.hostPlatform.isLinux ''
-    substituteInPlace $cargoDepsCopy/libappindicator-sys-*/src/lib.rs \
-      --replace "libayatana-appindicator3.so.1" "${libayatana-appindicator}/lib/libayatana-appindicator3.so.1"
-  '';
+  # Basic example provided by upstream
+  sourceRoot = "${src.name}/examples/workspace";
 
-  inherit (cargo-tauri) cargoDeps;
+  cargoPatches = [
+    # https://github.com/NixOS/nixpkgs/issues/332957
+    ./update-time-crate.patch
+  ];
 
-  pnpmDeps = pnpm.fetchDeps {
-    inherit (finalAttrs)
-      pname
-      version
-      src
-      ;
-
-    hash = "sha256-kTr61DFPIIYceB8tZrKFaMG65CZ//djGEOQBLRNPotk=";
-  };
+  cargoHash = "sha256-ull9BWzeKsnMi4wcH67FnKFzTjqEdiRlM3f+EKIPvvU=";
 
   nativeBuildInputs = [
     cargo-tauri.hook
 
-    nodejs
     pkg-config
-    pnpm.configHook
-    rustPlatform.cargoCheckHook
-    rustPlatform.cargoSetupHook
-    wrapGAppsHook4
+    wrapGAppsHook3
   ];
 
   buildInputs =
     [ openssl ]
-    ++ lib.optionals stdenv.hostPlatform.isLinux [
+    ++ lib.optionals stdenv.isLinux [
       glib-networking
-      libayatana-appindicator
-      webkitgtk_4_1
-    ];
-
-  buildAndTestSubdir = "examples/api/src-tauri";
-
-  # This example depends on the actual `api` package to be built in-tree
-  preBuild = ''
-    pnpm --filter '@tauri-apps/api' build
-  '';
+      libsoup
+      webkitgtk_4_0
+    ]
+    ++ lib.optionals stdenv.isDarwin (
+      with darwin.apple_sdk.frameworks;
+      [
+        AppKit
+        CoreServices
+        Security
+        WebKit
+      ]
+    );
 
   # No one should be actually running this, so lets save some time
   buildType = "debug";
@@ -70,4 +57,4 @@ stdenv.mkDerivation (finalAttrs: {
   meta = {
     inherit (cargo-tauri.hook.meta) platforms;
   };
-})
+}

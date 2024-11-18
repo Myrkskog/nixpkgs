@@ -40,12 +40,12 @@ buildPythonPackage rec {
       --replace-fail "--cov-branch" ""
   '';
 
-  build-system = [
+  nativeBuildInputs = [
     hatchling
     hatch-vcs
   ];
 
-  dependencies = [
+  propagatedBuildInputs = [
     numpy
     scipy
     matplotlib
@@ -74,10 +74,8 @@ buildPythonPackage rec {
   '';
 
   disabledTests = [
-    # requires qtbot which is unmaintained/not in Nixpkgs:
-    "test_plotting_scalebars"
-    # tries to write a datetime object to hdf5, which fails:
-    "test_hitachi_basic"
+    # Fails due to changes in Numpy types
+    "mne.stats._adjacency.combine_adjacency"
   ];
 
   pythonImportsCheck = [ "mne" ];

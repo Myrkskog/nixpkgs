@@ -5,7 +5,7 @@
   stdenv,
   IOKit,
   CoreFoundation,
-  nix-update-script,
+  unstableGitUpdater,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -28,7 +28,7 @@ rustPlatform.buildRustPackage rec {
     IOKit
   ];
 
-  passthru.updateScript = nix-update-script { };
+  passthru.updateScript = unstableGitUpdater { };
 
   meta = with lib; {
     description = "Nushell plugin to list system network interfaces";

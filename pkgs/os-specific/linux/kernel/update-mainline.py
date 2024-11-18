@@ -87,8 +87,9 @@ def get_hash(kernel: KernelRelease):
     return f"sha256:{hash}"
 
 
-def get_oldest_branch(kernels) -> Version:
-    return min(parse_version(v) for v in kernels.keys() if v != "testing")
+def get_oldest_branch() -> Version:
+    with open(VERSIONS_FILE) as f:
+        return parse_version(sorted(json.load(f).keys())[0])
 
 
 def predates_oldest_branch(oldest: Version, to_compare: str) -> bool:
@@ -117,7 +118,8 @@ def main():
         if (parsed := parse_release(release)) is not None
     ]
     all_kernels = json.load(VERSIONS_FILE.open())
-    oldest_branch = get_oldest_branch(all_kernels)
+
+    oldest_branch = get_oldest_branch()
 
     for (branch, kernels) in groupby(parsed_releases, lambda kernel: kernel.branch):
         kernel = max(kernels, key=lambda kernel: kernel.parsed_version)

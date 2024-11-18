@@ -28,7 +28,6 @@
   python3,
   qtdeclarative,
   qtbase,
-  qttools,
   validatePkgConfig,
 }:
 
@@ -75,7 +74,6 @@ stdenv.mkDerivation (finalAttrs: {
     intltool
     pkg-config
     qtdeclarative
-    qttools # qdoc
     validatePkgConfig
   ];
 
@@ -108,7 +106,7 @@ stdenv.mkDerivation (finalAttrs: {
     (lib.cmakeBool "GSETTINGS_COMPILE" true)
     (lib.cmakeBool "ENABLE_TESTS" finalAttrs.finalPackage.doCheck)
     (lib.cmakeBool "ENABLE_UBUNTU_COMPAT" true) # just in case something needs it
-    (lib.cmakeBool "BUILD_DOC" true)
+    (lib.cmakeBool "BUILD_DOC" true) # lacks QML docs, needs qdoc: https://github.com/NixOS/nixpkgs/pull/245379
   ];
 
   doCheck = stdenv.buildPlatform.canExecute stdenv.hostPlatform;

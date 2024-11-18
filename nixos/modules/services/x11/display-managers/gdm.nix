@@ -147,9 +147,6 @@ in
 
     services.displayManager =
       {
-        # Enable desktop session data
-        enable = true;
-
         environment = {
           GDM_X_SERVER_EXTRA_ARGS = toString
             (lib.filter (arg: arg != "-terminate") cfg.xserverArgs);

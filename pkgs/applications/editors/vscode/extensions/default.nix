@@ -406,8 +406,8 @@ let
         mktplcRef = {
           name = "vscode-neovim";
           publisher = "asvetliakov";
-          version = "1.18.14";
-          hash = "sha256-Db49bLX0QLr7fS7ZUyeWOustN63LpaJ6IBTKMqAz8uc=";
+          version = "1.18.13";
+          hash = "sha256-FFgleWhzFaAE0UdKQ6lZsszBtJ46UZ3bfx1V3SopDNc=";
         };
         meta = {
           changelog = "https://marketplace.visualstudio.com/items/asvetliakov.vscode-neovim/changelog";
@@ -836,22 +836,6 @@ let
         };
       };
 
-      capatech.betacode = buildVscodeMarketplaceExtension {
-        mktplcRef = {
-          name = "betacode";
-          publisher = "capatech";
-          version = "0.1.10";
-          hash = "sha256-Sq+s1dM+gZo73VaGEAX88fgVRAhWklg0LKv+yH46Jfw=";
-        };
-        meta = {
-          description = "VSCode extension for writing polytonic Greek";
-          downloadPage = "https://marketplace.visualstudio.com/items?itemName=Capatech.betacode";
-          homepage = "https://github.com/kugland/vscode-extension-betacode";
-          license = lib.licenses.gpl3;
-          maintainers = with lib.maintainers; [ thtrf ];
-        };
-      };
-
       carrie999.cyberpunk-2020 = buildVscodeMarketplaceExtension {
         mktplcRef = {
           name = "cyberpunk-2020";
@@ -1065,30 +1049,30 @@ let
             sources = {
               "x86_64-linux" = {
                 arch = "linux-x64";
-                hash = "sha256-+/0ZQkRS6AD8u5+t2hiPwQxzwhEc+n2F0GVk1s0n74U=";
+                hash = "sha256-X6Oszc88F0ENABwX63uwxbJ4VPQOQzZbJA87znVg5d8=";
               };
               "x86_64-darwin" = {
                 arch = "darwin-x64";
-                hash = "sha256-FZbTBPn12pv9bQWqfWwPapFLTpp5nclp0RH/WZc6/r4=";
+                hash = "sha256-NH3kGmNZpKofNplw+FRJFvV3m36HRuIqGR3zt6X5x60=";
               };
               "aarch64-linux" = {
                 arch = "linux-arm64";
-                hash = "sha256-e6zfflFgxVuikWwQuU6ImEuVk8xgi2HyY8uZwBoQiLU=";
+                hash = "sha256-hlFAMz17cl2/1CK7/dgrLktcPZYAcccIWIpkAVdwpkI=";
               };
               "aarch64-darwin" = {
                 arch = "darwin-arm64";
-                hash = "sha256-SfA9wkvYT2Vb3GpJRjWE6lzZAXdFCnEKoKl0hjT0Llw=";
+                hash = "sha256-oVkmdw0sHv5Y+ysT4zWW6qFDh/h4/TcgSAauh1KrE1c=";
               };
             };
           in
           {
             name = "continue";
             publisher = "Continue";
-            version = "0.8.54";
+            version = "0.8.44";
           }
           // sources.${stdenv.system};
         nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [ autoPatchelfHook ];
-        buildInputs = [ (lib.getLib stdenv.cc.cc) ];
+        buildInputs = [ stdenv.cc.cc.lib ];
         meta = {
           description = "Open-source autopilot for software development - bring the power of ChatGPT to your IDE";
           downloadPage = "https://marketplace.visualstudio.com/items?itemName=Continue.continue";
@@ -1365,7 +1349,7 @@ let
 
         buildInputs = [
           zlib
-          (lib.getLib stdenv.cc.cc)
+          stdenv.cc.cc.lib
         ];
 
         postInstall = ''
@@ -1756,8 +1740,8 @@ let
         mktplcRef = {
           name = "prettier-vscode";
           publisher = "esbenp";
-          version = "11.0.0";
-          hash = "sha256-pNjkJhof19cuK0PsXJ/Q/Zb2H7eoIkfXJMLZJ4lDn7k=";
+          version = "10.4.0";
+          hash = "sha256-8+90cZpqyH+wBgPFaX5GaU6E02yBWUoB+T9C2z2Ix8c=";
         };
         meta = {
           changelog = "https://marketplace.visualstudio.com/items/esbenp.prettier-vscode/changelog";
@@ -3261,7 +3245,7 @@ let
           // sources.${stdenv.system};
         nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [ autoPatchelfHook ];
         buildInputs = [
-          (lib.getLib stdenv.cc.cc)
+          stdenv.cc.cc.lib
           zlib
         ];
         meta = {
@@ -3643,13 +3627,7 @@ let
         };
       };
 
-      ms-vscode-remote.vscode-remote-extensionpack =
-        callPackage ./ms-vscode-remote.vscode-remote-extensionpack
-          { };
-
       ms-vsliveshare.vsliveshare = callPackage ./ms-vsliveshare.vsliveshare { };
-
-      ms-windows-ai-studio.windows-ai-studio = callPackage ./ms-windows-ai-studio.windows-ai-studio { };
 
       mshr-h.veriloghdl = buildVscodeMarketplaceExtension {
         mktplcRef = {
@@ -3928,23 +3906,6 @@ let
         };
       };
 
-      pollywoggames.pico8-ls = buildVscodeMarketplaceExtension {
-        mktplcRef = {
-          name = "pico8-ls";
-          publisher = "PollywogGames";
-          version = "0.5.5";
-          hash = "sha256-MTIBCZcqJ+Dq1ECTkj24QIrg4MqT/xWcyYkp6vJRlnM=";
-        };
-        meta = {
-          changelog = "https://marketplace.visualstudio.com/items/PollywogGames.pico8-ls/changelog";
-          description = "VSCode extension for full language support for the PICO-8 dialect of Lua";
-          downloadPage = "https://marketplace.visualstudio.com/items?itemName=PollywogGames.pico8-ls";
-          homepage = "https://github.com/japhib/pico8-ls";
-          license = lib.licenses.mit;
-          maintainers = [ lib.maintainers.dotmobo ];
-        };
-      };
-
       prisma.prisma = buildVscodeMarketplaceExtension {
         mktplcRef = {
           name = "prisma";
@@ -4190,23 +4151,6 @@ let
         };
       };
 
-      sainnhe.gruvbox-material = buildVscodeMarketplaceExtension {
-        mktplcRef = {
-          name = "gruvbox-material";
-          publisher = "sainnhe";
-          version = "6.5.2";
-          hash = "sha256-D+SZEQQwjZeuyENOYBJGn8tqS3cJiWbEkmEqhNRY/i4=";
-        };
-        meta = {
-          changelog = "https://marketplace.visualstudio.com/items/sainnhe.gruvbox-material/changelog";
-          description = "Gruvbox Material theme VSCode extension with Material palette";
-          downloadPage = "https://marketplace.visualstudio.com/items?itemName=sainnhe.gruvbox-material";
-          homepage = "https://github.com/sainnhe/gruvbox-material-vscode";
-          license = lib.licenses.mit;
-          maintainers = with lib.maintainers; [ thtrf ];
-        };
-      };
-
       samuelcolvin.jinjahtml = buildVscodeMarketplaceExtension {
         mktplcRef = {
           name = "jinjahtml";
@@ -4357,8 +4301,8 @@ let
         mktplcRef = {
           publisher = "shd101wyy";
           name = "markdown-preview-enhanced";
-          version = "0.8.15";
-          hash = "sha256-aW2Ri73xIl/1q/Yoi5qg25fjx7l55QfXAn+M+JuoN+A=";
+          version = "0.8.14";
+          hash = "sha256-vCuuPB/GTkM2xCBn1UF3CZwP49Ge/8eelHhg67EG7tQ=";
         };
         meta = {
           description = "Provides a live preview of markdown using either markdown-it or pandoc";
@@ -4587,8 +4531,8 @@ let
         mktplcRef = {
           name = "code-spell-checker";
           publisher = "streetsidesoftware";
-          version = "4.0.16";
-          hash = "sha256-1GH3liiExURy5e6owSRr5UJ7UXa8KUgglIzfGsSPARg=";
+          version = "4.0.14";
+          hash = "sha256-b87sBCprMMfxsP8lyMM3yI82YvKZd5Jc+Z/x7uflnL0=";
         };
         meta = {
           changelog = "https://marketplace.visualstudio.com/items/streetsidesoftware.code-spell-checker/changelog";

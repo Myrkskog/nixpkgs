@@ -1,20 +1,13 @@
-{
-  generateProtobufCode,
-  version,
-  zitadelRepo,
+{ generateProtobufCode
+, version
+, zitadelRepo
 }:
 
-{
-  lib,
-  stdenv,
-  fetchYarnDeps,
-  yarnConfigHook,
-  yarnBuildHook,
-  nodejs,
-
-  grpc-gateway,
-  protoc-gen-grpc-web,
-  protoc-gen-js,
+{ mkYarnPackage
+, fetchYarnDeps
+, grpc-gateway
+, protoc-gen-grpc-web
+, protoc-gen-js
 }:
 
 let
@@ -31,32 +24,36 @@ let
     hash = "sha256-n6BJ1gSSm66yOGdHcSea/nQbjiHZX2YX2zbFT4o75/4=";
   };
 in
-stdenv.mkDerivation {
-  pname = "zitadel-console";
+mkYarnPackage rec {
+  name = "zitadel-console";
   inherit version;
 
-  src = zitadelRepo;
+  src = "${zitadelRepo}/console";
 
-  sourceRoot = "${zitadelRepo.name}/console";
-
+  packageJSON = ./package.json;
   offlineCache = fetchYarnDeps {
-    yarnLock = "${zitadelRepo}/console/yarn.lock";
+    yarnLock = "${src}/yarn.lock";
     hash = "sha256-MWATjfhIbo3cqpzOdXP52f/0Td60n99OTU1Qk6oWmXU=";
   };
 
-  nativeBuildInputs = [
-    yarnConfigHook
-    yarnBuildHook
-    nodejs
-  ];
+  postPatch = ''
+    substituteInPlace src/styles.scss \
+      --replace-fail "/node_modules/flag-icons" "flag-icons"
 
-  preBuild = ''
-    cp -r ${protobufGenerated} src/app/proto
+    substituteInPlace angular.json \
+      --replace-fail "./node_modules/tinycolor2" "../../node_modules/tinycolor2"
+  '';
+
+  buildPhase = ''
+    ln -s "${zitadelRepo}/docs" deps/docs
+    mkdir deps/console/src/app/proto
+    cp -r ${protobufGenerated}/* deps/console/src/app/proto/
+    yarn --offline build
   '';
 
   installPhase = ''
-    runHook preInstall
-    cp -r dist/console "$out"
-    runHook postInstall
+    cp -r deps/console/dist/console $out
   '';
+
+  doDist = false;
 }

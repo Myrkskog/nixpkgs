@@ -7,8 +7,12 @@
   qt5platform-plugins,
   udisks2-qt5,
   cmake,
+  qtbase,
+  qttools,
   pkg-config,
-  libsForQt5,
+  kcodecs,
+  karchive,
+  wrapQtAppsHook,
   minizip,
   libzip,
   libuuid,
@@ -35,9 +39,9 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [
     cmake
-    libsForQt5.qttools
+    qttools
     pkg-config
-    libsForQt5.wrapQtAppsHook
+    wrapQtAppsHook
   ];
 
   buildInputs = [
@@ -45,8 +49,8 @@ stdenv.mkDerivation rec {
     qt5integration
     qt5platform-plugins
     udisks2-qt5
-    libsForQt5.kcodecs
-    libsForQt5.karchive
+    kcodecs
+    karchive
     minizip
     libzip
     libuuid
@@ -57,6 +61,9 @@ stdenv.mkDerivation rec {
     "-DVERSION=${version}"
     "-DUSE_TEST=OFF"
   ];
+
+  # qt5integration must be placed before qtsvg in QT_PLUGIN_PATH
+  qtWrapperArgs = [ "--prefix QT_PLUGIN_PATH : ${qt5integration}/${qtbase.qtPluginPrefix}" ];
 
   strictDeps = true;
 

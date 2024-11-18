@@ -4,7 +4,6 @@
   fetchpatch,
   isPyPy,
   lib,
-  stdenv,
   numpy,
   protobuf,
   pytestCheckHook,
@@ -85,21 +84,15 @@ buildPythonPackage {
     pytestCheckHook
   ] ++ lib.optionals (lib.versionAtLeast protobuf.version "22") [ numpy ];
 
-  disabledTests =
-    lib.optionals isPyPy [
-      # error message differs
-      "testInvalidTimestamp"
-      # requires tracemalloc which pypy does not implement
-      # https://foss.heptapod.net/pypy/pypy/-/issues/3048
-      "testUnknownFieldsNoMemoryLeak"
-      # assertion is not raised for some reason
-      "testStrictUtf8Check"
-    ]
-    ++ lib.optionals stdenv.hostPlatform.is32bit [
-      # OverflowError: timestamp out of range for platform time_t
-      "testTimezoneAwareDatetimeConversionWhereTimestampLosesPrecision"
-      "testTimezoneNaiveDatetimeConversionWhereTimestampLosesPrecision"
-    ];
+  disabledTests = lib.optionals isPyPy [
+    # error message differs
+    "testInvalidTimestamp"
+    # requires tracemalloc which pypy does not implement
+    # https://foss.heptapod.net/pypy/pypy/-/issues/3048
+    "testUnknownFieldsNoMemoryLeak"
+    # assertion is not raised for some reason
+    "testStrictUtf8Check"
+  ];
 
   disabledTestPaths =
     lib.optionals (lib.versionAtLeast protobuf.version "23") [

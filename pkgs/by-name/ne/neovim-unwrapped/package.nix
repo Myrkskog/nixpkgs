@@ -6,6 +6,7 @@
   cmake,
   gettext,
   msgpack-c,
+  darwin,
   libuv,
   lua,
   pkg-config,
@@ -144,6 +145,7 @@ stdenv.mkDerivation (
         tree-sitter
         unibilium
       ]
+      ++ lib.optionals stdenv.hostPlatform.isDarwin [ darwin.libutil ]
       ++ lib.optionals finalAttrs.finalPackage.doCheck [
         glibcLocales
         procps
@@ -183,12 +185,16 @@ stdenv.mkDerivation (
       ];
 
     # nvim --version output retains compilation flags and references to build tools
-    postPatch = lib.optionalString (!stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
-      sed -i runtime/CMakeLists.txt \
-        -e "s|\".*/bin/nvim|\${stdenv.hostPlatform.emulator buildPackages} &|g"
-      sed -i src/nvim/po/CMakeLists.txt \
-        -e "s|\$<TARGET_FILE:nvim|\${stdenv.hostPlatform.emulator buildPackages} &|g"
-    '';
+    postPatch =
+      ''
+        substituteInPlace src/nvim/version.c --replace NVIM_VERSION_CFLAGS "";
+      ''
+      + lib.optionalString (!stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
+        sed -i runtime/CMakeLists.txt \
+          -e "s|\".*/bin/nvim|\${stdenv.hostPlatform.emulator buildPackages} &|g"
+        sed -i src/nvim/po/CMakeLists.txt \
+          -e "s|\$<TARGET_FILE:nvim|\${stdenv.hostPlatform.emulator buildPackages} &|g"
+      '';
     postInstall = ''
       find "$out" -type f -exec remove-references-to -t ${stdenv.cc} '{}' +
     '';
@@ -222,7 +228,10 @@ stdenv.mkDerivation (
       ];
 
     preConfigure =
+      lib.optionalString stdenv.hostPlatform.isDarwin ''
+        substituteInPlace src/nvim/CMakeLists.txt --replace "    util" ""
       ''
+      + ''
         mkdir -p $out/lib/nvim/parser
       ''
       + lib.concatStrings (

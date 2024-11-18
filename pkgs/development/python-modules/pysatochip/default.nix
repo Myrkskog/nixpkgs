@@ -1,7 +1,7 @@
 {
   lib,
   buildPythonPackage,
-  fetchFromGitHub,
+  fetchPypi,
   certifi,
   cryptography,
   ecdsa,
@@ -17,12 +17,17 @@ buildPythonPackage rec {
   format = "setuptools";
   disabled = pythonOlder "3.6";
 
-  src = fetchFromGitHub {
-    owner = "toporin";
-    repo = "pysatochip";
-    rev = "v${version}";
-    hash = "sha256-7wA9erk2OA1FyNSzOSWJzjyp9QeYq6C+YA8B0Dk2iQE=";
+  src = fetchPypi {
+    inherit pname version;
+    hash = "sha256-ccyBvQ00p/uDULzGeJIhIJIiRRrFitsp271wep74DHI=";
   };
+
+  postPatch = ''
+    substituteInPlace requirements.txt \
+      --replace "cryptography==3.3.2" "cryptography" \
+      --replace "ecdsa==0.15" "ecdsa" \
+      --replace "pyopenssl==20.0.0" "pyopenssl"
+  '';
 
   propagatedBuildInputs = [
     cryptography

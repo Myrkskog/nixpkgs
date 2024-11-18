@@ -47,7 +47,6 @@ buildPythonPackage rec {
     "fastapi"
     "llama-index-core"
     "llama-index-readers-file"
-    "python-multipart"
   ];
 
   dependencies = [

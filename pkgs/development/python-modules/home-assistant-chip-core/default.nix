@@ -1,35 +1,70 @@
 {
   lib,
+  stdenv,
   buildPythonPackage,
+  fetchPypi,
   pythonOlder,
+
+  # build
+  autoPatchelfHook,
+
+  # runtime
+  glib,
+  libnl,
+
+  # propagates
   aenum,
-  home-assistant-chip-wheels,
   coloredlogs,
   construct,
   cryptography,
   dacite,
-  deprecation,
   ecdsa,
+  rich,
+  pyyaml,
   ipdb,
+  deprecation,
   mobly,
   pygobject3,
-  pyyaml,
-  rich,
 }:
 
 buildPythonPackage rec {
   pname = "home-assistant-chip-core";
-  inherit (home-assistant-chip-wheels) version;
+  version = "2024.9.0";
   format = "wheel";
 
   disabled = pythonOlder "3.7";
 
-  src = home-assistant-chip-wheels;
+  src =
+    let
+      system =
+        {
+          "aarch64-linux" = {
+            name = "aarch64";
+            hash = "sha256-oVqPaScNCjf1xY2iWJTXTh2YqimZk5kVsiQN586j9mc=";
+          };
+          "x86_64-linux" = {
+            name = "x86_64";
+            hash = "sha256-hWH2UCYIuDMFS/W4FELW57iQft0jfGPt8aFT1k59sWA=";
+          };
+        }
+        .${stdenv.system} or (throw "Unsupported system: ${stdenv.system}");
+    in
+    fetchPypi {
+      pname = "home_assistant_chip_core";
+      inherit version format;
+      dist = "cp37";
+      python = "cp37";
+      abi = "abi3";
+      platform = "manylinux_2_31_${system.name}";
+      hash = system.hash;
+    };
 
-  # format=wheel needs src to be a wheel not a folder of wheels
-  preUnpack = ''
-    src=($src/home_assistant_chip_core*.whl)
-  '';
+  nativeBuildInputs = [ autoPatchelfHook ];
+
+  buildInputs = [
+    glib
+    libnl
+  ];
 
   propagatedBuildInputs = [
     aenum
@@ -44,7 +79,7 @@ buildPythonPackage rec {
     deprecation
     mobly
     pygobject3
-  ] ++ home-assistant-chip-wheels.propagatedBuildInputs;
+  ];
 
   pythonNamespaces = [
     "chip"
@@ -69,5 +104,10 @@ buildPythonPackage rec {
     changelog = "https://github.com/home-assistant-libs/chip-wheels/releases/tag/${version}";
     license = licenses.asl20;
     maintainers = teams.home-assistant.members;
+    platforms = [
+      "aarch64-linux"
+      "x86_64-linux"
+    ];
+    sourceProvenance = with sourceTypes; [ binaryNativeCode ];
   };
 }

@@ -49,8 +49,7 @@ in
     (if withX then "--with-x" else "--without-x")
     (if withQt then "--with-qt=qt5" else "--without-qt")
     (if aquaterm then "--with-aquaterm" else "--without-aquaterm")
-  ] ++ lib.optional withCaca "--with-caca"
-    ++ lib.optional withTeXLive "--with-texdir=${placeholder "out"}/share/texmf/tex/latex/gnuplot";
+  ] ++ lib.optional withCaca "--with-caca";
 
   CXXFLAGS = lib.optionalString (stdenv.hostPlatform.isDarwin && withQt) "-std=c++11";
 

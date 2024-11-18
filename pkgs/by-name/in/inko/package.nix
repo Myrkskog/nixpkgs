@@ -29,7 +29,7 @@ rustPlatform.buildRustPackage rec {
     libz
     libxml2
     ncurses
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
   ];
 
   nativeBuildInputs = [

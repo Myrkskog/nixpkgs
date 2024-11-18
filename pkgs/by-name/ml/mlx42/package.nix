@@ -4,6 +4,7 @@
   fetchFromGitHub,
   cmake,
   glfw,
+  darwin,
   enableShared ? !stdenv.hostPlatform.isStatic,
   enableDebug ? false,
 }:
@@ -32,7 +33,16 @@ stdenv.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [ cmake ];
 
-  buildInputs = [ glfw ];
+  buildInputs =
+    [ glfw ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin (
+      with darwin.apple_sdk.frameworks;
+      [
+        OpenGL
+        Cocoa
+        IOKit
+      ]
+    );
 
   cmakeFlags = [ (lib.cmakeBool "DEBUG" enableDebug) ];
 

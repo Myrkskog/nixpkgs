@@ -101,12 +101,7 @@ in {
       };
     };
 
-    systemd = {
-      packages = [ cfg.package ];
-      tmpfiles.rules = [
-        "d /etc/openvpn3/configs 0750 openvpn openvpn - -"
-      ];
-    };
+    systemd.packages = [ cfg.package ];
   };
 
   meta.maintainers = with lib.maintainers; [ shamilton progrm_jarvis ];

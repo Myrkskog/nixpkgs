@@ -7,7 +7,7 @@
 
   html5lib,
   jsonschema,
-  pytest-cov-stub,
+  pytest-cov,
   pytest-mock,
   pytest-recording,
   python-dateutil,
@@ -36,7 +36,7 @@ buildPythonPackage rec {
     html5lib
     jsonschema
     pytestCheckHook
-    pytest-cov-stub
+    pytest-cov
     pytest-mock
     pytest-recording
     requests-mock

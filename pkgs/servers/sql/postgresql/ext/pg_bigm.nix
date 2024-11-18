@@ -1,6 +1,6 @@
-{ lib, stdenv, fetchFromGitHub, fetchpatch, postgresql, buildPostgresqlExtension }:
+{ lib, stdenv, fetchFromGitHub, fetchpatch, postgresql }:
 
-buildPostgresqlExtension rec {
+stdenv.mkDerivation rec {
   pname = "pg_bigm";
   version = "1.2-20200228";
 
@@ -19,7 +19,15 @@ buildPostgresqlExtension rec {
     })
   ];
 
+  buildInputs = [ postgresql ];
+
   makeFlags = [ "USE_PGXS=1" ];
+
+  installPhase = ''
+    install -D -t $out/lib pg_bigm${postgresql.dlSuffix}
+    install -D -t $out/share/postgresql/extension *.sql
+    install -D -t $out/share/postgresql/extension *.control
+  '';
 
   meta = with lib; {
     description = "Text similarity measurement and index searching based on bigrams";

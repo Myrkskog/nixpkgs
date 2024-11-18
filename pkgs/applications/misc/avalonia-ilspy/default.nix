@@ -44,7 +44,7 @@ buildDotnetModule rec {
 
   buildInputs = [
     # Dependencies of nuget packages w/ native binaries
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     fontconfig
   ];
 

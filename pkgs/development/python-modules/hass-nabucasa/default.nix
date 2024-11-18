@@ -8,6 +8,7 @@
   ciso8601,
   cryptography,
   fetchFromGitHub,
+  fetchpatch2,
   pycognito,
   pyjwt,
   pytest-aiohttp,
@@ -17,22 +18,21 @@
   setuptools,
   snitun,
   syrupy,
-  webrtc-models,
   xmltodict,
 }:
 
 buildPythonPackage rec {
   pname = "hass-nabucasa";
-  version = "0.83.0";
+  version = "0.82.0";
   pyproject = true;
 
-  disabled = pythonOlder "3.12";
+  disabled = pythonOlder "3.11";
 
   src = fetchFromGitHub {
     owner = "nabucasa";
     repo = "hass-nabucasa";
     rev = "refs/tags/${version}";
-    hash = "sha256-1l0nLSY+r5ujYo3pHzicqnmZ49OH8elVLGpK3lqCaTo=";
+    hash = "sha256-hRhRXpiIPrI3umOhsVWLwkSwtEfwevC3fNvJElhKy+I=";
   };
 
   pythonRelaxDeps = [ "acme" ];
@@ -49,7 +49,6 @@ buildPythonPackage rec {
     pycognito
     pyjwt
     snitun
-    webrtc-models
   ];
 
   nativeCheckInputs = [

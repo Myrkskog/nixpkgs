@@ -6,6 +6,8 @@
 , pkg-config
 , libxcb
 , openssl
+  # Darwin dependencies
+, AppKit
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -30,6 +32,8 @@ rustPlatform.buildRustPackage rec {
   buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
     libxcb
     openssl
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    AppKit
   ];
 
   postInstall = ''

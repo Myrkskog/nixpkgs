@@ -59,10 +59,9 @@ sed -i 's/64 = ".*";$/64 = "";/g' pkgs/applications/editors/eclipse/default.nix
 echo;
 echo "paste the following url + hash blocks into pkgs/applications/editors/eclipse/default.nix:";
 
-for url in $(grep 'url = ' pkgs/applications/editors/eclipse/default.nix | grep arch | cut -d '"' -f 2); do
-    u=$(echo "$url" | sed 's/&/\\&/g');
+for u in $(grep 'url = ' pkgs/applications/editors/eclipse/default.nix | grep arch | cut -d '"' -f 2 | sed 's/&/\\&/g'); do
     echo;
-    echo "        url = \"${url}\";";
+    echo "        url = \"${u}\";";
     echo "        hash = {";
     for arch in x86_64 aarch64; do
         us=$(eval echo "$u");

@@ -5,7 +5,7 @@
 }:
 buildFishPlugin rec {
   pname = "fzf";
-  version = "0.16.6-unstable-2021-05-12";
+  version = "unstable-2021-05-12";
 
   src = fetchFromGitHub {
     owner = "jethrokuan";

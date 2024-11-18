@@ -39,7 +39,7 @@ let
 
   runtimeLibs = lib.makeLibraryPath [
     libGL
-    stdenv.cc.cc
+    stdenv.cc.cc.lib
   ];
 in
 stdenv.mkDerivation {

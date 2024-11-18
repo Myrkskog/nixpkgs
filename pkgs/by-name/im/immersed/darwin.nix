@@ -1,19 +1,13 @@
-{
-  stdenv,
-  pname,
-  version,
-  src,
-  meta,
-  undmg,
+{ stdenv
+, pname
+, version
+, src
+, meta
+, undmg
 }:
 
 stdenv.mkDerivation {
-  inherit
-    pname
-    version
-    src
-    meta
-    ;
+  inherit pname version src meta;
 
   nativeBuildInputs = [ undmg ];
 

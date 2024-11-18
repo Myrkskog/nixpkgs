@@ -108,6 +108,7 @@ let
         bhougland
         DerGuteMoritz
         jlesquembre
+        thiagokokada
       ];
     };
   };

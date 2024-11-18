@@ -6,6 +6,7 @@
   protobuf,
   bzip2,
   stdenv,
+  darwin,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -32,7 +33,9 @@ rustPlatform.buildRustPackage rec {
     protobuf
   ];
 
-  buildInputs = [ bzip2 ];
+  buildInputs = [
+    bzip2
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ darwin.apple_sdk.frameworks.Security ];
 
   meta = {
     description = "Sign (and root) Android A/B OTAs with custom keys while preserving Android Verified Boot";

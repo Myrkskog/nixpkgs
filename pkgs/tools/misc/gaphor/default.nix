@@ -4,23 +4,16 @@
 , copyDesktopItems
 , gobject-introspection
 , poetry-core
-, wrapGAppsHook4
-, gtksourceview5
-, libadwaita
+, wrapGAppsHook3
+, gtksourceview4
 , pango
 , gaphas
 , generic
 , jedi
 , pycairo
-, pillow
-, dulwich
-, pydot
-, defusedxml
-, better-exceptions
-, babel
 , pygobject3
 , tinycss2
-, gtk4
+, gtk3
 , librsvg
 , makeDesktopItem
 , python
@@ -28,43 +21,34 @@
 
 buildPythonApplication rec {
   pname = "gaphor";
-  version = "2.27.0";
-  pyproject = true;
+  version = "2.8.2";
+
+  format = "pyproject";
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-MsbEeOop6Osq2Hn6CkorsXt8/bTY//QHW/uCl0FEUN4=";
+    hash = "sha256-+qqsSLjdY2I19fxdfkOEQ9DhTTHccUDll4O5yqtLiz0=";
   };
-
-  pythonRelaxDeps = [ "defusedxml" ];
 
   nativeBuildInputs = [
     copyDesktopItems
     gobject-introspection
-    wrapGAppsHook4
+    poetry-core
+    wrapGAppsHook3
   ];
 
   buildInputs = [
-    gtksourceview5
+    gtksourceview4
     pango
-    libadwaita
   ];
 
-  build-system = [ poetry-core ];
-
-  dependencies = [
-    pycairo
-    pygobject3
+  propagatedBuildInputs = [
     gaphas
     generic
-    tinycss2
-    babel
     jedi
-    better-exceptions
-    pydot
-    pillow
-    defusedxml
-    dulwich
+    pycairo
+    pygobject3
+    tinycss2
   ];
 
   desktopItems = [
@@ -77,7 +61,7 @@ buildPythonApplication rec {
     })
   ];
 
-  # Disable automatic wrapGAppsHook4 to prevent double wrapping
+  # Disable automatic wrapGAppsHook3 to prevent double wrapping
   dontWrapGApps = true;
 
   postInstall = ''
@@ -87,7 +71,7 @@ buildPythonApplication rec {
   preFixup = ''
     makeWrapperArgs+=(
       "''${gappsWrapperArgs[@]}" \
-      --prefix XDG_DATA_DIRS : "${gtk4}/share/gsettings-schemas/${gtk4.name}/" \
+      --prefix XDG_DATA_DIRS : "${gtk3}/share/gsettings-schemas/${gtk3.name}/" \
       --set GDK_PIXBUF_MODULE_FILE "${librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"
     )
   '';
@@ -97,6 +81,6 @@ buildPythonApplication rec {
     maintainers = [ ];
     homepage = "https://github.com/gaphor/gaphor";
     license = licenses.asl20;
-    platforms = lib.platforms.linux;
+    platforms = [ "x86_64-linux" ];
   };
 }

@@ -1,12 +1,12 @@
 {
   lib,
+  stdenv,
+  callPackage,
   fetchFromGitHub,
   postgresql,
-  buildPostgresqlExtension,
-  nixosTests,
 }:
 
-buildPostgresqlExtension rec {
+stdenv.mkDerivation rec {
   pname = "wal2json";
   version = "2.6";
 
@@ -17,9 +17,21 @@ buildPostgresqlExtension rec {
     sha256 = "sha256-+QoACPCKiFfuT2lJfSUmgfzC5MXf75KpSoc2PzPxKyM=";
   };
 
+  buildInputs = [ postgresql ];
+
   makeFlags = [ "USE_PGXS=1" ];
 
-  passthru.tests = nixosTests.postgresql.wal2json.passthru.override postgresql;
+  installPhase = ''
+    install -D -t $out/lib *${postgresql.dlSuffix}
+    install -D -t $out/share/postgresql/extension sql/*.sql
+  '';
+
+  passthru.tests.wal2json = lib.recurseIntoAttrs (
+    callPackage ../../../../../nixos/tests/postgresql-wal2json.nix {
+      inherit (stdenv) system;
+      inherit postgresql;
+    }
+  );
 
   meta = with lib; {
     description = "PostgreSQL JSON output plugin for changeset extraction";

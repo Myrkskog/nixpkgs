@@ -39,7 +39,7 @@ let
     let
       baseStdenv = if stdenv.cc.isClang then llvmPackages.stdenv else stdenv;
     in
-    if stdenv.hostPlatform.isDarwin then overrideSDK baseStdenv "11.0" else baseStdenv;
+    if stdenv.isDarwin then overrideSDK baseStdenv "11.0" else baseStdenv;
 
   patterns_src = fetchFromGitHub {
     name = "ImHex-Patterns-source-${patterns_version}";
@@ -75,7 +75,7 @@ stdenv'.mkDerivation (finalAttrs: {
   ];
 
   # Comment out fixup_bundle in PostprocessBundle.cmake as we are not building a standalone application
-  postPatch = lib.optionalString stdenv.hostPlatform.isDarwin ''
+  postPatch = lib.optionalString stdenv.isDarwin ''
     substituteInPlace cmake/modules/PostprocessBundle.cmake \
       --replace-fail "fixup_bundle" "#fixup_bundle"
   '';
@@ -89,32 +89,28 @@ stdenv'.mkDerivation (finalAttrs: {
       pkg-config
       rsync
     ]
-    ++ lib.optionals stdenv.hostPlatform.isLinux [ autoPatchelfHook ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [ makeWrapper ];
+    ++ lib.optionals stdenv.isLinux [ autoPatchelfHook ]
+    ++ lib.optionals stdenv.isDarwin [ makeWrapper ];
 
-  buildInputs =
-    [
-      capstone
-      curl
-      dbus
-      file
-      fmt
-      glfw3
-      gtk3
-      jansson
-      libGLU
-      mbedtls
-      nlohmann_json
-      yara
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      darwin.apple_sdk_11_0.frameworks.UniformTypeIdentifiers
-    ];
+  buildInputs = [
+    capstone
+    curl
+    dbus
+    file
+    fmt
+    glfw3
+    gtk3
+    jansson
+    libGLU
+    mbedtls
+    nlohmann_json
+    yara
+  ] ++ lib.optionals stdenv.isDarwin [ darwin.apple_sdk_11_0.frameworks.UniformTypeIdentifiers ];
 
   # autoPatchelfHook only searches for *.so and *.so.*, and won't find *.hexpluglib
   # however, we will append to RUNPATH ourselves
-  autoPatchelfIgnoreMissingDeps = lib.optionals stdenv.hostPlatform.isLinux [ "*.hexpluglib" ];
-  appendRunpaths = lib.optionals stdenv.hostPlatform.isLinux [
+  autoPatchelfIgnoreMissingDeps = lib.optionals stdenv.isLinux [ "*.hexpluglib" ];
+  appendRunpaths = lib.optionals stdenv.isLinux [
     (lib.makeLibraryPath [ libGL ])
     "${placeholder "out"}/lib/imhex/plugins"
   ];
@@ -122,7 +118,7 @@ stdenv'.mkDerivation (finalAttrs: {
   cmakeFlags = [
     (lib.cmakeBool "IMHEX_OFFLINE_BUILD" true)
     (lib.cmakeBool "IMHEX_COMPRESS_DEBUG_INFO" false) # avoids error: cannot compress debug sections (zstd not enabled)
-    (lib.cmakeBool "IMHEX_GENERATE_PACKAGE" stdenv.hostPlatform.isDarwin)
+    (lib.cmakeBool "IMHEX_GENERATE_PACKAGE" stdenv.isDarwin)
     (lib.cmakeBool "USE_SYSTEM_CAPSTONE" true)
     (lib.cmakeBool "USE_SYSTEM_CURL" true)
     (lib.cmakeBool "USE_SYSTEM_FMT" true)
@@ -133,12 +129,12 @@ stdenv'.mkDerivation (finalAttrs: {
 
   # rsync is used here so we can not copy the _schema.json files
   postInstall =
-    if stdenv.hostPlatform.isLinux then
+    if stdenv.isLinux then
       ''
         mkdir -p $out/share/imhex
         rsync -av --exclude="*_schema.json" ${patterns_src}/{constants,encodings,includes,magic,nodes,patterns} $out/share/imhex
       ''
-    else if stdenv.hostPlatform.isDarwin then
+    else if stdenv.isDarwin then
       ''
         mkdir -p $out/Applications
         mv $out/imhex.app $out/Applications

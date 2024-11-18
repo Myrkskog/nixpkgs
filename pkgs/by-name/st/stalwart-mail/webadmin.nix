@@ -2,7 +2,7 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
-  trunk,
+  trunk-ng,
   tailwindcss,
   fetchNpmDeps,
   nix-update-script,
@@ -16,13 +16,13 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "webadmin";
-  version = "0.1.19";
+  version = "0.1.17";
 
   src = fetchFromGitHub {
     owner = "stalwartlabs";
     repo = "webadmin";
     rev = "refs/tags/v${version}";
-    hash = "sha256-jaNBYVIIxYjle4JQJdcvzl9f5slRvGPKqtzR2WGc0LE=";
+    hash = "sha256-kMfdCb2dwoVd9G1uZw2wcfaAAPt6obFfWQbbXG/MDB4=";
   };
 
   npmDeps = fetchNpmDeps {
@@ -31,7 +31,7 @@ rustPlatform.buildRustPackage rec {
     hash = "sha256-na1HEueX8w7kuDp8LEtJ0nD1Yv39cyk6sEMpS1zix2s=";
   };
 
-  cargoHash = "sha256-r4j4+vwmx8JJn3+6i6z6dYBOr6Efdid6qtw9oolCTW8=";
+  cargoHash = "sha256-0Urr0MsmenFqg25lZAzg7LgJ/NkZHINoOWtPad7G6GE=";
 
   postPatch = ''
     # Using local tailwindcss for compilation
@@ -44,20 +44,15 @@ rustPlatform.buildRustPackage rec {
     nodejs
     npmHooks.npmConfigHook
     tailwindcss
-    trunk
-    # needs to match with wasm-bindgen version in upstreams Cargo.lock
-    (wasm-bindgen-cli.override {
-      version = "0.2.93";
-      hash = "sha256-DDdu5mM3gneraM85pAepBXWn3TMofarVR4NbjMdz3r0=";
-      cargoHash = "sha256-birrg+XABBHHKJxfTKAMSlmTVYLmnmqMDfRnmG6g/YQ=";
-    })
+    trunk-ng
+    wasm-bindgen-cli
     zip
   ];
 
   NODE_PATH = "$npmDeps";
 
   buildPhase = ''
-    trunk build --offline --frozen --release
+    trunk-ng build --offline --verbose --release
   '';
 
   installPhase = ''

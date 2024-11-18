@@ -4,8 +4,9 @@
   fetchFromGitHub,
   dtkwidget,
   cmake,
-  libsForQt5,
+  qttools,
   pkg-config,
+  wrapQtAppsHook,
   opencv,
   freeimage,
   libmediainfo,
@@ -32,8 +33,8 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     cmake
     pkg-config
-    libsForQt5.qttools
-    libsForQt5.wrapQtAppsHook
+    qttools
+    wrapQtAppsHook
   ];
 
   buildInputs = [

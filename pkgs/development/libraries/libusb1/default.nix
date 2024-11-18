@@ -4,7 +4,7 @@
 , autoreconfHook
 , doxygen
 , pkg-config
-, enableUdev ? stdenv.hostPlatform.isLinux && !stdenv.hostPlatform.isStatic && !stdenv.hostPlatform.isAndroid
+, enableUdev ? stdenv.hostPlatform.isLinux && !stdenv.hostPlatform.isStatic
 , udev
 , libobjc
 , IOKit

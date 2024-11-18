@@ -1,13 +1,12 @@
 {
   buildGoModule,
   dependabot-cli,
-  dockerTools,
   fetchFromGitHub,
   installShellFiles,
   lib,
-  makeWrapper,
-  symlinkJoin,
   testers,
+  dockerTools,
+  makeWrapper,
 }:
 let
   pname = "dependabot-cli";
@@ -66,6 +65,13 @@ buildGoModule {
       --bash <($out/bin/dependabot completion bash) \
       --fish <($out/bin/dependabot completion fish) \
       --zsh <($out/bin/dependabot completion zsh)
+
+    # Create a wrapper that pins the docker images that are depended upon
+    makeWrapper $out/bin/dependabot $out/bin/dependabot-pinned \
+      --run "docker load --input ${updateJobProxy}" \
+      --add-flags "--proxy-image=dependabot-update-job-proxy:${tag}" \
+      --run "docker load --input ${updaterGitHubActions}" \
+      --add-flags "--updater-image=dependabot-updater-github-actions:${tag}"
   '';
 
   checkFlags = [
@@ -76,20 +82,6 @@ buildGoModule {
   installCheckPhase = ''
     $out/bin/dependabot --help
   '';
-
-  passthru.withDockerImages = symlinkJoin {
-    name = "dependabot-cli-with-docker-images";
-    paths = [ dependabot-cli ];
-    buildInputs = [ makeWrapper ];
-    postBuild = ''
-      # Create a wrapper that pins the docker images that are depended upon
-      wrapProgram $out/bin/dependabot \
-        --run "docker load --input ${updateJobProxy} >&2" \
-        --add-flags "--proxy-image=dependabot-update-job-proxy:${tag}" \
-        --run "docker load --input ${updaterGitHubActions} >&2" \
-        --add-flags "--updater-image=dependabot-updater-github-actions:${tag}"
-    '';
-  };
 
   passthru.tests.version = testers.testVersion {
     package = dependabot-cli;

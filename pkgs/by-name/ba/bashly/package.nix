@@ -1,16 +1,31 @@
-{
-  lib,
-  bundlerApp,
-  bundlerUpdateScript,
+{ lib
+, stdenvNoCC
+, bundlerApp
 }:
 
-bundlerApp {
-  pname = "bashly";
+let
+  bashlyBundlerApp = bundlerApp {
+    pname = "bashly";
+    gemdir = ./.;
+    exes = [ "bashly" ];
+  };
+in
+stdenvNoCC.mkDerivation (finalAttrs: {
+  name = "bashly";
 
-  gemdir = ./.;
-  exes = [ "bashly" ];
+  dontUnpack = true;
 
-  passthru.updateScript = bundlerUpdateScript "bashly";
+  installPhase = ''
+    runHook preInstall
+
+    mkdir $out;
+    cd $out;
+
+    mkdir bin; pushd bin;
+    ln -vs ${bashlyBundlerApp}/bin/bashly;
+
+    runHook postInstall
+  '';
 
   meta = {
     description = "Bash command line framework and CLI generator";
@@ -20,4 +35,4 @@ bundlerApp {
     maintainers = with lib.maintainers; [ drupol ];
     platforms = lib.platforms.unix;
   };
-}
+})

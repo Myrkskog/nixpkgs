@@ -1,6 +1,7 @@
 {
   lib,
   buildPythonPackage,
+  pythonOlder,
   fetchFromGitHub,
 
   # build-system
@@ -14,20 +15,22 @@
   numpy,
   etils,
 
-  # tests
+  # checks
   callPackage,
 }:
 
 buildPythonPackage rec {
   pname = "optax";
-  version = "0.2.4";
+  version = "0.2.3";
   pyproject = true;
+
+  disabled = pythonOlder "3.9";
 
   src = fetchFromGitHub {
     owner = "deepmind";
     repo = "optax";
     rev = "refs/tags/v${version}";
-    hash = "sha256-7UPWeo/Q9/tjewaM7HN8/e7U1U1QzAliuk95+9GOi0E=";
+    hash = "sha256-D1qKei3IjDP9fC62hf6fNtvHlnn09O/dKuzTBdLwW64=";
   };
 
   outputs = [
@@ -60,11 +63,11 @@ buildPythonPackage rec {
     pytest = callPackage ./tests.nix { };
   };
 
-  meta = {
+  meta = with lib; {
     description = "Gradient processing and optimization library for JAX";
     homepage = "https://github.com/deepmind/optax";
     changelog = "https://github.com/deepmind/optax/releases/tag/v${version}";
-    license = lib.licenses.asl20;
-    maintainers = with lib.maintainers; [ ndl ];
+    license = licenses.asl20;
+    maintainers = with maintainers; [ ndl ];
   };
 }

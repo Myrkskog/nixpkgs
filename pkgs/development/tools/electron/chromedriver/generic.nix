@@ -51,7 +51,7 @@ let
     src = fetcher version (get tags platform) (get hashes platform);
 
     buildInputs = [
-      (lib.getLib stdenv.cc.cc)
+      stdenv.cc.cc.lib
       glib
       xorg.libxcb
       nspr

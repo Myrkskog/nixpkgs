@@ -4,29 +4,26 @@
   fetchFromGitHub,
   pytestCheckHook,
   pythonOlder,
-  setuptools,
 }:
 
 buildPythonPackage rec {
   pname = "pastedeploy";
-  version = "3.1";
-  pyproject = true;
+  version = "3.0.1";
+  format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
   src = fetchFromGitHub {
     owner = "Pylons";
-    repo = "pastedeploy";
+    repo = pname;
     rev = "refs/tags/${version}";
     hash = "sha256-8MNeOcYPEYAfghZN/K/1v/tAAdgz/fCvuVnBoru+81Q=";
   };
 
   postPatch = ''
     substituteInPlace pytest.ini \
-      --replace-fail " --cov" ""
+      --replace " --cov" ""
   '';
-
-  build-system = [ setuptools ];
 
   nativeCheckInputs = [ pytestCheckHook ];
 

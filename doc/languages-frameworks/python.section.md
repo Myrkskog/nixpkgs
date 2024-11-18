@@ -55,7 +55,6 @@ sets are
 * `pkgs.python311Packages`
 * `pkgs.python312Packages`
 * `pkgs.python313Packages`
-* `pkgs.python314Packages`
 * `pkgs.pypy27Packages`
 * `pkgs.pypy39Packages`
 * `pkgs.pypy310Packages`

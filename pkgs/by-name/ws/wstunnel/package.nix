@@ -6,10 +6,11 @@
   nixosTests,
   nix-update-script,
   versionCheckHook,
+  darwin,
 }:
 
 let
-  version = "10.1.6";
+  version = "10.1.5";
 in
 
 rustPlatform.buildRustPackage {
@@ -20,7 +21,7 @@ rustPlatform.buildRustPackage {
     owner = "erebe";
     repo = "wstunnel";
     rev = "v${version}";
-    hash = "sha256-ufssj7m5mly2B33e1DWY2e6AH0zTPh3SozYc663QjJ4=";
+    hash = "sha256-MomT9iwIsdou7lIfI7zBU9nEjjYGcsHKTlrYbK4p3BQ=";
   };
 
   cargoLock = {
@@ -31,6 +32,9 @@ rustPlatform.buildRustPackage {
   };
 
   nativeBuildInputs = [ versionCheckHook ];
+  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
+    darwin.apple_sdk.frameworks.CoreServices
+  ];
 
   doInstallCheck = true;
 

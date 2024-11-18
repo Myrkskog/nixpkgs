@@ -51,7 +51,7 @@ let
     nativeBuildInputs = [ autoPatchelfHook ];
 
     buildInputs = [
-      (lib.getLib stdenv.cc.cc)
+      stdenv.cc.cc.lib
       gtk2
       pango
       cairo

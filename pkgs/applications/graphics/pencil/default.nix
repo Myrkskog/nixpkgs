@@ -37,7 +37,7 @@ let
     xorg.libXrandr
     xorg.libXrender
     xorg.libXtst
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     stdenv.cc.cc
   ];
 

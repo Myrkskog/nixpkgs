@@ -4,6 +4,7 @@
   fetchPypi,
   pythonAtLeast,
   pythonOlder,
+  backports-zoneinfo,
   python-dateutil,
   setuptools,
   tzdata,
@@ -27,7 +28,8 @@ buildPythonPackage rec {
   nativeBuildInputs = [ setuptools ];
 
   propagatedBuildInputs =
-    (lib.optionals (pythonOlder "3.6") [ python-dateutil ])
+    (lib.optionals (pythonAtLeast "3.6" && pythonOlder "3.9") [ backports-zoneinfo ])
+    ++ (lib.optionals (pythonOlder "3.6") [ python-dateutil ])
     ++ (lib.optionals (pythonAtLeast "3.6") [ tzdata ]);
 
   nativeCheckInputs = [

@@ -2,8 +2,9 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  apple-sdk,
+  darwin,
 }:
+
 stdenv.mkDerivation rec {
   pname = "autoraise";
   version = "5.3";
@@ -15,9 +16,12 @@ stdenv.mkDerivation rec {
     hash = "sha256-OsvmNHpQ46+cWkR4Nz/9oIgSFSWLfCwZnAnRKRiNm5E=";
   };
 
-  buildInputs = [
-    apple-sdk.privateFrameworksHook
+  buildInputs = with darwin.apple_sdk.frameworks; [
+    AppKit
+    SkyLight
   ];
+
+  dontConfigure = true;
 
   buildPhase = ''
     runHook preBuild

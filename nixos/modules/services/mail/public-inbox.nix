@@ -7,7 +7,7 @@ let
   stateDir = "/var/lib/public-inbox";
 
   gitIni = pkgs.formats.gitIni { listsAsDuplicateKeys = true; };
-  iniAtom = gitIni.lib.types.atom;
+  iniAtom = elemAt gitIni.type/*attrsOf*/.functor.wrapped/*attrsOf*/.functor.wrapped/*either*/.functor.wrapped 0;
 
   useSpamAssassin = cfg.settings.publicinboxmda.spamcheck == "spamc" ||
                     cfg.settings.publicinboxwatch.spamcheck == "spamc";

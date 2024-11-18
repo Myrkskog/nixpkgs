@@ -112,7 +112,7 @@ let
     buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
       alsa-lib # libasound.so wanted by lib/libjsound.so
       fontconfig
-      (lib.getLib stdenv.cc.cc) # libstdc++.so.6
+      stdenv.cc.cc.lib # libstdc++.so.6
       xorg.libX11
       xorg.libXext
       xorg.libXi

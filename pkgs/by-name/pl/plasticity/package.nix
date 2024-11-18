@@ -64,7 +64,7 @@ stdenv.mkDerivation rec  {
     nss
     openssl
     pango
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     trash-cli
     xdg-utils
   ];

@@ -2,21 +2,17 @@
 
 stdenv.mkDerivation rec {
   pname = "ocaml${ocaml.version}-findlib";
-  version = "1.9.7";
+  version = "1.9.6";
 
   src = fetchurl {
     url = "http://download.camlcity.org/download/findlib-${version}.tar.gz";
-    hash = "sha256-zNgiAI8bh6vVahL/f0rxlaDNouO8AROSF3miBcl5Hik=";
+    sha256 = "sha256-LfmWJ5rha2Bttf9Yefk9v63giY258aPoL3+EX6opMKI=";
   };
 
   nativeBuildInputs = [ ocaml ];
   buildInputs = lib.optional (lib.versionOlder ocaml.version "4.07") ncurses;
 
   patches = [ ./ldconf.patch ./install_topfind.patch ];
-
-  postPatch = ''
-    substituteInPlace src/bytes/Makefile --replace-warn OCAMLOPT_SHARED OCAMLOPT
-  '';
 
   dontAddPrefix=true;
   dontAddStaticConfigureFlags = true;

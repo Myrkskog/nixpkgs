@@ -11,16 +11,16 @@
 
 buildPythonPackage rec {
   pname = "identify";
-  version = "2.6.2";
+  version = "2.6.1";
   pyproject = true;
 
-  disabled = pythonOlder "3.9";
+  disabled = pythonOlder "3.8";
 
   src = fetchFromGitHub {
     owner = "pre-commit";
     repo = "identify";
     rev = "refs/tags/v${version}";
-    hash = "sha256-6sKnHsVLkwHy2udd8znqiFFMfWnmWTxTU949X4bqLNU=";
+    hash = "sha256-EbJiMTDE9eumhkWTXlcB38rHrX5DPAZdqix2H4ocnkE=";
   };
 
   build-system = [ setuptools ];

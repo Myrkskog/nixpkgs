@@ -4,7 +4,6 @@
   fetchurl,
   qtsvg,
   qtwebengine,
-  kconfigwidgets,
 }:
 mkKdeDerivation rec {
   pname = "klevernotes";
@@ -18,7 +17,6 @@ mkKdeDerivation rec {
   extraBuildInputs = [
     qtsvg
     qtwebengine
-    kconfigwidgets
   ];
 
   meta.license = with lib.licenses; [

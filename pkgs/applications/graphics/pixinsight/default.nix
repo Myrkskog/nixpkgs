@@ -75,7 +75,7 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     stdenv.cc
     libGL
     libpulseaudio
@@ -129,7 +129,7 @@ stdenv.mkDerivation (finalAttrs: {
   postPatch = ''
     patchelf ./installer \
       --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-      --set-rpath ${lib.getLib stdenv.cc.cc}/lib
+      --set-rpath ${stdenv.cc.cc.lib}/lib
   '';
 
   dontConfigure = true;

@@ -2,7 +2,6 @@
 , stdenv
 , fetchFromGitHub
 , runtimeShell
-, apple-sdk_11
 , cacert
 , cmake
 , cmakerc
@@ -41,7 +40,7 @@ stdenv.mkDerivation (finalAttrs: {
   buildInputs = [
     cmakerc
     fmt
-  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ apple-sdk_11 ];
+  ];
 
   patches = [
     ./change-lock-location.patch

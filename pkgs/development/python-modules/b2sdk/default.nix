@@ -10,7 +10,7 @@
   packaging,
   pdm-backend,
   pyfakefs,
-  pytest-lazy-fixtures,
+  pytest-lazy-fixture,
   pytest-mock,
   pytestCheckHook,
   pythonOlder,
@@ -21,7 +21,7 @@
 
 buildPythonPackage rec {
   pname = "b2sdk";
-  version = "2.6.0";
+  version = "2.5.1";
   pyproject = true;
 
   disabled = pythonOlder "3.7";
@@ -30,10 +30,13 @@ buildPythonPackage rec {
     owner = "Backblaze";
     repo = "b2-sdk-python";
     rev = "refs/tags/v${version}";
-    hash = "sha256-nYsbcRRNh6WEelur/GvzE800Yg0h51FDhxJwBryVs4w=";
+    hash = "sha256-oS037l5pQW/z4GX5+hb/mCUA219cGHE7lyiG8aos21k=";
   };
 
   build-system = [ pdm-backend ];
+
+
+  pythonRemoveDeps = [ "setuptools" ];
 
   dependencies =
     [
@@ -46,7 +49,8 @@ buildPythonPackage rec {
     ++ lib.optionals (pythonOlder "3.12") [ typing-extensions ];
 
   nativeCheckInputs = [
-    pytest-lazy-fixtures
+    pyfakefs
+    pytest-lazy-fixture
     pytest-mock
     pytestCheckHook
     tqdm
@@ -77,6 +81,6 @@ buildPythonPackage rec {
     homepage = "https://github.com/Backblaze/b2-sdk-python";
     changelog = "https://github.com/Backblaze/b2-sdk-python/blob/v${version}/CHANGELOG.md";
     license = licenses.mit;
-    maintainers = with maintainers; [ pmw ];
+    maintainers = [ ];
   };
 }

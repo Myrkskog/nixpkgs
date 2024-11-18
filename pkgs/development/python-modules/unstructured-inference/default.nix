@@ -17,7 +17,7 @@
   click,
   httpx,
   mypy,
-  pytest-cov-stub,
+  pytest-cov,
   pdf2image,
 }:
 
@@ -53,7 +53,7 @@ buildPythonPackage rec {
     click
     httpx
     mypy
-    pytest-cov-stub
+    pytest-cov
     pdf2image
     huggingface-hub
   ];

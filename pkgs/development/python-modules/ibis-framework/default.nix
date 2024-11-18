@@ -57,6 +57,7 @@ let
   testBackends = [
     "duckdb"
     "sqlite"
+    "datafusion"
   ];
 
   ibisTestingData = fetchFromGitHub {
@@ -91,20 +92,9 @@ buildPythonPackage rec {
       url = "https://github.com/ibis-project/ibis/commit/a54eceabac1d6592e9f6ab0ca7749e37a748c2ad.patch";
       hash = "sha256-j5BPYVqnEF9GQV5N3/VhFUCdsEwAIOQC0KfZ5LNBSRg=";
     })
-
-    # remove after the 10.0 release
-    (fetchpatch {
-      name = "ibis-framework-arrow-18.patch";
-      url = "https://github.com/ibis-project/ibis/commit/5dc549b22c2eca29a11a31fb29deef7c1466a204.patch";
-      hash = "sha256-4i/g2uixdlkbE6x659wzZJ91FZpzwOVkF6ZeXkiCP3I=";
-      excludes = [
-        "poetry.lock"
-        "requirements-dev.txt"
-      ];
-    })
   ];
 
-  build-system = [
+  nativeBuildInputs = [
     poetry-core
     poetry-dynamic-versioning
   ];
@@ -112,7 +102,7 @@ buildPythonPackage rec {
   dontBypassPoetryDynamicVersioning = true;
   env.POETRY_DYNAMIC_VERSIONING_BYPASS = lib.head (lib.strings.splitString "-" version);
 
-  dependencies = [
+  propagatedBuildInputs = [
     atpublic
     parsy
     python-dateutil
@@ -138,9 +128,12 @@ buildPythonPackage rec {
     pytest-xdist
   ] ++ lib.concatMap (name: optional-dependencies.${name}) testBackends;
 
+  dontUsePytestXdist = true;
+
   pytestFlagsArray = [
     "-m"
-    "'${lib.concatStringsSep " or " testBackends} or core'"
+    # tpcds and tpch are slow, so disable them
+    "'not tpcds and not tpch and (${lib.concatStringsSep " or " testBackends} or core)'"
   ];
 
   disabledTests = [

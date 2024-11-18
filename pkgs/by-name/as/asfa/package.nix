@@ -3,6 +3,7 @@
   rustPlatform,
   fetchFromGitHub,
   stdenv,
+  darwin,
   help2man,
   openssl,
   pkg-config,
@@ -28,7 +29,9 @@ rustPlatform.buildRustPackage {
     "man"
   ];
 
-  buildInputs = [ openssl ];
+  buildInputs = [
+    openssl
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ darwin.apple_sdk.frameworks.SystemConfiguration ];
 
   nativeBuildInputs = [
     help2man

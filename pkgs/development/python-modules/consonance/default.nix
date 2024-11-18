@@ -3,7 +3,6 @@
   buildPythonPackage,
   fetchFromGitHub,
   fetchpatch,
-  setuptools,
   dissononce,
   python-axolotl-curve25519,
   transitions,
@@ -15,14 +14,14 @@
 buildPythonPackage rec {
   pname = "consonance";
   version = "0.1.5";
-  pyproject = true;
+  format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
   src = fetchFromGitHub {
     owner = "tgalal";
     repo = "consonance";
-    rev = "refs/tags/${version}";
+    rev = version;
     hash = "sha256-BhgxLxjKZ4dSL7DqkaoS+wBPCd1SYZomRKrtDLdGmYQ=";
   };
 
@@ -35,15 +34,7 @@ buildPythonPackage rec {
     })
   ];
 
-  env = {
-    # make protobuf compatible with old versions
-    # https://developers.google.com/protocol-buffers/docs/news/2022-05-06#python-updates
-    PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION = "python";
-  };
-
-  build-system = [ setuptools ];
-
-  dependencies = [
+  propagatedBuildInputs = [
     dissononce
     python-axolotl-curve25519
     transitions
@@ -56,10 +47,10 @@ buildPythonPackage rec {
 
   pythonImportsCheck = [ "consonance" ];
 
-  meta = {
+  meta = with lib; {
     description = "WhatsApp's handshake implementation using Noise Protocol";
     homepage = "https://github.com/tgalal/consonance";
-    license = lib.licenses.gpl3Plus;
+    license = licenses.gpl3Plus;
     maintainers = [ ];
   };
 }

@@ -1,4 +1,4 @@
-{ lib, stdenv, bison, fetchFromGitHub, flex, perl, postgresql, buildPostgresqlExtension }:
+{ lib, stdenv, bison, fetchFromGitHub, flex, perl, postgresql }:
 
 let
   hashes = {
@@ -11,7 +11,7 @@ let
     "12" = "sha256-JFNk17ESsIt20dwXrfBkQ5E6DbZzN/Q9eS6+WjCXGd4=";
   };
 in
-buildPostgresqlExtension rec {
+stdenv.mkDerivation rec {
   pname = "age";
   version = "1.5.0-rc0";
 
@@ -22,11 +22,19 @@ buildPostgresqlExtension rec {
     hash = hashes.${lib.versions.major postgresql.version} or (throw "Source for Age is not available for ${postgresql.version}");
   };
 
+  buildInputs = [ postgresql ];
+
   makeFlags = [
     "BISON=${bison}/bin/bison"
     "FLEX=${flex}/bin/flex"
     "PERL=${perl}/bin/perl"
   ];
+
+  installPhase = ''
+    install -D -t $out/lib *${postgresql.dlSuffix}
+    install -D -t $out/share/postgresql/extension *.sql
+    install -D -t $out/share/postgresql/extension *.control
+  '';
 
   passthru.tests = stdenv.mkDerivation {
     inherit version src;

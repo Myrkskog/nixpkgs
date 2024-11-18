@@ -16,8 +16,6 @@
   wasm-pack,
 }:
 
-# TODO: package python bindings
-
 let
 
   wasm-bindgen-92 = wasm-bindgen-cli.override {
@@ -38,16 +36,16 @@ in
 
 rustPlatform.buildRustPackage rec {
   pname = "pagefind";
-  version = "1.2.0";
+  version = "1.1.1";
 
   src = fetchFromGitHub {
     owner = "cloudcannon";
     repo = "pagefind";
     rev = "refs/tags/v${version}";
-    hash = "sha256-OKZYy+Mm9xOEBBD/tI2GwP2+Myt5aELosRP8Tbi5bqY=";
+    hash = "sha256-4NfosDp5Wwz2lnqaFNcaIbWpjWiaQ4WCL6TcKEkfPck=";
   };
 
-  cargoHash = "sha256-k50RyGuS66r+wWIij7yOOSlDxXYY1y+lTJgCkMREllc=";
+  cargoHash = "sha256-hnT9w3j8/YuN00x0LBPr75BKGWSnIYUNFTWIgtghJP4";
 
   env.npmDeps_web_js = fetchNpmDeps {
     name = "npm-deps-web-js";

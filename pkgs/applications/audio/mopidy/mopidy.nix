@@ -1,13 +1,5 @@
-{
-  lib,
-  stdenv,
-  fetchFromGitHub,
-  pythonPackages,
-  wrapGAppsNoGuiHook,
-  gst_all_1,
-  glib-networking,
-  gobject-introspection,
-  pipewire,
+{ lib, stdenv, fetchFromGitHub, pythonPackages, wrapGAppsNoGuiHook
+, gst_all_1, glib-networking, gobject-introspection
 }:
 
 pythonPackages.buildPythonApplication rec {
@@ -32,22 +24,17 @@ pythonPackages.buildPythonApplication rec {
     gst-plugins-rs
   ];
 
-  propagatedBuildInputs =
-    [
-      gobject-introspection
-    ]
-    ++ (
-      with pythonPackages;
-      [
-        gst-python
-        pygobject3
-        pykka
-        requests
-        setuptools
-        tornado
-      ]
-      ++ lib.optional (!stdenv.hostPlatform.isDarwin) dbus-python
-    );
+  propagatedBuildInputs = [
+    gobject-introspection
+  ] ++ (with pythonPackages; [
+      gst-python
+      pygobject3
+      pykka
+      requests
+      setuptools
+      tornado
+    ] ++ lib.optional (!stdenv.hostPlatform.isDarwin) dbus-python
+  );
 
   propagatedNativeBuildInputs = [
     gobject-introspection
@@ -56,18 +43,12 @@ pythonPackages.buildPythonApplication rec {
   # There are no tests
   doCheck = false;
 
-  preFixup = ''
-    gappsWrapperArgs+=(
-      --prefix GST_PLUGIN_SYSTEM_PATH_1_0 : "${pipewire}/lib/gstreamer-1.0"
-    )
-  '';
-
   meta = with lib; {
     homepage = "https://www.mopidy.com/";
     description = "Extensible music server that plays music from local disk, Spotify, SoundCloud, and more";
     mainProgram = "mopidy";
     license = licenses.asl20;
     maintainers = [ maintainers.fpletz ];
-    hydraPlatforms = [ ];
+    hydraPlatforms = [];
   };
 }

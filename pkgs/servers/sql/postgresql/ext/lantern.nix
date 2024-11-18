@@ -5,10 +5,9 @@
 , openssl
 , postgresql
 , postgresqlTestExtension
-, buildPostgresqlExtension
 }:
 
-buildPostgresqlExtension (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "postgresql-lantern";
   version = "0.4.1";
 
@@ -30,7 +29,18 @@ buildPostgresqlExtension (finalAttrs: {
 
   buildInputs = [
     openssl
+    postgresql
   ];
+
+  installPhase = ''
+    runHook preInstall
+
+    install -D -t $out/lib lantern${postgresql.dlSuffix}
+    install -D -t $out/share/postgresql/extension lantern-*.sql
+    install -D -t $out/share/postgresql/extension lantern.control
+
+    runHook postInstall
+  '';
 
   cmakeFlags = [
     "-DBUILD_FOR_DISTRIBUTING=ON"
@@ -54,7 +64,7 @@ buildPostgresqlExtension (finalAttrs: {
     description = "PostgreSQL vector database extension for building AI applications";
     homepage = "https://lantern.dev/";
     changelog = "https://github.com/lanterndata/lantern/blob/${finalAttrs.src.rev}/CHANGELOG.md";
-    license = licenses.agpl3Only;
+    license = licenses.bsl11;
     maintainers = [ ];
     platforms = postgresql.meta.platforms;
     # error: use of undeclared identifier 'aligned_alloc'

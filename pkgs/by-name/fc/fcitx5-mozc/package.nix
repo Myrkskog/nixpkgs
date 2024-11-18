@@ -1,5 +1,5 @@
 {
-  bazel_6,
+  bazel_7,
   buildBazelPackage,
   fcitx5,
   fetchFromGitHub,
@@ -41,7 +41,7 @@ buildBazelPackage {
     sed -i -e 's|^\(LINUX_MOZC_SERVER_DIR = \).\+|\1"${mozc}/lib/mozc"|' src/config.bzl
   '';
 
-  bazel = bazel_6;
+  bazel = bazel_7;
   removeRulesCC = false;
   dontAddBazelOpts = true;
 
@@ -62,7 +62,7 @@ buildBazelPackage {
       rm -rf $bazelOut/external/fcitx5
     '';
 
-    sha256 = "sha256-rrRp/v1pty7Py80/6I8rVVQvkeY72W+nlixUeYkjp+o=";
+    sha256 = "sha256-wz2lJckr7Pu4jtoejjFv8LdjVO2+ferrS473M4jc86I=";
   };
 
   preConfigure = ''

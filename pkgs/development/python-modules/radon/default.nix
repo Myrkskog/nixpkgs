@@ -45,10 +45,6 @@ buildPythonPackage rec {
     colorama
   ];
 
-  pythonRelaxDeps = [
-    "mando"
-  ];
-
   optional-dependencies = {
     toml = [ tomli ];
   };

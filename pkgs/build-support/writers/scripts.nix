@@ -523,17 +523,15 @@ rec {
   writeFishBin = name: writeFish "/bin/${name}";
 
   /**
-    writeBabashka takes a name, an attrset with babashka interpreter and linting check (both optional)
-    and some babashka source code and returns an executable.
+    Like writeScript but the first line is a shebang to babashka
 
-    `pkgs.babashka-unwrapped` is used as default interpreter for small closure size. If dependencies needed, use `pkgs.babashka` instead. Pass empty string to check to disable the default clj-kondo linting.
+    Can be called with or without extra arguments.
 
-    # Examples
     :::{.example}
-    ## `pkgs.writers.writeBabashka` with empty arguments
+    ## `pkgs.writers.writeBabashka` without arguments
 
     ```nix
-    writeBabashka "example" { } ''
+    writeBabashka "example" ''
       (println "hello world")
     ''
     ```
@@ -555,61 +553,55 @@ rec {
     ''
     ```
     :::
+  */
+  writeBabashka =
+    name: argsOrScript:
+    if lib.isAttrs argsOrScript && !lib.isDerivation argsOrScript then
+      makeScriptWriter (
+        argsOrScript
+        // {
+          interpreter = "${lib.getExe pkgs.babashka}";
+          check = "${lib.getExe pkgs.clj-kondo} --lint";
+        }
+      ) name
+    else
+      makeScriptWriter {
+        interpreter = "${lib.getExe pkgs.babashka}";
+        check = "${lib.getExe pkgs.clj-kondo} --lint";
+      } name argsOrScript;
 
-    :::{.note}
-    Babashka needs Java for fetching dependencies. Wrapped babashka contains jdk,
-    pass wrapped version `pkgs.babashka` to babashka if dependencies are required.
+  /**
+    Like writeScriptBin but the first line is a shebang to babashka
 
-    For example:
+    Can be called with or without extra arguments.
+
+    # Examples
+    :::{.example}
+    ## `pkgs.writers.writeBabashkaBin` without arguments
 
     ```nix
-    writeBabashka "example"
-    {
-      babashka = pkgs.babashka;
-    }
-    ''
-      (require '[babashka.deps :as deps])
-      (deps/add-deps '{:deps {medley/medley {:mvn/version "1.3.0"}}})
-      (require '[medley.core :as m])
-      (prn (m/index-by :id [{:id 1} {:id 2}]))
-    ''
-    ```
-    :::
-
-    :::{.note}
-    Disable clj-kondo linting:
-
-    ```nix
-    writeBabashka "example"
-    {
-      check = "";
-    }
-    ''
+    writeBabashkaBin "example" ''
       (println "hello world")
     ''
     ```
     :::
-  */
-  writeBabashka =
-    name:
-    {
-      makeWrapperArgs ? [ ],
-      babashka ? pkgs.babashka-unwrapped,
-      check ? "${lib.getExe pkgs.clj-kondo} --lint",
-      ...
-    }@args:
-    makeScriptWriter (
-      (builtins.removeAttrs args [
-        "babashka"
-      ])
-      // {
-        interpreter = "${lib.getExe babashka}";
-      }
-    ) name;
 
-  /**
-    writeBabashkaBin takes the same arguments as writeBabashka but outputs a directory
-    (like writeScriptBin)
+    :::{.example}
+    ## `pkgs.writers.writeBabashkaBin` with arguments
+
+    ```nix
+    writeBabashkaBin "example"
+    {
+      makeWrapperArgs = [
+        "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.hello ]}"
+      ];
+    }
+    ''
+      (require '[babashka.tasks :as tasks])
+      (tasks/shell "hello" "-g" "Hello babashka!")
+    ''
+    ```
+    :::
   */
   writeBabashkaBin = name: writeBabashka "/bin/${name}";
 

@@ -86,7 +86,9 @@ in
 
   passthru = {
     updateScript = nix-update-script { };
-    tests = nixosTests.postgresql.pgvecto-rs.passthru.override postgresql;
+    tests = {
+      pgvecto-rs = nixosTests.pgvecto-rs;
+    };
   };
 
   meta = with lib; {

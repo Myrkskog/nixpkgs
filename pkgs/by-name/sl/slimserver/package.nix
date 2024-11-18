@@ -28,7 +28,7 @@ let
   );
   libPath = lib.makeLibraryPath [
     zlib
-    stdenv.cc.cc
+    stdenv.cc.cc.lib
   ];
 in
 perlPackages.buildPerlPackage rec {

@@ -26,7 +26,7 @@ rustPlatform.buildRustPackage rec {
   # No tests exist
   doCheck = false;
 
-  buildInputs = [ (lib.getLib stdenv.cc.cc) ];
+  buildInputs = [ stdenv.cc.cc.lib ];
   nativeBuildInputs = [ autoPatchelfHook ];
 
   runtimeDependencies = [

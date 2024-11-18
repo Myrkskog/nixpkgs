@@ -52,12 +52,12 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs =
     [ openssl ]
-    ++ lib.optionals stdenv.hostPlatform.isLinux [
+    ++ lib.optionals stdenv.isLinux [
       glib-networking # Most Tauri apps need networking
       libsoup
       webkitgtk_4_0
     ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin (
+    ++ lib.optionals stdenv.isDarwin (
       with darwin.apple_sdk.frameworks;
       [
         AppKit

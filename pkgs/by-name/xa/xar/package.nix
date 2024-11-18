@@ -48,11 +48,7 @@ stdenv.mkDerivation (finalAttrs: {
   #   # …
   #   rm -r ../pkgs/by-name/xa/xar/patches
   #   git format-patch --zero-commit --output-directory ../pkgs/by-name/xa/xar/patches main
-  patches =
-    # Avoid Darwin rebuilds on staging-next
-    lib.filter (
-      p: stdenv.hostPlatform.isDarwin -> baseNameOf p != "0020-Fall-back-to-readlink-on-Linux.patch"
-    ) (lib.filesystem.listFilesRecursive ./patches);
+  patches = lib.filesystem.listFilesRecursive ./patches;
 
   # We do not use or modify files outside of the xar subdirectory.
   patchFlags = [ "-p2" ];

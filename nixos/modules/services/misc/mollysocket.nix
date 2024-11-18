@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  inherit (lib) getExe mkIf mkOption mkEnableOption types;
+  inherit (lib) getExe mkIf mkOption mkEnableOption optionals types;
 
   cfg = config.services.mollysocket;
   configuration = format.generate "mollysocket.conf" cfg.settings;
@@ -85,7 +85,9 @@ in {
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       environment.RUST_LOG = cfg.logLevel;
-      serviceConfig = {
+      serviceConfig = let
+        capabilities = [ "" ] ++ optionals (cfg.settings.port < 1024) [ "CAP_NET_BIND_SERVICE" ];
+      in {
         EnvironmentFile = cfg.environmentFile;
         ExecStart = "${getExe package} server";
         KillSignal = "SIGINT";
@@ -95,6 +97,8 @@ in {
         WorkingDirectory = "/var/lib/mollysocket";
 
         # hardening
+        AmbientCapabilities = capabilities;
+        CapabilityBoundingSet = capabilities;
         DevicePolicy = "closed";
         DynamicUser = true;
         LockPersonality = true;

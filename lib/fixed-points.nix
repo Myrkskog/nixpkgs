@@ -160,9 +160,7 @@ rec {
     A fixed-point function returning an attribute set has the form
 
     ```nix
-    final: {
-      # attributes
-    }
+    final: { # attributes }
     ```
 
     where `final` refers to the lazily evaluated attribute set returned by the fixed-point function.
@@ -170,9 +168,7 @@ rec {
     An overlay to such a fixed-point function has the form
 
     ```nix
-    final: prev: {
-      # attributes
-    }
+    final: prev: { # attributes }
     ```
 
     where `prev` refers to the result of the original function to `final`, and `final` is the result of the composition of the overlay and the original function.
@@ -181,12 +177,8 @@ rec {
 
     ```nix
     let
-      f = final: {
-        # attributes
-      };
-      overlay = final: prev: {
-        # attributes
-      };
+      f = final: { # attributes };
+      overlay = final: prev: { # attributes };
     in extends overlay f;
     ```
 
@@ -194,12 +186,8 @@ rec {
 
     ```nix
     let
-      f = final: {
-        # attributes
-      };
-      overlay = final: prev: {
-        # attributes
-      };
+      f = final: { # attributes };
+      overlay = final: prev: { # attributes };
       g = extends overlay f;
     in fix g
     ```

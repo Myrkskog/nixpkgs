@@ -4,6 +4,7 @@
   buildGoModule,
   pkg-config,
   deepin-gettext-tools,
+  wrapQtAppsHook,
   wrapGAppsHook3,
   alsa-lib,
   gtk3,
@@ -55,8 +56,10 @@ buildGoModule rec {
   nativeBuildInputs = [
     pkg-config
     deepin-gettext-tools
+    wrapQtAppsHook
     wrapGAppsHook3
   ];
+  dontWrapGApps = true;
 
   buildInputs = [
     alsa-lib
@@ -83,9 +86,13 @@ buildGoModule rec {
     runHook postInstall
   '';
 
+  preFixup = ''
+    qtWrapperArgs+=("''${gappsWrapperArgs[@]}")
+  '';
+
   postFixup = ''
     for binary in $out/lib/deepin-api/*; do
-      wrapProgram $binary "''${gappsWrapperArgs[@]}"
+      wrapProgram $binary "''${qtWrapperArgs[@]}"
     done
   '';
 

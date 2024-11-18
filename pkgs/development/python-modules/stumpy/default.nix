@@ -2,8 +2,6 @@
   lib,
   buildPythonPackage,
   fetchFromGitHub,
-  setuptools,
-  setuptools-scm,
   numpy,
   scipy,
   numba,
@@ -17,7 +15,7 @@
 buildPythonPackage rec {
   pname = "stumpy";
   version = "1.13.0";
-  pyproject = true;
+  format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
@@ -28,12 +26,7 @@ buildPythonPackage rec {
     hash = "sha256-S+Rb6pHphXfbqz4VMnN1p7ZrlWB/g7XCdy/T5/Q8VD8=";
   };
 
-  build-system = [
-    setuptools
-    setuptools-scm
-  ];
-
-  dependencies = [
+  propagatedBuildInputs = [
     numpy
     scipy
     numba
@@ -54,11 +47,10 @@ buildPythonPackage rec {
     "tests/test_core.py"
   ];
 
-  meta = {
+  meta = with lib; {
     description = "Library that can be used for a variety of time series data mining tasks";
-    changelog = "https://github.com/TDAmeritrade/stumpy/blob/${src.rev}/CHANGELOG.md";
     homepage = "https://github.com/TDAmeritrade/stumpy";
-    license = lib.licenses.bsd3;
+    license = licenses.bsd3;
     maintainers = [ ];
   };
 }

@@ -57,7 +57,7 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   postInstall =
-    if stdenv.hostPlatform.isDarwin then
+    if stdenv.isDarwin then
       ''
         cp -r pdf_viewer/shaders sioyek.app/Contents/MacOS/shaders
         cp pdf_viewer/{prefs,prefs_user,keys,key_user}.config tutorial.pdf sioyek.app/Contents/MacOS/

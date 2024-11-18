@@ -48,7 +48,7 @@ stdenv.mkDerivation rec {
     libXinerama
     glibc
     libGL
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     qtx11extras
   ];
 

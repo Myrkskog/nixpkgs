@@ -6,7 +6,7 @@
   cryptography,
   freezegun,
   pytestCheckHook,
-  pytest-cov-stub,
+  pytest-cov,
 }:
 
 buildPythonPackage rec {
@@ -33,7 +33,7 @@ buildPythonPackage rec {
   nativeCheckInputs = [
     pytestCheckHook
     freezegun
-    pytest-cov-stub
+    pytest-cov
   ];
 
   pythonImportsCheck = [ "jwt" ];

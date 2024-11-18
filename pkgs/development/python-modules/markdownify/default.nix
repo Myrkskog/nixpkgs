@@ -2,7 +2,7 @@
   lib,
   beautifulsoup4,
   buildPythonPackage,
-  fetchFromGitHub,
+  fetchPypi,
   pytestCheckHook,
   pythonOlder,
   setuptools,
@@ -17,11 +17,9 @@ buildPythonPackage rec {
 
   disabled = pythonOlder "3.7";
 
-  src = fetchFromGitHub {
-    owner = "matthewwithanm";
-    repo = "python-markdownify";
-    rev = "refs/tags/${version}";
-    hash = "sha256-EqQ4DKIGaMNivw9cWCSP/Mh+1YxyTaHGPYRjGxPFOnA=";
+  src = fetchPypi {
+    inherit pname version;
+    hash = "sha256-qyV/nmvUB1EYgoooydAvikv+t0IfVYg0qnmy3+syoJg=";
   };
 
   build-system = [

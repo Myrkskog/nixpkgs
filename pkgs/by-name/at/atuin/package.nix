@@ -3,8 +3,9 @@
 , fetchFromGitHub
 , installShellFiles
 , rustPlatform
+, libiconv
 , buildPackages
-, apple-sdk_11
+, darwin
 , nixosTests
 }:
 
@@ -35,7 +36,10 @@ rustPlatform.buildRustPackage rec {
   nativeBuildInputs = [ installShellFiles ];
 
   buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
-    apple-sdk_11
+    libiconv
+    darwin.apple_sdk_11_0.frameworks.AppKit
+    darwin.apple_sdk_11_0.frameworks.Security
+    darwin.apple_sdk_11_0.frameworks.SystemConfiguration
   ];
 
   preBuild = ''

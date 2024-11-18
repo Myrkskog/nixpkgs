@@ -12,7 +12,7 @@
 
 buildPythonPackage rec {
   pname = "tuf";
-  version = "5.1.0";
+  version = "3.1.1";
   pyproject = true;
 
   disabled = pythonOlder "3.8";
@@ -21,12 +21,17 @@ buildPythonPackage rec {
     owner = "theupdateframework";
     repo = "python-tuf";
     rev = "refs/tags/v${version}";
-    hash = "sha256-Qv9SH4ObC7bgPLd2Wu5XynBddlW6pycwLwaKhZ+l61k=";
+    hash = "sha256-HiF/b6aOhDhhQqYx/bjMXHABxmAJY4vkLlTheiL8zEo=";
   };
 
-  build-system = [ hatchling ];
+  postPatch = ''
+    substituteInPlace pyproject.toml \
+      --replace-fail "hatchling==" "hatchling>="
+  '';
 
-  dependencies = [
+  nativeBuildInputs = [ hatchling ];
+
+  propagatedBuildInputs = [
     requests
     securesystemslib
   ] ++ securesystemslib.optional-dependencies.pynacl ++ securesystemslib.optional-dependencies.crypto;
@@ -42,14 +47,14 @@ buildPythonPackage rec {
     cd tests
   '';
 
-  meta = {
+  meta = with lib; {
     description = "Python reference implementation of The Update Framework (TUF)";
     homepage = "https://github.com/theupdateframework/python-tuf";
     changelog = "https://github.com/theupdateframework/python-tuf/blob/v${version}/docs/CHANGELOG.md";
-    license = with lib.licenses; [
+    license = with licenses; [
       asl20
       mit
     ];
-    maintainers = with lib.maintainers; [ fab ];
+    maintainers = with maintainers; [ fab ];
   };
 }

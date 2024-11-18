@@ -2,17 +2,14 @@
   lib,
   buildPythonPackage,
   fetchFromGitHub,
-  scikit-build-core,
   setuptools,
   setuptools-scm,
-  cmake,
-  ninja,
   matchpy,
   numpy,
   astunparse,
   typing-extensions,
-  pytestCheckHook,
-  pytest-cov-stub,
+  pytest7CheckHook,
+  pytest-cov,
 }:
 
 buildPythonPackage rec {
@@ -27,15 +24,11 @@ buildPythonPackage rec {
     hash = "sha256-q9lMU/xA+G2x38yZy3DxCpXTEmg1lZhZ8GFIHDIKE24=";
   };
 
-  build-system = [
-    scikit-build-core
+  nativeBuildInputs = [
     setuptools
     setuptools-scm
-    cmake
-    ninja
   ];
-
-  dontUseCmakeConfigure = true;
+  build-system = [ setuptools ];
 
   dependencies = [
     astunparse
@@ -45,8 +38,8 @@ buildPythonPackage rec {
   ];
 
   nativeCheckInputs = [
-    pytestCheckHook
-    pytest-cov-stub
+    pytest7CheckHook
+    pytest-cov
   ];
 
   # Tests must be run from outside the source directory
@@ -65,6 +58,6 @@ buildPythonPackage rec {
     description = "Universal array library";
     homepage = "https://github.com/Quansight-Labs/uarray";
     license = licenses.bsd0;
-    maintainers = [ lib.maintainers.pbsds ];
+    maintainers = [ ];
   };
 }

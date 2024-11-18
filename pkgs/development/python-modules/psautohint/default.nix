@@ -8,7 +8,7 @@
   fs, # for fonttools extras
   setuptools-scm,
   pytestCheckHook,
-  pytest-cov-stub,
+  pytest-cov,
   pytest-xdist,
   runAllTests ? false,
   psautohint, # for passthru.tests
@@ -45,7 +45,7 @@ buildPythonPackage rec {
 
   nativeCheckInputs = [
     pytestCheckHook
-    pytest-cov-stub
+    pytest-cov
     pytest-xdist
   ];
   disabledTests = lib.optionals (!runAllTests) [

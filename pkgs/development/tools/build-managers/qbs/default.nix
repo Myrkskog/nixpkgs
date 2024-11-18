@@ -24,7 +24,7 @@ stdenv.mkDerivation rec {
     description = "Tool that helps simplify the build process for developing projects across multiple platforms";
     homepage = "https://wiki.qt.io/Qbs";
     license = licenses.lgpl3;
-    maintainers = [];
+    maintainers = with maintainers; [ expipiplus1 ];
     platforms = platforms.linux;
   };
 }

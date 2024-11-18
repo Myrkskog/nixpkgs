@@ -1,6 +1,8 @@
 { lib
+, stdenv
 , fetchFromGitHub
 , rustPlatform
+, Security
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -15,6 +17,8 @@ rustPlatform.buildRustPackage rec {
   };
 
   cargoHash = "sha256-dMXaIFc0e6PMYiQrokQoUc1xAVCccE92WzM2fl7tOBQ=";
+
+  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [ Security ];
 
   # tests run in CI on the source repo
   doCheck = false;

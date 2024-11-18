@@ -3,6 +3,8 @@
 , rustPlatform
 , openssl
 , pkg-config
+, stdenv
+, Security
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -20,7 +22,7 @@ rustPlatform.buildRustPackage rec {
 
   cargoBuildFlags = [ "-p eludris" ];
   cargoTestFlags = [ "-p eludris" ];
-  buildInputs = [ openssl ];
+  buildInputs = [ openssl ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ Security ];
   nativeBuildInputs = [ pkg-config ];
 
   meta = with lib; {

@@ -12,14 +12,14 @@
 
 buildPythonPackage rec {
   pname = "pynvim";
-  version = "0.5.2";
+  version = "0.5.1";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "neovim";
     repo = "pynvim";
     rev = "refs/tags/${version}";
-    hash = "sha256-/frugwYPS4rS4L6BRsmNb5pJI8xfLJvbr+PyOLx25a4=";
+    hash = "sha256-YVAWu+i2pElq8OhibSqh9ogk+xWDRCZT4niDF/oMnzY=";
   };
 
   build-system = [ setuptools ];

@@ -11,7 +11,7 @@ buildPythonPackage rec {
 
   inherit (flit) src patches;
 
-  postPatch = "cd flit_core";
+  sourceRoot = "${src.name}/flit_core";
 
   # Tests are run in the "flit" package.
   doCheck = false;

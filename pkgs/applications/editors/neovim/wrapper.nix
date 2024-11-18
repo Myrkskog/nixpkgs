@@ -61,7 +61,7 @@ let
 
   stdenv.mkDerivation (finalAttrs:
   let
-    pluginsNormalized = neovimUtils.normalizePlugins finalAttrs.plugins;
+    pluginsNormalized = neovimUtils.normalizePlugins plugins;
 
     myVimPackage = neovimUtils.normalizedPluginsToVimPackage pluginsNormalized;
 
@@ -249,13 +249,6 @@ let
 
     # A Vim "package", see ':h packages'
     vimPackage = myVimPackage;
-
-    checkPhase = ''
-      runHook preCheck
-
-      $out/bin/nvim -i NONE -e +quitall!
-      runHook postCheck
-      '';
 
     passthru = {
       inherit providerLuaRc packpathDirs;

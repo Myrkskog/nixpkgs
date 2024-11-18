@@ -14,7 +14,6 @@
   embedScript ? null,
   additionalTargets ? { },
   additionalOptions ? [ ],
-  firmwareBinary ? "ipxe.efirom",
 }:
 
 let
@@ -131,11 +130,8 @@ stdenv.mkDerivation (finalAttrs: {
 
   enableParallelBuilding = true;
 
-  passthru = {
-    firmware = "${finalAttrs.finalPackage}/${firmwareBinary}";
-    updateScript = unstableGitUpdater {
-      tagPrefix = "v";
-    };
+  passthru.updateScript = unstableGitUpdater {
+    tagPrefix = "v";
   };
 
   meta = {

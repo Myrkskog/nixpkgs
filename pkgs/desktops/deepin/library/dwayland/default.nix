@@ -3,12 +3,14 @@
   lib,
   fetchFromGitHub,
   cmake,
-  libsForQt5,
+  qtbase,
+  qtwayland,
   wayland,
   wayland-protocols,
   wayland-scanner,
   extra-cmake-modules,
   deepin-wayland-protocols,
+  qttools,
 }:
 
 stdenv.mkDerivation rec {
@@ -25,13 +27,13 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     cmake
     extra-cmake-modules
-    libsForQt5.qttools
+    qttools
     wayland-scanner
   ];
 
   buildInputs = [
-    libsForQt5.qtbase
-    libsForQt5.qtwayland
+    qtbase
+    qtwayland
     wayland
     wayland-protocols
     deepin-wayland-protocols

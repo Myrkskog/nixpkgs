@@ -11,6 +11,7 @@
   groff,
   compatIfNeeded,
   fts,
+  darwin,
   stdenv,
 }:
 
@@ -43,7 +44,8 @@ mkDerivation {
     # fts header is needed. glibc already has this header, but musl doesn't,
     # so make sure pkgsMusl.netbsd.install still builds in case you want to
     # remove it!
-    ++ [ fts ];
+    ++ [ fts ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [ darwin.libutil ];
   installPhase = ''
     runHook preInstall
 

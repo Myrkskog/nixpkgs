@@ -4,14 +4,17 @@
   fetchFromGitHub,
   cmake,
   pkg-config,
-  libsForQt5,
+  qttools,
+  wrapQtAppsHook,
   dtkwidget,
   wayland,
   dwayland,
   qt5integration,
   qt5platform-plugins,
   image-editor,
-  ffmpeg_6,
+  qtbase,
+  qtmultimedia,
+  ffmpeg,
   ffmpegthumbnailer,
   libusb1,
   libpciaccess,
@@ -40,15 +43,15 @@ stdenv.mkDerivation rec {
       --replace "/usr/share/libimagevisualresult" "${image-editor}/share/libimagevisualresult" \
       --replace "/usr/include/libusb-1.0" "${lib.getDev libusb1}/include/libusb-1.0"
     substituteInPlace src/com.deepin.Camera.service \
-      --replace "/usr/bin/qdbus" "${lib.getBin libsForQt5.qttools}/bin/qdbus" \
+      --replace "/usr/bin/qdbus" "${lib.getBin qttools}/bin/qdbus" \
       --replace "/usr/share" "$out/share"
   '';
 
   nativeBuildInputs = [
     cmake
     pkg-config
-    libsForQt5.qttools
-    libsForQt5.wrapQtAppsHook
+    qttools
+    wrapQtAppsHook
   ];
 
   buildInputs =
@@ -59,9 +62,9 @@ stdenv.mkDerivation rec {
       qt5integration
       qt5platform-plugins
       image-editor
-      libsForQt5.qtbase
-      libsForQt5.qtmultimedia
-      ffmpeg_6
+      qtbase
+      qtmultimedia
+      ffmpeg
       ffmpegthumbnailer
       libusb1
       libpciaccess
@@ -85,7 +88,7 @@ stdenv.mkDerivation rec {
   qtWrapperArgs = [
     "--prefix LD_LIBRARY_PATH : ${
       lib.makeLibraryPath [
-        ffmpeg_6
+        ffmpeg
         ffmpegthumbnailer
         gst_all_1.gstreamer
         gst_all_1.gst-plugins-base

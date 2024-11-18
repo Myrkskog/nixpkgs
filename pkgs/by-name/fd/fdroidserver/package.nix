@@ -60,7 +60,6 @@ python3Packages.buildPythonApplication {
     defusedxml
     gitpython
     libcloud
-    libvirt
     mwclient
     oscrypto
     paramiko

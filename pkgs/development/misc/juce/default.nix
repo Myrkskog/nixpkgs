@@ -46,7 +46,7 @@ stdenv.mkDerivation (finalAttrs: {
   buildInputs = [
     freetype # libfreetype.so
     curl # libcurl.so
-    (lib.getLib stdenv.cc.cc) # libstdc++.so libgcc_s.so
+    stdenv.cc.cc.lib # libstdc++.so libgcc_s.so
     pcre # libpcre2.pc
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [
     alsa-lib # libasound.so

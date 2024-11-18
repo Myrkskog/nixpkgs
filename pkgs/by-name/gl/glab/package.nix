@@ -1,23 +1,17 @@
-{
-  lib,
-  buildGo123Module,
-  fetchFromGitLab,
-  installShellFiles,
-  stdenv,
-}:
+{ lib, buildGo123Module, fetchFromGitLab, installShellFiles, stdenv }:
 
 buildGo123Module rec {
   pname = "glab";
-  version = "1.48.0";
+  version = "1.47.0";
 
   src = fetchFromGitLab {
     owner = "gitlab-org";
     repo = "cli";
     rev = "v${version}";
-    hash = "sha256-cddXgjJR8SD/mggDzbyxp/hdffE5ZqmT9oEPaEd8ZCo=";
+    hash = "sha256-mAM11nQ6YJJWNFOR9xQbgma7Plvo4MdcW2Syniw7o60=";
   };
 
-  vendorHash = "sha256-quQqQRXMByUgXlnPpR2mCPhxw5AbFdHN5sBsawuHc18=";
+  vendorHash = "sha256-uwSVdebZtIpSol553gJC0ItkEqa6qXXOAVFvzjsHSSI=";
 
   ldflags = [
     "-s"
@@ -43,15 +37,12 @@ buildGo123Module rec {
       --zsh <($out/bin/glab completion -s zsh)
   '';
 
-  meta = {
+  meta = with lib; {
     description = "GitLab CLI tool bringing GitLab to your command line";
-    license = lib.licenses.mit;
+    license = licenses.mit;
     homepage = "https://gitlab.com/gitlab-org/cli";
     changelog = "https://gitlab.com/gitlab-org/cli/-/releases/v${version}";
-    maintainers = with lib.maintainers; [
-      freezeboy
-      luftmensch-luftmensch
-    ];
+    maintainers = with maintainers; [ freezeboy ];
     mainProgram = "glab";
   };
 }

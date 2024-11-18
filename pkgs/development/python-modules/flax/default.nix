@@ -21,31 +21,26 @@
   # checks
   cloudpickle,
   einops,
-  flaxlib,
   keras,
-  pytestCheckHook,
   pytest-xdist,
-  sphinx,
+  pytestCheckHook,
   tensorflow,
   treescope,
 
   # optional-dependencies
   matplotlib,
-
-  writeScript,
-  tomlq,
 }:
 
 buildPythonPackage rec {
   pname = "flax";
-  version = "0.10.1";
+  version = "0.9.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "google";
     repo = "flax";
     rev = "refs/tags/v${version}";
-    hash = "sha256-+URbQGnmqmSNgucEyWvI5DMnzXjpmJzLA+Pho2lX+S4=";
+    hash = "sha256-iDWuUJKO7V4QrbVsS4ALgy6fbllOC43o7W4mhjtZ9xc=";
   };
 
   build-system = [
@@ -74,11 +69,9 @@ buildPythonPackage rec {
   nativeCheckInputs = [
     cloudpickle
     einops
-    flaxlib
     keras
-    pytestCheckHook
     pytest-xdist
-    sphinx
+    pytestCheckHook
     tensorflow
     treescope
   ];
@@ -114,14 +107,6 @@ buildPythonPackage rec {
     "test_vmap_and_cond_passthrough" # ValueError: vmap has mapped output but out_axes is None
     "test_vmap_and_cond_passthrough_error" # AssertionError: "at vmap.*'broadcast'.*got axis spec ...
   ];
-
-  passthru = {
-    updateScript = writeScript "update.sh" ''
-      nix-update flax # does not --build by default
-      nix-build . -A flax.src # src is essentially a passthru
-      nix-update flaxlib --version="$(${lib.getExe tomlq} <result/Cargo.toml .something.version)" --commit
-    '';
-  };
 
   meta = {
     description = "Neural network library for JAX";

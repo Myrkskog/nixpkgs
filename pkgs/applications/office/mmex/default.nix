@@ -1,9 +1,7 @@
 { lib
 , stdenv
 , fetchFromGitHub
-, appstream
 , cmake
-, fetchpatch
 , gettext
 , git
 , makeWrapper
@@ -19,23 +17,15 @@
 
 stdenv.mkDerivation rec {
   pname = "money-manager-ex";
-  version = "1.8.0";
+  version = "1.6.3";
 
   src = fetchFromGitHub {
     owner = "moneymanagerex";
     repo = "moneymanagerex";
     rev = "v${version}";
     fetchSubmodules = true;
-    hash = "sha256-jV1jW0aFx95JpwzywEVajstnMKVcEtBdvyL7y6OLl+k=";
+    hash = "sha256-TQgJ2Q4Z7+OtwuwkfPBgm2BmMKML9nmyFLSkmKJ1RE4=";
   };
-
-  patches = [
-    (fetchpatch { # https://github.com/moneymanagerex/moneymanagerex/pull/6716
-      name = "workaround-appstream-1.0.3.patch";
-      url = "https://github.com/moneymanagerex/moneymanagerex/commit/bb98eab92d95b7315d27f4e59ae59b50587106d8.patch";
-      hash = "sha256-98OyFO2nnGBRTIirxZ3jX1NPvsw5kVT8nsCSSmyfabo=";
-    })
-  ];
 
   postPatch = lib.optionalString (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isx86_64) ''
     substituteInPlace src/platfdep_mac.mm \
@@ -46,14 +36,12 @@ stdenv.mkDerivation rec {
   '';
 
   nativeBuildInputs = [
-    appstream # for appstreamcli
     cmake
     gettext
     git
     makeWrapper
     pkg-config
     wrapGAppsHook3
-    wxGTK32
   ] ++ lib.optionals stdenv.hostPlatform.isLinux [
     lsb-release
   ];
@@ -66,8 +54,6 @@ stdenv.mkDerivation rec {
   ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
     darwin.libobjc
   ];
-
-  strictDeps = true;
 
   env.NIX_CFLAGS_COMPILE = toString (lib.optionals stdenv.cc.isClang [
     "-Wno-deprecated-copy"

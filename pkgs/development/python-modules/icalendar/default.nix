@@ -3,8 +3,10 @@
   buildPythonPackage,
   fetchFromGitHub,
   replaceVars,
+  pythonOlder,
   hatch-vcs,
   hatchling,
+  backports-zoneinfo,
   python-dateutil,
   tzdata,
   hypothesis,
@@ -37,7 +39,7 @@ buildPythonPackage rec {
   dependencies = [
     python-dateutil
     tzdata
-  ];
+  ] ++ lib.optionals (pythonOlder "3.9") [ backports-zoneinfo ];
 
   nativeCheckInputs = [
     hypothesis

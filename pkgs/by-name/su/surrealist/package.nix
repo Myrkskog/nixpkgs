@@ -22,6 +22,23 @@
 }:
 
 let
+  cargo-tauri_2 = let
+    version = "2.0.0-rc.3";
+    src = fetchFromGitHub {
+      owner = "tauri-apps";
+      repo = "tauri";
+      rev = "tauri-v${version}";
+      hash = "sha256-PV8m/MzYgbY4Hv71dZrqVbrxmxrwFfOAraLJIaQk6FQ=";
+    };
+  in cargo-tauri.overrideAttrs (drv: {
+    inherit src version;
+    cargoDeps = drv.cargoDeps.overrideAttrs (lib.const {
+      inherit src;
+      name = "tauri-${version}-vendor.tar.gz";
+      outputHash = "sha256-BrIH0JkGMp68O+4B+0g7X3lSdNSPXo+otlBgslCzPZE=";
+    });
+  });
+
   esbuild_21-5 = let
     version = "0.21.5";
   in esbuild.override {
@@ -73,7 +90,7 @@ in stdenv.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     cargo
-    cargo-tauri.hook
+    (cargo-tauri.hook.override { cargo-tauri = cargo-tauri_2; })
     gobject-introspection
     makeBinaryWrapper
     nodejs

@@ -67,7 +67,7 @@ rustPlatform.buildRustPackage {
   meta = {
     description = "Community Manifest Creator for WinGet";
     homepage = "https://github.com/russellbanks/Komac";
-    changelog = "https://github.com/russellbanks/Komac/releases/tag/v${version}";
+    changelog = "https://github.com/russellbanks/Komac/releases/tag/${src.rev}";
     license = lib.licenses.gpl3Plus;
     maintainers = with lib.maintainers; [
       kachick

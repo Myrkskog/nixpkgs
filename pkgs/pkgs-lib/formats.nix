@@ -76,11 +76,10 @@ rec {
 
   };
 
-  yaml = yaml_1_1;
+  yaml = {}: {
 
-  yaml_1_1 = {}: {
-    generate = name: value: pkgs.callPackage ({ runCommand, remarshal_0_17 }: runCommand name {
-      nativeBuildInputs = [ remarshal_0_17 ];
+    generate = name: value: pkgs.callPackage ({ runCommand, remarshal }: runCommand name {
+      nativeBuildInputs = [ remarshal ];
       value = builtins.toJSON value;
       passAsFile = [ "value" ];
       preferLocalBuild = true;
@@ -124,9 +123,9 @@ rec {
           }
         else
           singleIniAtom;
-      iniSection = atom:
-        attrsOf atom // {
-          description = "section of an INI file (attrs of " + atom.description + ")";
+      iniSection = { listsAsDuplicateKeys, listToValue, atomsCoercedToLists }@args:
+        attrsOf (iniAtom args) // {
+          description = "section of an INI file (attrs of " + (iniAtom args).description + ")";
         };
 
       maybeToList = listToValue: if listToValue != null then lib.mapAttrs (key: val: if lib.isList val then listToValue val else val) else lib.id;
@@ -145,14 +144,12 @@ rec {
         assert atomsCoercedToLists != null -> (listsAsDuplicateKeys || listToValue != null);
         let
           atomsCoercedToLists' = if atomsCoercedToLists == null then false else atomsCoercedToLists;
-          atom = iniAtom { inherit listsAsDuplicateKeys listToValue; atomsCoercedToLists = atomsCoercedToLists'; };
         in
         {
 
         type = lib.types.attrsOf (
-          iniSection atom
+          iniSection { inherit listsAsDuplicateKeys listToValue; atomsCoercedToLists = atomsCoercedToLists'; }
         );
-        lib.types.atom = atom;
 
         generate = name: value:
           lib.pipe value
@@ -177,26 +174,24 @@ rec {
         assert atomsCoercedToLists != null -> (listsAsDuplicateKeys || listToValue != null);
         let
           atomsCoercedToLists' = if atomsCoercedToLists == null then false else atomsCoercedToLists;
-          atom = iniAtom { inherit listsAsDuplicateKeys listToValue; atomsCoercedToLists = atomsCoercedToLists'; };
         in
         {
           type = lib.types.submodule {
             options = {
               sections = lib.mkOption rec {
                 type = lib.types.attrsOf (
-                  iniSection atom
+                  iniSection { inherit listsAsDuplicateKeys listToValue; atomsCoercedToLists = atomsCoercedToLists'; }
                 );
                 default = {};
                 description = type.description;
               };
               globalSection = lib.mkOption rec {
-                type = iniSection atom;
+                type = iniSection { inherit listsAsDuplicateKeys listToValue; atomsCoercedToLists = atomsCoercedToLists'; };
                 default = {};
                 description = "global " + type.description;
               };
             };
           };
-          lib.types.atom = atom;
           generate = name: { sections ? {}, globalSection ? {}, ... }:
             pkgs.writeText name (lib.generators.toINIWithGlobalSection (removeAttrs args ["listToValue" "atomsCoercedToLists"])
             {
@@ -205,19 +200,17 @@ rec {
             });
         };
 
-      gitIni = { listsAsDuplicateKeys ? false, ... }@args:
-        let
+      gitIni = { listsAsDuplicateKeys ? false, ... }@args: {
+        type = let
           atom = iniAtom {
-            inherit listsAsDuplicateKeys;
+            listsAsDuplicateKeys = listsAsDuplicateKeys;
             listToValue = null;
             atomsCoercedToLists = false;
           };
-        in
-        {
-          type = attrsOf (attrsOf (either atom (attrsOf atom)));
-          lib.types.atom = atom;
-          generate = name: value: pkgs.writeText name (lib.generators.toGitINI value);
-        };
+        in attrsOf (attrsOf (either atom (attrsOf atom)));
+
+        generate = name: value: pkgs.writeText name (lib.generators.toGitINI value);
+      };
 
     }) ini iniWithGlobalSection gitIni;
 

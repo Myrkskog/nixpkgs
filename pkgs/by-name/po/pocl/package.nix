@@ -30,7 +30,7 @@ let
       rm -f $out/bin/$BASENAME
       makeWrapper ${clang}/bin/$BASENAME $out/bin/$BASENAME \
         --add-flags "-L$LIBGCC_DIR" \
-        --add-flags "-L${lib.getLib stdenv.cc.cc}/lib"
+        --add-flags "-L${stdenv.cc.cc.lib}/lib"
     done
   '';
 in

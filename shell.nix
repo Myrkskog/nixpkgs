@@ -17,17 +17,8 @@
 }:
 let
   inherit (import ./ci { inherit nixpkgs system; }) pkgs;
-
-  # For `nix-shell -A hello`
-  curPkgs = builtins.removeAttrs (import ./. { inherit system; }) [
-    # Although this is what anyone may expect from a `_type = "pkgs"`,
-    # this file is intended to produce a shell in the first place,
-    # and a `_type` tag could confuse some code.
-    "_type"
-  ];
 in
-curPkgs
-// pkgs.mkShellNoCC {
+pkgs.mkShellNoCC {
   packages = with pkgs; [
     # The default formatter for Nix code
     # See https://github.com/NixOS/nixfmt

@@ -1,15 +1,16 @@
 {
-  lib,
   buildPythonPackage,
   fetchFromGitHub,
-  poetry-core,
-  pytestCheckHook,
+  isPy3k,
+  lib,
+  pytest,
 }:
 
 buildPythonPackage rec {
   pname = "viewstate";
   version = "0.6.0";
-  pyproject = true;
+  format = "setuptools";
+  disabled = !isPy3k;
 
   src = fetchFromGitHub {
     owner = "yuvadm";
@@ -18,11 +19,11 @@ buildPythonPackage rec {
     sha256 = "sha256-cXT5niE3rNdqmNqnITWy9c9/MF0gZ6LU2i1uzfOzkUI=";
   };
 
-  build-system = [ poetry-core ];
+  nativeCheckInputs = [ pytest ];
 
-  nativeCheckInputs = [
-    pytestCheckHook
-  ];
+  checkPhase = ''
+    pytest
+  '';
 
   meta = {
     description = ".NET viewstate decoder";

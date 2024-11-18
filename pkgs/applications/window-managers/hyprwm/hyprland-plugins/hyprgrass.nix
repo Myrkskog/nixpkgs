@@ -11,15 +11,15 @@
   nix-update-script,
 }:
 
-mkHyprlandPlugin hyprland {
+mkHyprlandPlugin hyprland rec {
   pluginName = "hyprgrass";
-  version = "0.8.2-unstable-2024-10-30";
+  version = "0.8.2";
 
   src = fetchFromGitHub {
     owner = "horriblename";
     repo = "hyprgrass";
-    rev = "f97b6ac2b7de3bae194b776c388467db2604929f";
-    hash = "sha256-Jg5Q/v8tcNjopTMbra82y5n9QQdCnrbEFNgT1kA7pQE=";
+    rev = "v${version}";
+    hash = "sha256-0dYMlNYuevQvsd6+imOkic3c6RSssM8WSx1hAepJ/wU=";
   };
 
   nativeBuildInputs = [

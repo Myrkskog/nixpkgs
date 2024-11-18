@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     cmake
     pkg-config
-    qt6Packages.wrapQtAppsNoGuiHook
+    qt6Packages.wrapQtAppsHook
   ];
 
   buildInputs = [

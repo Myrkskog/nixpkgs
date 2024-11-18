@@ -1,10 +1,12 @@
 {
   lib,
+  backports-zoneinfo,
   buildPythonPackage,
   cached-property,
   defusedxml,
   dnspython,
   fetchFromGitHub,
+  flake8,
   isodate,
   lxml,
   oauthlib,
@@ -18,6 +20,7 @@
   requests-ntlm,
   requests-gssapi,
   requests-oauthlib,
+  requests-kerberos,
   requests-mock,
   setuptools,
   tzdata,
@@ -26,16 +29,16 @@
 
 buildPythonPackage rec {
   pname = "exchangelib";
-  version = "5.5.0";
+  version = "5.4.3";
   pyproject = true;
 
-  disabled = pythonOlder "3.9";
+  disabled = pythonOlder "3.8";
 
   src = fetchFromGitHub {
     owner = "ecederstrand";
     repo = "exchangelib";
     rev = "refs/tags/v${version}";
-    hash = "sha256-nu1uhsUc4NhVE08RtaD8h6KL6DFzA8mPcCJ/cX2UYME=";
+    hash = "sha256-SX5F0OXKdxA2HoDwvCe4M7RftdjUEdQuFbxRyuABC4E=";
   };
 
   pythonRelaxDeps = [ "defusedxml" ];
@@ -53,9 +56,10 @@ buildPythonPackage rec {
     requests
     requests-ntlm
     requests-oauthlib
+    requests-kerberos
     tzdata
     tzlocal
-  ];
+  ] ++ lib.optionals (pythonOlder "3.9") [ backports-zoneinfo ];
 
   optional-dependencies = {
     complete = [
@@ -69,6 +73,7 @@ buildPythonPackage rec {
   };
 
   nativeCheckInputs = [
+    flake8
     psutil
     python-dateutil
     pytz

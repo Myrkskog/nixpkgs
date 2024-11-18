@@ -1,7 +1,7 @@
 { fetchFromGitHub, fetchgit, fetchHex, rebar3Relx, buildRebar3, rebar3-proper
 , stdenv, writeScript, lib }:
 let
-  version = "1.1.0";
+  version = "0.52.0";
   owner = "erlang-ls";
   repo = "erlang_ls";
   deps = import ./rebar-deps.nix {
@@ -16,15 +16,6 @@ let
           substituteInPlace rebar.config --replace ", warnings_as_errors" ""
           '';
       });
-      json_polyfill = super.json_polyfill.overrideAttrs (_: {
-        # When compiling with erlang >= 27, the json_polyfill rebar script will
-        # delete the json.beam file as it's not needed. However, we need to
-        # adjust this path as the nix build will put the beam file under `ebin`
-        # instead of `$REBAR_DEPS_DIR/json_polyfill/ebin`.
-        postPatch = ''
-          substituteInPlace rebar.config.script --replace "{erlc_compile, \"rm \\\"\$REBAR_DEPS_DIR/json_polyfill/ebin/json.beam\\\"\"}" "{erlc_compile, \"rm \\\"ebin/json.beam\\\"\"}"
-          '';
-      });
     });
   };
 in
@@ -33,7 +24,7 @@ rebar3Relx {
   inherit version;
   src = fetchFromGitHub {
     inherit owner repo;
-    hash = "sha256-MSDBU+blsAdeixaHMMXmeMJ+9Yrzn3HekE8KbIc/Guo=";
+    hash = "sha256-tV7M8y0R+BN5ATxM03K0/gtHgITI9KxtvA7o0ft8RuE=";
     rev = version;
   };
   releaseType = "escript";

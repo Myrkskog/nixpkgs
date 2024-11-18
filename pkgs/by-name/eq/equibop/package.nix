@@ -23,13 +23,13 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "equibop";
-  version = "2.1.1";
+  version = "2.0.9";
 
   src = fetchFromGitHub {
     owner = "Equicord";
     repo = "Equibop";
     rev = "refs/tags/v${finalAttrs.version}";
-    hash = "sha256-LGgmWaC7iYj0Mx5wPKmLkYV2ozyhkiwrE4v4uFB0erg=";
+    hash = "sha256-mK/zoW8Km6xlppxJnVbuas4yE1rpAOd9QnjETlxxnsE=";
   };
 
   pnpmDeps = pnpm_9.fetchDeps {
@@ -39,7 +39,7 @@ stdenv.mkDerivation (finalAttrs: {
       src
       patches
       ;
-    hash = "sha256-dIz/HyhzFU86QqQEQ9qWSthKB9HfoRJbmpc3raWNbcA=";
+    hash = "sha256-TSdkHSZTbFf3Nq0QHDNTeUHmd6N+L1N1kSiKt0uNF6s=";
   };
 
   nativeBuildInputs = [
@@ -59,7 +59,7 @@ stdenv.mkDerivation (finalAttrs: {
   buildInputs = [
     libpulseaudio
     pipewire
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
   ];
 
   patches =
@@ -141,7 +141,7 @@ stdenv.mkDerivation (finalAttrs: {
   meta = {
     description = "Custom Discord App aiming to give you better performance and improve linux support";
     homepage = "https://github.com/Equicord/Equibop";
-    changelog = "https://github.com/Equicord/Equibop/releases/tag/v${finalAttrs.version}";
+    changelog = "https://github.com/Equicord/Equibop/releases/tag/${finalAttrs.src.rev}";
     license = lib.licenses.gpl3Only;
     maintainers = [
       lib.maintainers.NotAShelf

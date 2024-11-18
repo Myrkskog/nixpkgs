@@ -26,10 +26,6 @@ buildPythonPackage rec {
 
   build-system = [ setuptools ];
 
-  patches = [
-    ./001-skip-broken-test.patch
-  ];
-
   nativeCheckInputs = [ unittestCheckHook ];
 
   unittestFlagsArray = [

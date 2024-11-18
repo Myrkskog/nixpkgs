@@ -10,12 +10,12 @@
 
 buildPythonPackage rec {
   pname = "zfec";
-  version = "1.6.0.0";
+  version = "1.5.7.4";
   pyproject = true;
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-xaGGHCU7USaYwuczrk2D9eLW6myIG32+ETNLaU51WgA=";
+    hash = "sha256-EGmFchj4ur5AhEOXEnIIA6Ef6RsU8gvHepak5vThER8=";
   };
 
   nativeBuildInputs = [ setuptools ];

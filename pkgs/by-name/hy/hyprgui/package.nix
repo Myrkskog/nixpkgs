@@ -12,16 +12,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "hyprgui";
-  version = "0.1.8";
+  version = "0.1.7";
 
   src = fetchFromGitHub {
     owner = "hyprutils";
     repo = "hyprgui";
     rev = "refs/tags/v${version}";
-    hash = "sha256-Bg1S/FhduRSSXc3Yd7SkyrmMKff7oh0jw781jTB0J60=";
+    hash = "sha256-toHE+N18PGSp0HdR9tcVPYRdfNv20HQfS7U5fHeJ32s=";
   };
 
-  cargoHash = "sha256-bhtmU0vGptUYrPN/BbbSvSa27Ykma8UI6TS17eiQkyU=";
+  cargoHash = "sha256-Vn059HCHwz0j6ujDVk+GNrHQ7PhqBFb3XfjKLSYlYKg=";
 
   strictDeps = true;
 

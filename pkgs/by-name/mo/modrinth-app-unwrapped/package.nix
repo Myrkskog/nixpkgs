@@ -1,19 +1,19 @@
 {
   lib,
   stdenv,
-  apple-sdk_11,
+  fetchFromGitHub,
+  rustPlatform,
   cacert,
   cargo-tauri,
+  darwin,
   desktop-file-utils,
-  fetchFromGitHub,
-  makeBinaryWrapper,
+  libsoup,
   nodejs,
   openssl,
   pkg-config,
   pnpm_9,
-  rustPlatform,
   turbo,
-  webkitgtk_4_1,
+  webkitgtk_4_0,
 }:
 
 let
@@ -21,40 +21,52 @@ let
 in
 rustPlatform.buildRustPackage rec {
   pname = "modrinth-app-unwrapped";
-  version = "0.8.9";
+  version = "0.8.2";
 
   src = fetchFromGitHub {
     owner = "modrinth";
     repo = "code";
-    rev = "refs/tags/v${version}";
-    hash = "sha256-DR1aPbSqAVhL/m/Maa3mPzNWwK4A1WvDd/PwEMVYn5g=";
+    rev = "a0bd011b808cdc998ef27960f610a8d99550c914";
+    hash = "sha256-zpFJq7if5gOx7jvwpE73lqH4Vpif0MJMPIGsgtThKVk=";
   };
 
   cargoLock = {
     lockFile = ./Cargo.lock;
     outputHashes = {
-      "wry-0.44.1" = "sha256-I1qkUVTu+Yqk1Imo1w5rG/lRSPLITF5BdcjBsPe+jXU=";
+      "sqlx-0.8.0-alpha.0" = "sha256-M1bumCMTzgDcQlgSYB6ypPp794e35ZSQCLzkbrFV4qY=";
+      "tauri-plugin-single-instance-0.0.0" = "sha256-DZWTO2/LevbQJCJbeHbTc2rhesV3bNrs+BoYm2eMakA=";
     };
   };
 
   pnpmDeps = pnpm.fetchDeps {
     inherit pname version src;
-    hash = "sha256-murZ82LV2pGng/Cg08NoWr/mDIVECrf00utVrs6PKRg=";
+    hash = "sha256-Ye9GHvkO+xZj87NIc1JLmhIJFqdkJMg7HvfTltx9krw=";
   };
 
   nativeBuildInputs = [
-    cacert # Required for turbo
+    cacert # required for turbo
     cargo-tauri.hook
     desktop-file-utils
     nodejs
     pkg-config
     pnpm.configHook
-  ] ++ lib.optional stdenv.hostPlatform.isDarwin makeBinaryWrapper;
+  ];
 
   buildInputs =
     [ openssl ]
-    ++ lib.optional stdenv.hostPlatform.isDarwin apple-sdk_11
-    ++ lib.optional stdenv.hostPlatform.isLinux webkitgtk_4_1;
+    ++ lib.optionals stdenv.hostPlatform.isLinux [
+      libsoup
+      webkitgtk_4_0
+    ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin (
+      with darwin.apple_sdk.frameworks;
+      [
+        AppKit
+        CoreServices
+        Security
+        WebKit
+      ]
+    );
 
   env = {
     TURBO_BINARY_PATH = lib.getExe turbo;
@@ -62,7 +74,9 @@ rustPlatform.buildRustPackage rec {
 
   postInstall =
     lib.optionalString stdenv.hostPlatform.isDarwin ''
-      makeBinaryWrapper "$out"/Applications/Modrinth\ App.app/Contents/MacOS/Modrinth\ App "$out"/bin/ModrinthApp
+      mkdir -p "$out"/bin
+      mv "$out"/Applications/Modrinth\ App.app/Contents/MacOS/Modrinth\ App "$out"/bin/modrinth-app
+      ln -s "$out"/bin/modrinth-app "$out"/Applications/Modrinth\ App.app/Contents/MacOS/Modrinth\ App
     ''
     + lib.optionalString stdenv.hostPlatform.isLinux ''
       desktop-file-edit \
@@ -71,7 +85,7 @@ rustPlatform.buildRustPackage rec {
         --set-key="Categories" --set-value="Game;ActionGame;AdventureGame;Simulation;" \
         --set-key="Keywords" --set-value="game;minecraft;mc;" \
         --set-key="StartupWMClass" --set-value="ModrinthApp" \
-        $out/share/applications/Modrinth\ App.desktop
+        $out/share/applications/modrinth-app.desktop
     '';
 
   meta = {
@@ -86,7 +100,7 @@ rustPlatform.buildRustPackage rec {
       unfreeRedistributable
     ];
     maintainers = with lib.maintainers; [ getchoo ];
-    mainProgram = "ModrinthApp";
+    mainProgram = "modrinth-app";
     platforms = with lib; platforms.linux ++ platforms.darwin;
     # This builds on architectures like aarch64, but the launcher itself does not support them yet.
     # Darwin is the only exception

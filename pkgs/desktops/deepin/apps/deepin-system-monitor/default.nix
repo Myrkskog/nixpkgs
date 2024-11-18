@@ -4,14 +4,19 @@
   fetchFromGitHub,
   cmake,
   pkg-config,
+  qttools,
   deepin-gettext-tools,
-  libsForQt5,
+  wrapQtAppsHook,
   dtkwidget,
   qt5integration,
   qt5platform-plugins,
+  qtbase,
+  qtsvg,
+  qtx11extras,
   dde-qt-dbus-factory,
   dde-tray-loader,
   gsettings-qt,
+  polkit-qt,
   procps,
   libpcap,
   libnl,
@@ -55,22 +60,22 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     cmake
     pkg-config
-    libsForQt5.qttools
+    qttools
     deepin-gettext-tools
-    libsForQt5.wrapQtAppsHook
+    wrapQtAppsHook
   ];
 
   buildInputs = [
     dtkwidget
     qt5integration
     qt5platform-plugins
-    libsForQt5.qtbase
-    libsForQt5.qtsvg
-    libsForQt5.qtx11extras
+    qtbase
+    qtsvg
+    qtx11extras
     dde-qt-dbus-factory
     dde-tray-loader
     gsettings-qt
-    libsForQt5.polkit-qt
+    polkit-qt
     procps
     libpcap
     libnl

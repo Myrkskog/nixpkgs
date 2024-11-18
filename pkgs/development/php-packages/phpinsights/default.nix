@@ -4,18 +4,18 @@
   php,
 }:
 
-php.buildComposerProject2 (finalAttrs: {
+php.buildComposerProject (finalAttrs: {
   pname = "phpinsights";
-  version = "2.12.0";
+  version = "2.11.0";
 
   src = fetchFromGitHub {
     owner = "nunomaduro";
     repo = "phpinsights";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-XuvwO/MkGBMWo2hjDPDDYS3JmfWJH75mbNn6oKsMWps=";
+    hash = "sha256-7ATlfAlCFv78JSKg5cD/VcYoq/EAM/6/GjH3lkfVCJ8=";
   };
 
-  vendorHash = "sha256-xeruE3oCrl6usg/7Wmop/w/CrIZfT+zMTQiQJXtBExw=";
+  vendorHash = "sha256-MOq7xmX8wqDk9W3M2gkejyXXPTcVFFgU0ohmDpL0Tvg=";
 
   composerLock = ./composer.lock;
 

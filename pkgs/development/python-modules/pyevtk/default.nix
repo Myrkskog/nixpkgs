@@ -5,7 +5,7 @@
   setuptools,
   numpy,
   pytestCheckHook,
-  pytest-cov-stub,
+  pytest-cov,
 }:
 
 buildPythonPackage rec {
@@ -29,7 +29,7 @@ buildPythonPackage rec {
 
   nativeCheckInputs = [
     pytestCheckHook
-    pytest-cov-stub
+    pytest-cov
   ];
 
   pythonImportsCheck = [ "pyevtk" ];

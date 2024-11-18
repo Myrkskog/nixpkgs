@@ -5,7 +5,6 @@
   jsonschema,
   poetry-core,
   pymacaroons,
-  pytest-cov-stub,
   pytest-mock,
   pytestCheckHook,
   pythonOlder,
@@ -15,32 +14,30 @@
 buildPythonPackage rec {
   pname = "pypitoken";
   version = "7.0.1";
-  pyproject = true;
+  format = "pyproject";
 
   disabled = pythonOlder "3.8";
 
   src = fetchFromGitHub {
     owner = "ewjoachim";
-    repo = "pypitoken";
+    repo = pname;
     rev = "refs/tags/${version}";
     hash = "sha256-1SUR6reZywgFpSdD49E5PjEDNrlvsHH4TK6SkXStUws=";
   };
 
   postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail 'version = "0.0.0"' 'version = "${version}"'
+    sed -i "/--cov/d" setup.cfg
   '';
 
-  build-system = [ poetry-core ];
+  nativeBuildInputs = [ poetry-core ];
 
-  dependencies = [
+  propagatedBuildInputs = [
     pymacaroons
     jsonschema
     typing-extensions
   ];
 
   nativeCheckInputs = [
-    pytest-cov-stub
     pytest-mock
     pytestCheckHook
   ];
@@ -50,8 +47,8 @@ buildPythonPackage rec {
   meta = with lib; {
     description = "Library for generating and manipulating PyPI tokens";
     homepage = "https://pypitoken.readthedocs.io/";
-    changelog = "https://github.com/ewjoachim/pypitoken/releases/tag/${version}";
-    license = licenses.mit;
+    changelog = "https://github.com/ewjoachim/pypitoken/releases/tag/6.0.3${version}";
+    license = with licenses; [ mit ];
     maintainers = with maintainers; [ fab ];
   };
 }

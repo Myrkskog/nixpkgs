@@ -6,10 +6,29 @@
   pkg-config,
   wayland,
   dwayland,
-  libsForQt5,
+  qtbase,
+  qttools,
+  qtx11extras,
+  wrapQtAppsHook,
   extra-cmake-modules,
   gsettings-qt,
   libepoxy,
+  kconfig,
+  kconfigwidgets,
+  kcoreaddons,
+  kcrash,
+  kdbusaddons,
+  kiconthemes,
+  kglobalaccel,
+  kidletime,
+  knotifications,
+  kpackage,
+  plasma-framework,
+  kcmutils,
+  knewstuff,
+  kdecoration,
+  kscreenlocker,
+  breeze-qt5,
   libinput,
   mesa,
   lcms2,
@@ -39,48 +58,47 @@ stdenv.mkDerivation rec {
     cmake
     pkg-config
     extra-cmake-modules
-    libsForQt5.wrapQtAppsHook
-    libsForQt5.qttools
+    wrapQtAppsHook
   ];
 
-  buildInputs =
-    [
-      wayland
-      dwayland
-      libepoxy
-      gsettings-qt
+  buildInputs = [
+    qtbase
+    qttools
+    qtx11extras
+    wayland
+    dwayland
+    libepoxy
+    gsettings-qt
 
-      libinput
-      mesa
-      lcms2
+    kconfig
+    kconfigwidgets
+    kcoreaddons
+    kcrash
+    kdbusaddons
+    kiconthemes
 
-      xorg.libxcb
-      xorg.libXdmcp
-      xorg.libXcursor
-      xorg.xcbutilcursor
-      xorg.libXtst
-      xorg.libXScrnSaver
-    ]
-    ++ (with libsForQt5; [
-      qtbase
-      qtx11extras
-      kconfig
-      kconfigwidgets
-      kcoreaddons
-      kcrash
-      kdbusaddons
-      kiconthemes
-      kglobalaccel
-      kidletime
-      knotifications
-      kpackage
-      plasma-framework
-      kcmutils
-      knewstuff
-      kdecoration
-      kscreenlocker
-      breeze-qt5
-    ]);
+    kglobalaccel
+    kidletime
+    knotifications
+    kpackage
+    plasma-framework
+    kcmutils
+    knewstuff
+    kdecoration
+    kscreenlocker
+
+    breeze-qt5
+    libinput
+    mesa
+    lcms2
+
+    xorg.libxcb
+    xorg.libXdmcp
+    xorg.libXcursor
+    xorg.xcbutilcursor
+    xorg.libXtst
+    xorg.libXScrnSaver
+  ];
 
   cmakeFlags = [ "-DKWIN_BUILD_RUNNERS=OFF" ];
 
@@ -89,11 +107,11 @@ stdenv.mkDerivation rec {
     "dev"
   ];
 
-  meta = {
+  meta = with lib; {
     description = "Fork of kwin, an easy to use, but flexible, composited Window Manager";
     homepage = "https://github.com/linuxdeepin/deepin-kwin";
-    license = lib.licenses.lgpl21Plus;
-    platforms = lib.platforms.linux;
-    maintainers = lib.teams.deepin.members;
+    license = licenses.lgpl21Plus;
+    platforms = platforms.linux;
+    maintainers = teams.deepin.members;
   };
 }

@@ -1,25 +1,28 @@
 {
   lib,
   cmake,
+  darwin,
   fetchFromGitHub,
   installShellFiles,
+  libiconv,
   pkg-config,
   python3Packages,
   rustPlatform,
+  stdenv,
   versionCheckHook,
   nix-update-script,
 }:
 
 python3Packages.buildPythonApplication rec {
   pname = "uv";
-  version = "0.4.30";
+  version = "0.4.29";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "astral-sh";
     repo = "uv";
     rev = "refs/tags/${version}";
-    hash = "sha256-xy/fgy3+YvSdfq5ngPVbAmRpYyJH27Cft5QxBwFQumU=";
+    hash = "sha256-FJJnb4m9yPf1bBvlAyAgQKgAzt4O0tbokYkz4iY6kbg=";
   };
 
   cargoDeps = rustPlatform.importCargoLock {
@@ -39,6 +42,10 @@ python3Packages.buildPythonApplication rec {
     rustPlatform.cargoSetupHook
     rustPlatform.maturinBuildHook
   ];
+
+  buildInputs = [
+    libiconv
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [ darwin.apple_sdk.frameworks.SystemConfiguration ];
 
   dontUseCmakeConfigure = true;
 

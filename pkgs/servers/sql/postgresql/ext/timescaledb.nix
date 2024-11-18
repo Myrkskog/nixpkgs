@@ -1,11 +1,11 @@
-{ lib, stdenv, fetchFromGitHub, cmake, postgresql, openssl, libkrb5, nixosTests, enableUnfree ? true, buildPostgresqlExtension }:
+{ lib, stdenv, fetchFromGitHub, cmake, postgresql, openssl, libkrb5, nixosTests, enableUnfree ? true }:
 
-buildPostgresqlExtension rec {
+stdenv.mkDerivation rec {
   pname = "timescaledb${lib.optionalString (!enableUnfree) "-apache"}";
   version = "2.14.2";
 
   nativeBuildInputs = [ cmake ];
-  buildInputs = [ openssl libkrb5 ];
+  buildInputs = [ postgresql openssl libkrb5 ];
 
   src = fetchFromGitHub {
     owner = "timescale";
@@ -32,7 +32,7 @@ buildPostgresqlExtension rec {
     done
   '';
 
-  passthru.tests = nixosTests.postgresql.timescaledb.passthru.override postgresql;
+  passthru.tests = { inherit (nixosTests) timescaledb; };
 
   meta = with lib; {
     description = "Scales PostgreSQL for time-series data via automatic partitioning across time and space";

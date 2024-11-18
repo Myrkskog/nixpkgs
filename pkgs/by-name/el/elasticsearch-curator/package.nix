@@ -9,14 +9,14 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "elasticsearch-curator";
-  version = "8.0.17";
+  version = "8.0.16";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "elastic";
     repo = "curator";
     rev = "refs/tags/v${version}";
-    hash = "sha256-Y2GXh+LUKU3VcQ51yZZdEIUjfKzRdbu6QKnXshI1Em0=";
+    hash = "sha256-nSBsLzem+eZBM0ebhW1Omh+pYYPYdly/VraM89iJe3E=";
   };
 
   pythonRelaxDeps = [ "es-client" ];

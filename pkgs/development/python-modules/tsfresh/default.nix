@@ -2,7 +2,6 @@
   lib,
   buildPythonPackage,
   fetchFromGitHub,
-  stdenv,
   pythonOlder,
   requests,
   numpy,
@@ -46,7 +45,7 @@ buildPythonPackage rec {
     ./remove-pytest-coverage-flags.patch
   ];
 
-  dependencies = [
+  propagatedBuildInputs = [
     requests
     numpy
     pandas
@@ -72,34 +71,25 @@ buildPythonPackage rec {
     pandas-datareader
   ];
 
-  disabledTests =
-    [
-      # touches network
-      "test_relevant_extraction"
-      "test_characteristics_downloaded_robot_execution_failures"
-      "test_index"
-      "test_binary_target_is_default"
-      "test_characteristics_downloaded_robot_execution_failures"
-      "test_extraction_runs_through"
-      "test_multilabel_target_on_request"
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      # RuntimeError: Cluster failed to start: [Errno 1] Operation not permitted
-      # may require extra privileges on darwin
-      "test_local_dask_cluster_extraction_one_worker"
-      "test_local_dask_cluster_extraction_two_worker"
-      "test_dask_cluster_extraction_one_worker"
-      "test_dask_cluster_extraction_two_workers"
-    ];
+  disabledTests = [
+    # touches network
+    "test_relevant_extraction"
+    "test_characteristics_downloaded_robot_execution_failures"
+    "test_index"
+    "test_binary_target_is_default"
+    "test_characteristics_downloaded_robot_execution_failures"
+    "test_extraction_runs_through"
+    "test_multilabel_target_on_request"
+  ];
 
   pythonImportsCheck = [ "tsfresh" ];
 
-  meta = {
+  meta = with lib; {
     description = "Automatic extraction of relevant features from time series";
     mainProgram = "run_tsfresh";
     homepage = "https://github.com/blue-yonder/tsfresh";
     changelog = "https://github.com/blue-yonder/tsfresh/blob/${src.rev}/CHANGES.rst";
-    license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ mbalatsko ];
+    license = licenses.mit;
+    maintainers = with maintainers; [ mbalatsko ];
   };
 }

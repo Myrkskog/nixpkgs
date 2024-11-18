@@ -1,32 +1,29 @@
 {
   lib,
   stdenv,
-  appstream,
+  fetchFromGitHub,
+  appstream-glib,
   blueprint-compiler,
   desktop-file-utils,
-  fetchFromGitHub,
   gjs,
-  glib,
-  gtk4,
   gtksourceview5,
   libadwaita,
   libspelling,
   meson,
   ninja,
-  nix-update-script,
   pkg-config,
   wrapGAppsHook4,
+  nix-update-script,
 }:
-
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation rec {
   pname = "commit";
-  version = "4.2";
+  version = "4.1";
 
   src = fetchFromGitHub {
     owner = "sonnyp";
     repo = "Commit";
-    rev = "refs/tags/v${finalAttrs.version}";
-    hash = "sha256-L8CI8SAGWhhJyTc8aMPV0s+UevEJGE7n1l7fFnTjdPw=";
+    rev = "v${version}";
+    hash = "sha256-HhyoQ4wrc8dHvVU+MylJgaKu9HwSw+/f6UDTIM2YRNk=";
     fetchSubmodules = true;
   };
 
@@ -46,15 +43,10 @@ stdenv.mkDerivation (finalAttrs: {
     patchShebangs {,.}*
   '';
 
-  strictDeps = true;
-
   nativeBuildInputs = [
-    appstream
+    appstream-glib
     blueprint-compiler
-    desktop-file-utils # for `desktop-file-validate` & `update-desktop-database`
-    gjs
-    glib # for `glib-compile-schemas`
-    gtk4 # for `gtk-update-icon-cache`
+    desktop-file-utils
     meson
     ninja
     pkg-config
@@ -62,13 +54,11 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   buildInputs = [
-    gjs
-    gtksourceview5
     libadwaita
     libspelling
+    gtksourceview5
+    gjs
   ];
-
-  doCheck = stdenv.buildPlatform.canExecute stdenv.hostPlatform;
 
   passthru = {
     updateScript = nix-update-script { };
@@ -82,4 +72,4 @@ stdenv.mkDerivation (finalAttrs: {
     mainProgram = "re.sonny.Commit";
     platforms = lib.platforms.linux;
   };
-})
+}

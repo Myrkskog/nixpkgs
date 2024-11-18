@@ -8,7 +8,7 @@
   wrapGAppsHook3,
   cargo,
   rustc,
-  cargo-tauri_1,
+  cargo-tauri,
   pkg-config,
   esbuild,
   buildGoModule,
@@ -25,13 +25,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "pot";
-  version = "3.0.6";
+  version = "3.0.5";
 
   src = fetchFromGitHub {
     owner = "pot-app";
     repo = "pot-desktop";
     rev = finalAttrs.version;
-    hash = "sha256-PUXZT1kiInM/CXUoRko/5qlrRurGpQ4ym5YMTgFwuxE=";
+    hash = "sha256-Y0/N5xunEXOG+FuZE23xsSwFd6PL1XClV5UIckTYNPs=";
   };
 
   sourceRoot = "${finalAttrs.src.name}/src-tauri";
@@ -43,7 +43,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   pnpmDeps = pnpm.fetchDeps {
     inherit (finalAttrs) pname version src;
-    hash = "sha256-iYQNGRWqXYBU+WIH/Xm8qndgOQ6RKYCtAyi93kb7xrQ=";
+    hash = "sha256-AmMV8Nrn+zH/9bDkFX3Mx5xIQjkoXR8SzkdJRXkxTbA=";
   };
 
   pnpmRoot = "..";
@@ -52,7 +52,7 @@ stdenv.mkDerivation (finalAttrs: {
     lockFile = ./Cargo.lock;
     outputHashes = {
       # All other crates in the same workspace reuse this hash.
-      "tauri-plugin-autostart-0.0.0" = "sha256-rWk9Qz1XmByqPRIgR+f12743uYvnEGTHno9RrxmT8JE=";
+      "tauri-plugin-autostart-0.0.0" = "sha256-fgJvoe3rKom2DdXXgd5rx7kzaWL/uvvye8jfL2SNhrM=";
     };
   };
 
@@ -60,7 +60,7 @@ stdenv.mkDerivation (finalAttrs: {
     rustPlatform.cargoSetupHook
     cargo
     rustc
-    cargo-tauri_1.hook
+    cargo-tauri.hook
     nodejs
     pnpm.configHook
     wrapGAppsHook3
@@ -101,12 +101,12 @@ stdenv.mkDerivation (finalAttrs: {
     chmod +w ..
   '';
 
-  meta = {
+  meta = with lib; {
     description = "Cross-platform translation software";
     mainProgram = "pot";
-    homepage = "https://pot-app.com";
-    platforms = lib.platforms.linux;
-    license = lib.licenses.gpl3Only;
-    maintainers = with lib.maintainers; [ linsui ];
+    homepage = "https://pot.pylogmon.com";
+    platforms = platforms.linux;
+    license = licenses.gpl3Only;
+    maintainers = with maintainers; [ linsui ];
   };
 })

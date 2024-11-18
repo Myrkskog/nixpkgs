@@ -1,7 +1,7 @@
 {
   lib,
   buildPythonPackage,
-  fetchFromGitLab,
+  fetchPypi,
   argon2-cffi,
   bcrypt,
   cryptography,
@@ -14,19 +14,14 @@
 buildPythonPackage rec {
   pname = "passlib";
   version = "1.7.4";
-  pyproject = true;
+  format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
-  src = fetchFromGitLab {
-    domain = "foss.heptapod.net";
-    owner = "python-libs";
-    repo = "passlib";
-    rev = "refs/tags/${version}";
-    hash = "sha256-Mx2Xg/KAEfvfep2B/gWATTiAPJc+f22MTcsEdRpt3n8=";
+  src = fetchPypi {
+    inherit pname version;
+    hash = "sha256-3v1Q9ytlxUAqssVzgwppeOXyAq0NmEeTyN3ixBUuvgQ";
   };
-
-  build-system = [ setuptools ];
 
   dependencies = [ setuptools ];
 
@@ -65,11 +60,10 @@ buildPythonPackage rec {
     "--deselect=passlib/tests/test_handlers.py::sha256_crypt_os_crypt_test::test_82_crypt_support"
   ];
 
-  meta = {
-    changelog = "https://foss.heptapod.net/python-libs/passlib/-/blob/${version}/docs/history/${lib.versions.majorMinor version}.rst";
+  meta = with lib; {
     description = "Password hashing library for Python";
     homepage = "https://foss.heptapod.net/python-libs/passlib";
-    license = lib.licenses.bsdOriginal;
-    maintainers = with lib.maintainers; [ dotlambda ];
+    license = licenses.bsdOriginal;
+    maintainers = [ ];
   };
 }

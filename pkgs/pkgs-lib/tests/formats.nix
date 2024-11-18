@@ -118,7 +118,7 @@ in runBuildTests {
     '';
   };
 
-  yaml_1_1Atoms = shouldPass {
+  yamlAtoms = shouldPass {
     format = formats.yaml {};
     input = {
       null = null;
@@ -129,8 +129,6 @@ in runBuildTests {
       attrs.foo = null;
       list = [ null null ];
       path = ./formats.nix;
-      no = "no";
-      time = "22:30:00";
     };
     expected = ''
       attrs:
@@ -140,11 +138,9 @@ in runBuildTests {
       list:
       - null
       - null
-      'no': 'no'
       'null': null
       path: ${./formats.nix}
       str: foo
-      time: '22:30:00'
       'true': true
     '';
   };

@@ -4,15 +4,15 @@
   fetchFromGitHub,
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation {
   pname = "wine-discord-ipc-bridge";
-  version = "0.0.3";
+  version = "unstable-2023-08-09";
 
   src = fetchFromGitHub {
     owner = "0e4ef622";
     repo = "wine-discord-ipc-bridge";
-    rev = "refs/tags/v${finalAttrs.version}";
-    hash = "sha256-jzsbOKMakNQ6RNMlioX088fGzFBDxOP45Atlsfm2RKg=";
+    rev = "f8198c9d52e708143301017a296f7557c4387127";
+    hash = "sha256-tAknITFlG63+gI5cN9SfUIUZkbIq/MgOPoGIcvoNo4Q=";
   };
 
   postPatch = ''
@@ -33,6 +33,6 @@ stdenv.mkDerivation (finalAttrs: {
     license = licenses.mit;
     maintainers = [ maintainers.uku3lig ];
     mainProgram = "winediscordipcbridge";
-    platforms = [ "i686-windows" ];
+    platforms = [ "mingw32" ];
   };
-})
+}

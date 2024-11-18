@@ -34,7 +34,7 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [ unzip autoPatchelfHook makeWrapper ];
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     curl
     ncurses5
   ];

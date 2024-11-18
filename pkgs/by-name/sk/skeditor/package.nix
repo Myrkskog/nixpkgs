@@ -3,9 +3,6 @@
   buildDotnetModule,
   fetchFromGitHub,
   dotnetCorePackages,
-  makeDesktopItem,
-  copyDesktopItems,
-  iconConvTools,
 }:
 buildDotnetModule rec {
   pname = "skeditor";
@@ -25,36 +22,6 @@ buildDotnetModule rec {
   dotnet-sdk = dotnetCorePackages.sdk_8_0;
   dotnet-runtime = dotnetCorePackages.runtime_8_0;
 
-  nativeBuildInputs = [
-    iconConvTools
-    copyDesktopItems
-  ];
-
-  postInstall = ''
-    icoFileToHiColorTheme SkEditor/Assets/SkEditor.ico skeditor $out
-  '';
-
-  desktopItems = [
-    (makeDesktopItem {
-      name = pname;
-      desktopName = "SkEditor";
-      exec = meta.mainProgram;
-      icon = "SkEditor";
-      startupWMClass = "SkEditor";
-      genericName = "Skript Editor";
-      keywords = [
-        "skeditor"
-        "SkEditor"
-      ];
-      categories = [
-        "Utility"
-        "TextEditor"
-        "Development"
-        "IDE"
-      ];
-    })
-  ];
-
   passthru.updateScript = ./update.sh;
 
   meta = {
@@ -62,7 +29,6 @@ buildDotnetModule rec {
     homepage = "https://github.com/SkEditorTeam/SkEditor";
     changelog = "https://github.com/SkEditorTeam/SkEditor/releases/tag/v${version}";
     license = lib.licenses.mit;
-    mainProgram = "SkEditor";
     maintainers = with lib.maintainers; [ eveeifyeve ];
   };
 }

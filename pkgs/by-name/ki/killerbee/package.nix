@@ -28,18 +28,14 @@ python3.pkgs.buildPythonApplication rec {
     scapy
   ];
 
-  preBuild = ''
-    export HOME=$(mktemp -d)
-  '';
-
   pythonImportsCheck = [ "killerbee" ];
 
-  meta = {
+  meta = with lib; {
     description = "IEEE 802.15.4/ZigBee Security Research Toolkit";
     homepage = "https://github.com/riverloopsec/killerbee";
     changelog = "https://github.com/riverloopsec/killerbee/releases/tag/${version}";
-    license = lib.licenses.bsd3;
-    maintainers = with lib.maintainers; [ fab ];
-    platforms = lib.platforms.linux;
+    license = licenses.bsd3;
+    maintainers = with maintainers; [ fab ];
+    platforms = platforms.linux;
   };
 }

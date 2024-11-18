@@ -51,8 +51,6 @@ stdenv.mkDerivation (finalAttrs: {
     install_name_tool -change "librandombytes-kernel.1.dylib" "$out/lib/librandombytes-kernel.1.dylib" "$out/bin/randombytes-info"
   '';
 
-  passthru.updateScript = ./update.sh;
-
   meta = {
     homepage = "https://randombytes.cr.yp.to/";
     description = "A simple API for applications generating fresh randomness";

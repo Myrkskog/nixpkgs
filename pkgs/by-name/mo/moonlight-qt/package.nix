@@ -3,6 +3,8 @@
   lib,
   fetchFromGitHub,
   fetchpatch,
+  darwin,
+  overrideSDK,
   qt6,
   pkg-config,
   vulkan-headers,
@@ -22,7 +24,25 @@
   nix-update-script,
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+let
+  inherit (darwin.apple_sdk_12_3.frameworks)
+    AVFoundation
+    AppKit
+    AudioUnit
+    Cocoa
+    VideoToolbox
+    ;
+  stdenv' =
+    if stdenv.hostPlatform.isDarwin then
+      overrideSDK stdenv {
+        darwinMinVersion = "11.0";
+        darwinSdkVersion = "12.3";
+      }
+    else
+      stdenv;
+in
+
+stdenv'.mkDerivation (finalAttrs: {
   pname = "moonlight-qt";
   version = "6.1.0";
 
@@ -69,6 +89,13 @@ stdenv.mkDerivation (finalAttrs: {
       qt6.qtwayland
       wayland
       libdrm
+    ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [
+      AVFoundation
+      AppKit
+      AudioUnit
+      Cocoa
+      VideoToolbox
     ];
 
   qmakeFlags = [ "CONFIG+=disable-prebuilts" ];

@@ -11,12 +11,12 @@
 buildPythonPackage rec {
   pname = "paste";
   version = "3.10.1";
-  pyproject = true;
+  format = "setuptools";
 
   disabled = pythonOlder "3.7";
 
   src = fetchFromGitHub {
-    owner = "pasteorg";
+    owner = "cdent";
     repo = "paste";
     rev = "refs/tags/${version}";
     hash = "sha256-NY/h6hbpluEu1XAv3o4mqoG+l0LXfM1dw7+G0Rm1E4o=";
@@ -26,9 +26,7 @@ buildPythonPackage rec {
     patchShebangs tests/cgiapp_data/
   '';
 
-  build-system = [ setuptools ];
-
-  dependencies = [
+  propagatedBuildInputs = [
     setuptools
     six
   ];
@@ -45,7 +43,7 @@ buildPythonPackage rec {
   meta = with lib; {
     description = "Tools for using a Web Server Gateway Interface stack";
     homepage = "https://pythonpaste.readthedocs.io/";
-    changelog = "https://github.com/pasteorg/paste/blob/${version}/docs/news.txt";
+    changelog = "https://github.com/cdent/paste/blob/${version}/docs/news.txt";
     license = licenses.mit;
     maintainers = [ ];
   };

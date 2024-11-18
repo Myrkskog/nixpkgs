@@ -2,7 +2,7 @@
 
 buildFishPlugin {
   pname = "clownfish";
-  version = "0-unstable-2021-01-17";
+  version = "unstable-2021-01-17";
 
   src = fetchFromGitHub {
     owner = "IlanCosman";

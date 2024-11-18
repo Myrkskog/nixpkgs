@@ -29,7 +29,6 @@ let
     lxqt-session = callPackage ./lxqt-session {};
     lxqt-sudo = callPackage ./lxqt-sudo {};
     lxqt-themes = callPackage ./lxqt-themes {};
-    lxqt-wayland-session = callPackage ./lxqt-wayland-session {};
     pavucontrol-qt = callPackage ./pavucontrol-qt {};
     qtermwidget = callPackage ./qtermwidget {};
 
@@ -115,7 +114,6 @@ let
       lxqt-session
       lxqt-sudo
       lxqt-themes
-      lxqt-wayland-session
       pavucontrol-qt
 
       ### CORE 2

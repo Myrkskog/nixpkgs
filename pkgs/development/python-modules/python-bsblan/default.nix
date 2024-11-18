@@ -6,10 +6,9 @@
   backoff,
   buildPythonPackage,
   fetchFromGitHub,
-  mashumaro,
-  orjson,
   packaging,
   poetry-core,
+  mashumaro,
   pytest-asyncio,
   pytest-cov-stub,
   pytest-mock,
@@ -20,7 +19,7 @@
 
 buildPythonPackage rec {
   pname = "python-bsblan";
-  version = "0.6.4";
+  version = "0.6.2";
   pyproject = true;
 
   disabled = pythonOlder "3.12";
@@ -29,7 +28,7 @@ buildPythonPackage rec {
     owner = "liudger";
     repo = "python-bsblan";
     rev = "refs/tags/v${version}";
-    hash = "sha256-mOVX65YRDUac0GoB9+tHIYtvNDGyxT0BSsj8I3OzuBI=";
+    hash = "sha256-/rdYCd5eyFqW96XaIzQOhsApzcTkrI46Gt226sLTLUQ=";
   };
 
   postPatch = ''
@@ -44,9 +43,8 @@ buildPythonPackage rec {
     aiohttp
     async-timeout
     backoff
-    mashumaro
-    orjson
     packaging
+    mashumaro
     yarl
   ];
 

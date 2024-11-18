@@ -23,8 +23,4 @@ stdenv.mkDerivation rec {
 
     runHook postInstall
   '';
-
-  passthru = {
-    inherit conf;
-  };
 }

@@ -2,7 +2,6 @@
   lib,
   aiohttp,
   buildPythonPackage,
-  defusedxml,
   fetchFromGitHub,
   geopy,
   imageio,
@@ -34,7 +33,6 @@ buildPythonPackage rec {
 
   dependencies = [
     aiohttp
-    defusedxml
     geopy
     imageio
     lxml

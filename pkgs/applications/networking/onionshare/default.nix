@@ -82,7 +82,6 @@ rec {
       pysocks
       qrcode
       requests
-      setuptools
       stem
       unidecode
       waitress

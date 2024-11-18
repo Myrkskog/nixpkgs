@@ -6,21 +6,22 @@
 , git
 , zlib
 , sparsehash
+, CoreServices
 }:
 
 stdenv.mkDerivation rec {
   pname = "afsctool";
-  version = "1.7.3";
+  version = "1.7.0";
 
   src = fetchFromGitHub {
     owner = "RJVB";
     repo = pname;
-    rev = "v${version}";
-    hash = "sha256-cZ0P9cygj+5GgkDRpQk7P9z8zh087fpVfrYXMRRVUAI=";
+    rev = version;
+    hash = "sha256-rqca7gpH46hk4MEPMHqYnteYJnGpLS/gu4XP7xWqDzo=";
   };
 
   nativeBuildInputs = [ pkg-config cmake git ];
-  buildInputs = [ zlib sparsehash ];
+  buildInputs = [ zlib sparsehash CoreServices ];
 
   meta = with lib; {
     description = "Utility that allows end-users to leverage HFS+/APFS compression";

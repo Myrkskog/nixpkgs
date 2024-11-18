@@ -1,6 +1,6 @@
-{ lib, stdenv, fetchFromGitHub, curl, postgresql, buildPostgresqlExtension }:
+{ lib, stdenv, fetchFromGitHub, curl, postgresql }:
 
-buildPostgresqlExtension rec {
+stdenv.mkDerivation rec {
   pname = "pgsql-http";
   version = "1.6.0";
 
@@ -11,7 +11,13 @@ buildPostgresqlExtension rec {
     hash = "sha256-CPHfx7vhWfxkXsoKTzyFuTt47BPMvzi/pi1leGcuD60=";
   };
 
-  buildInputs = [ curl ];
+  buildInputs = [ curl postgresql ];
+
+  installPhase = ''
+    install -D -t $out/lib *${postgresql.dlSuffix}
+    install -D -t $out/share/postgresql/extension *.sql
+    install -D -t $out/share/postgresql/extension *.control
+  '';
 
   meta = with lib; {
     description = "HTTP client for PostgreSQL, retrieve a web page from inside the database";

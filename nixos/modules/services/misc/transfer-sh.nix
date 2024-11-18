@@ -69,6 +69,7 @@ in
           wantedBy = [ "multi-user.target" ];
           environment = mapAttrs (_: v: if isBool v then boolToString v else toString v) cfg.settings;
           serviceConfig = {
+            CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
             DevicePolicy = "closed";
             DynamicUser = true;
             ExecStart = "${getExe cfg.package} --provider ${cfg.provider}";

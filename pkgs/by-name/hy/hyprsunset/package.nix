@@ -10,16 +10,16 @@
   wayland,
   wayland-protocols,
   wayland-scanner,
-  nix-update-script,
+  unstableGitUpdater,
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "hyprsunset";
-  version = "0.1.0";
+  version = "0-unstable-2024-10-08";
 
   src = fetchFromGitHub {
     owner = "hyprwm";
     repo = "hyprsunset";
-    rev = "refs/tags/v${finalAttrs.version}";
+    rev = "f535c1894d71d7639d19b52f5b72e1ac840c2512";
     hash = "sha256-SVkcePzX9PAlWsPSGBaxiNFCouiQmGOezhMo0+zhDIQ=";
   };
 
@@ -38,7 +38,7 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   passthru = {
-    updateScript = nix-update-script { };
+    updateScript = unstableGitUpdater { };
   };
 
   meta = {

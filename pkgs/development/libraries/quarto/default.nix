@@ -13,26 +13,27 @@
 , runCommand
 , python3
 , quarto
-, extraPythonPackages ? ps: []
+, extraPythonPackages ? ps: with ps; []
 , sysctl
 }:
 
 stdenv.mkDerivation (final: {
   pname = "quarto";
-  version = "1.6.33";
-
+  version = "1.6.30";
   src = fetchurl {
     url = "https://github.com/quarto-dev/quarto-cli/releases/download/v${final.version}/quarto-${final.version}-linux-amd64.tar.gz";
-    hash = "sha256-0qCQswtBC8R1Q7pHLhJtqCncllqgXo1t9pG97VwCtAI=";
+    sha256 = "sha256-2gzpQbaFLUox4EMo8RO3bwVjhsm239w5hv4Z0UuS1Qs=";
   };
-
-  patches = [
-    ./deno2.patch
-  ];
 
   nativeBuildInputs = [
     makeWrapper
   ];
+
+  postPatch = ''
+    # Compat for Deno >=1.26
+    substituteInPlace bin/quarto.js \
+      --replace-fail ']))?.trim();' ']))?.trim().split(" ")[0];'
+  '';
 
   dontStrip = true;
 

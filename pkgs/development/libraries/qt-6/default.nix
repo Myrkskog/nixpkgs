@@ -7,11 +7,11 @@
 , fetchpatch2
 , makeSetupHook
 , makeWrapper
-, runCommand
 , gst_all_1
 , libglvnd
 , darwin
 , apple-sdk_15
+, apple-sdk_12
 , darwinMinVersionHook
 , buildPackages
 , python3
@@ -32,36 +32,29 @@ let
       });
 
       # Per <https://doc.qt.io/qt-6/macos.html#supported-versions>.
-      # This should reflect the highest “Build Environment” and the
-      # lowest “Target Platform”.
-      darwinVersionInputs = [
-        apple-sdk_15
+      # This should reflect the lowest “Target Platform” and the
+      # highest “Build Environment”.
+      apple-sdk_qt = apple-sdk_15;
+      darwinDeploymentTargetDeps = [
+        apple-sdk_12
         (darwinMinVersionHook "12.0")
       ];
-
-      onlyPluginsAndQml = drv: let
-        drv' = drv.__spliced.targetTarget or drv;
-        inherit (self.qtbase) qtPluginPrefix qtQmlPrefix;
-      in (runCommand "${drv'.name}-only-plugins-qml" { } ''
-          mkdir -p $(dirname "$out/${qtPluginPrefix}")
-          test -d "${drv'}/${qtPluginPrefix}" && ln -s "${drv'}/${qtPluginPrefix}" "$out/${qtPluginPrefix}" || true
-          test -d "${drv'}/${qtQmlPrefix}" && ln -s "${drv'}/${qtQmlPrefix}" "$out/${qtQmlPrefix}" || true
-      '');
     in
     {
 
-      inherit callPackage srcs darwinVersionInputs;
+      inherit callPackage srcs;
 
       qtModule = callPackage ./qtModule.nix {
-        inherit darwinVersionInputs;
+        inherit apple-sdk_qt;
       };
 
       qtbase = callPackage ./modules/qtbase.nix {
         withGtk3 = !stdenv.hostPlatform.isMinGW;
-        inherit darwinVersionInputs;
+        inherit apple-sdk_qt darwinDeploymentTargetDeps;
         inherit (srcs.qtbase) src version;
         patches = [
           ./patches/0001-qtbase-qmake-always-use-libname-instead-of-absolute-.patch
+          ./patches/0002-qtbase-qmake-fix-mkspecs-for-darwin.patch
           ./patches/0003-qtbase-qmake-fix-includedir-in-generated-pkg-config.patch
           ./patches/0004-qtbase-qt-cmake-always-use-cmake-from-path.patch
           ./patches/0005-qtbase-find-tools-in-PATH.patch
@@ -174,27 +167,10 @@ let
       qtwebview = callPackage ./modules/qtwebview.nix { };
 
       wrapQtAppsHook = callPackage
-        ({ makeBinaryWrapper, qtwayland, qtbase }:
-          makeSetupHook
+        ({ makeBinaryWrapper }: makeSetupHook
           {
             name = "wrap-qt6-apps-hook";
             propagatedBuildInputs = [ makeBinaryWrapper ];
-            depsTargetTargetPropagated = [
-              (onlyPluginsAndQml qtbase)
-            ] ++ lib.optionals (lib.meta.availableOn stdenv.targetPlatform qtwayland) [
-              (onlyPluginsAndQml qtwayland)
-            ];
-          } ./hooks/wrap-qt-apps-hook.sh)
-        { };
-
-      wrapQtAppsNoGuiHook = callPackage
-        ({ makeBinaryWrapper, qtbase }: makeSetupHook
-          {
-            name = "wrap-qt6-apps-no-gui-hook";
-            propagatedBuildInputs = [ makeBinaryWrapper ];
-            depsTargetTargetPropagated = [
-              (onlyPluginsAndQml qtbase)
-            ];
           } ./hooks/wrap-qt-apps-hook.sh)
         { };
 

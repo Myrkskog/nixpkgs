@@ -6,7 +6,7 @@
 , python3, pkg-config, libsass
 }:
 
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation rec {
   pname = "admin-fe";
   version = "unstable-2024-04-27";
 
@@ -19,7 +19,7 @@ stdenv.mkDerivation (finalAttrs: {
   };
 
   offlineCache = fetchYarnDeps {
-    yarnLock = finalAttrs.src + "/yarn.lock";
+    yarnLock = src + "/yarn.lock";
     hash = "sha256-acF+YuWXlMZMipD5+XJS+K9vVFRz3wB2fZqc3Hd0Bjc=";
   };
 
@@ -38,7 +38,7 @@ stdenv.mkDerivation (finalAttrs: {
 
     export HOME="$(mktemp -d)"
 
-    yarn config --offline set yarn-offline-mirror ${lib.escapeShellArg finalAttrs.offlineCache}
+    yarn config --offline set yarn-offline-mirror ${lib.escapeShellArg offlineCache}
     fixup-yarn-lock yarn.lock
     substituteInPlace yarn.lock \
       --replace-fail '"git://github.com/adobe-webplatform/eve.git#eef80ed"' '"https://github.com/adobe-webplatform/eve.git#eef80ed"'
@@ -73,10 +73,10 @@ stdenv.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
-  meta = {
+  meta = with lib; {
     description = "Admin interface for Akkoma";
     homepage = "https://akkoma.dev/AkkomaGang/akkoma-fe/";
-    license = lib.licenses.agpl3Only;
-    maintainers = with lib.maintainers; [ mvs ];
+    license = licenses.agpl3Only;
+    maintainers = with maintainers; [ mvs ];
   };
-})
+}

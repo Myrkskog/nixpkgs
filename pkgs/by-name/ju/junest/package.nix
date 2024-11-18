@@ -14,17 +14,11 @@ stdenvNoCC.mkDerivation rec {
   dontBuild = true;
 
   installPhase = ''
-    runHook preInstall
-
     mkdir -p $out/bin
     mkdir -p $out/lib
     cp -r $src/bin/ $out/
     cp -r $src/lib/ $out/
-    # cp -r $src/VERSION $out/
-    substituteInPlace $out/bin/junest --replace-fail '$(cat "$JUNEST_BASE"/VERSION)' ${version}
     substituteInPlace $out/lib/core/common.sh --replace-fail "wget" ${lib.getExe wget}
-
-    runHook postInstall
   '';
 
   meta = {

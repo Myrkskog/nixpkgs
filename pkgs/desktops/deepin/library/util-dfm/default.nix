@@ -4,7 +4,7 @@
   fetchFromGitHub,
   cmake,
   pkg-config,
-  libsForQt5,
+  qtbase,
   libmediainfo,
   libsecret,
   libisoburn,
@@ -31,7 +31,7 @@ stdenv.mkDerivation rec {
   dontWrapQtApps = true;
 
   buildInputs = [
-    libsForQt5.qtbase
+    qtbase
     libmediainfo
     libsecret
     libuuid

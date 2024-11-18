@@ -20,8 +20,6 @@ python3.pkgs.buildPythonApplication rec {
     "scikit-learn"
     "scipy"
     "tqdm"
-    "pandas"
-    "urllib3"
   ];
 
   build-system = [

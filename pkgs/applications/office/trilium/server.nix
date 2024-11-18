@@ -1,4 +1,4 @@
-{ lib, stdenv, autoPatchelfHook, fetchurl, nixosTests
+{ stdenv, autoPatchelfHook, fetchurl, nixosTests
 , metaCommon }:
 
 let
@@ -19,7 +19,7 @@ in stdenv.mkDerivation {
   ];
 
   buildInputs = [
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
   ];
 
   patches = [

@@ -21,7 +21,7 @@ rustPlatform.buildRustPackage rec {
     homepage = "https://github.com/grigio/obs-cmd";
     changelog = "https://github.com/grigio/obs-cmd/releases/tag/${src.rev}";
     license = licenses.mit;
-    maintainers = with maintainers; [ ];
+    maintainers = with maintainers; [ ianmjones ];
     mainProgram = "obs-cmd";
   };
 }

@@ -24,18 +24,13 @@ buildPythonPackage rec {
     hash = "sha256-xGLvc154xnje45Akf7H1qqQRUc03gGVt8AhGlkcP3kY=";
   };
 
-  build-system = [ poetry-core ];
+  nativeBuildInputs = [ poetry-core ];
 
-  dependencies = [
+  propagatedBuildInputs = [
     dbus-python
     flask
     flask-cors
     requests
-  ];
-
-  pythonRelaxDeps = [
-    "flask-cors"
-    "flask"
   ];
 
   # Tests want to use Dbus
@@ -43,10 +38,10 @@ buildPythonPackage rec {
 
   pythonImportsCheck = [ "SwSpotify" ];
 
-  meta = {
+  meta = with lib; {
     description = "Library to get the currently playing song and artist from Spotify";
     homepage = "https://github.com/SwagLyrics/SwSpotify";
-    license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ siraben ];
+    license = licenses.mit;
+    maintainers = with maintainers; [ siraben ];
   };
 }

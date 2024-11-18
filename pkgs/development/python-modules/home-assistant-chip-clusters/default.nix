@@ -1,22 +1,23 @@
 {
   lib,
   buildPythonPackage,
-  home-assistant-chip-wheels,
+  fetchPypi,
   aenum,
   dacite,
 }:
 
 buildPythonPackage rec {
   pname = "home-assistant-chip-clusters";
-  inherit (home-assistant-chip-wheels) version;
+  version = "2024.9.0";
   format = "wheel";
 
-  src = home-assistant-chip-wheels;
-
-  # format=wheel needs src to be a wheel not a folder of wheels
-  preUnpack = ''
-    src=($src/home_assistant_chip_clusters*.whl)
-  '';
+  src = fetchPypi {
+    inherit format version;
+    pname = "home_assistant_chip_clusters";
+    dist = "py3";
+    python = "py3";
+    hash = "sha256-h1umP5bgw1HByiZ0mAd6yWvGHPcvr//G5UhM/qIIkQE=";
+  };
 
   propagatedBuildInputs = [
     aenum
@@ -37,5 +38,6 @@ buildPythonPackage rec {
     changelog = "https://github.com/home-assistant-libs/chip-wheels/releases/tag/${version}";
     license = licenses.asl20;
     maintainers = teams.home-assistant.members;
+    sourceProvenance = with sourceTypes; [ binaryNativeCode ];
   };
 }

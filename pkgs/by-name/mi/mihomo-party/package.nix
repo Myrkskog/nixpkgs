@@ -37,7 +37,7 @@ stdenv.mkDerivation {
     alsa-lib
     openssl
     webkitgtk_4_0
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
   ];
 
   runtimeDependencies = map lib.getLib [

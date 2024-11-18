@@ -1,14 +1,14 @@
-{ lib, stdenv, fetchFromGitHub, mlton, mlkit, futhark }:
+{ lib, stdenv, fetchFromGitHub, mlton, futhark }:
 
 stdenv.mkDerivation rec {
   pname = "smlfut";
-  version = "1.6.2";
+  version = "1.3.0";
 
   src = fetchFromGitHub {
     owner = "diku-dk";
     repo = "smlfut";
     rev = "v${version}";
-    hash = "sha256-0Bqgoyp43Y961BMghJFBUx+1lcM2HHlPDjPyLHquWiE=";
+    hash = "sha256-Oj5+UNtV2GKB2GNsSFKePVpa1msSZwwJI/YElwBSH98=";
   };
 
   enableParallelBuilding = true;
@@ -21,7 +21,7 @@ stdenv.mkDerivation rec {
 
   doCheck = true;
 
-  nativeCheckInputs = [ futhark mlkit ];
+  nativeCheckInputs = [ futhark ];
 
   checkTarget = "run_test";
 

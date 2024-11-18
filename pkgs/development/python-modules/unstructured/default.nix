@@ -51,7 +51,7 @@
   freezegun,
   # , label-studio-sdk
   mypy,
-  pytest-cov-stub,
+  pytest-cov,
   pytest-mock,
   vcrpy,
   grpcio,
@@ -137,7 +137,7 @@ buildPythonPackage {
     click
     freezegun
     mypy
-    pytest-cov-stub
+    pytest-cov
     pytest-mock
     vcrpy
     grpcio

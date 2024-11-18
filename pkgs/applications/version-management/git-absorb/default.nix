@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, rustPlatform, installShellFiles }:
+{ lib, stdenv, fetchFromGitHub, rustPlatform, installShellFiles, Security }:
 
 rustPlatform.buildRustPackage rec {
   pname = "git-absorb";
@@ -12,6 +12,8 @@ rustPlatform.buildRustPackage rec {
   };
 
   nativeBuildInputs = [ installShellFiles ];
+
+  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [ Security ];
 
   cargoHash = "sha256-Y/0In33y4mVTaE9yoBZ/3tRWcsSKgGjTCSHdjScNEj0=";
 

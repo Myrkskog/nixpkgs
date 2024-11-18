@@ -10,7 +10,7 @@
   rustPlatform,
   cargo,
   rustc,
-  cargo-tauri_1,
+  cargo-tauri,
 
   pkg-config,
   wrapGAppsHook3,
@@ -40,7 +40,7 @@ stdenv.mkDerivation (finalAttrs: {
     rustPlatform.cargoSetupHook
     cargo
     rustc
-    cargo-tauri_1.hook
+    cargo-tauri.hook
     pkg-config
     wrapGAppsHook3
   ];

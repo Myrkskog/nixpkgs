@@ -4,57 +4,55 @@
   callPackage,
   rustPlatform,
   fetchFromGitHub,
-  cargo-tauri,
-  gtk4,
-  nix-update-script,
+  darwin,
+  gtk3,
+  libsoup,
   openssl,
   pkg-config,
-  webkitgtk_4_1,
+  webkitgtk_4_0,
 }:
 
 rustPlatform.buildRustPackage rec {
   pname = "tauri";
-  version = "2.1.1";
+  version = "1.7.1-unstable-2024-08-16";
 
   src = fetchFromGitHub {
     owner = "tauri-apps";
     repo = "tauri";
-    rev = "refs/tags/tauri-v${version}";
-    hash = "sha256-HPmViOowP1xAjDJ89YS0BTjNnKI1P0L777ywkqAhhc4=";
+    rev = "2b61447dfc167ec11724f99671bf9e2de0bf6768";
+    hash = "sha256-gKG7olZuTCkW+SKI3FVZqgS6Pp5hFemRJshdma8rpyg=";
   };
 
-  cargoLock = {
-    lockFile = ./Cargo.lock;
-    outputHashes = {
-      "schemars_derive-0.8.21" = "sha256-AmxBKZXm2Eb+w8/hLQWTol5f22uP8UqaIh+LVLbS20g=";
-    };
-  };
+  # Manually specify the sourceRoot since this crate depends on other crates in the workspace. Relevant info at
+  # https://discourse.nixos.org/t/difficulty-using-buildrustpackage-with-a-src-containing-multiple-cargo-workspaces/10202
+  sourceRoot = "${src.name}/tooling/cli";
+
+  cargoHash = "sha256-VXg/dAhwPTSrLwJm8HNzAi/sVF9RqgpHIF3PZe1LjSA=";
 
   nativeBuildInputs = [ pkg-config ];
 
   buildInputs =
     [ openssl ]
     ++ lib.optionals stdenv.hostPlatform.isLinux [
-      gtk4
-      webkitgtk_4_1
-    ];
-
-  cargoBuildFlags = [ "--package tauri-cli" ];
-  cargoTestFlags = cargoBuildFlags;
+      gtk3
+      libsoup
+      webkitgtk_4_0
+    ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin (
+      with darwin.apple_sdk.frameworks;
+      [
+        CoreServices
+        Security
+        SystemConfiguration
+      ]
+    );
 
   passthru = {
     # See ./doc/hooks/tauri.section.md
     hook = callPackage ./hook.nix { };
 
     tests = {
-      hook = callPackage ./test-app.nix { };
-    };
-
-    updateScript = nix-update-script {
-      extraArgs = [
-        "--version-regex"
-        "tauri-v(.*)"
-      ];
+      setupHooks = callPackage ./test-app.nix { };
     };
   };
 

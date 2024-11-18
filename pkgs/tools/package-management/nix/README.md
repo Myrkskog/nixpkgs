@@ -11,7 +11,7 @@ Alternatively, you can request access to the Nix community builder for all platf
 To build all dependent packages, use:
 
 ```
-nixpkgs-review pr <your-pull-request>
+nix-review pr <your-pull-request>
 ```
 
 And to build all important NixOS tests, run:

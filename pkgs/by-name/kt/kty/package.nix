@@ -31,7 +31,7 @@ rustPlatform.buildRustPackage rec {
     [
       openssl
     ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin (
+    ++ lib.optionals stdenv.isDarwin (
       with darwin.apple_sdk;
       [
         frameworks.SystemConfiguration

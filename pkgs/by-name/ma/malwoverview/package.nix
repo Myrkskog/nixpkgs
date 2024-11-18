@@ -5,14 +5,14 @@
 
 python3.pkgs.buildPythonApplication rec {
   pname = "malwoverview";
-  version = "6.0.1";
+  version = "6.0.0";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "alexandreborges";
     repo = "malwoverview";
     rev = "refs/tags/v${version}";
-    hash = "sha256-N9jXMkX3Kt3ldw/QgJRAE2ItrzjXzQthQ9UULRtnN0A=";
+    hash = "sha256-qwNWYwMkxnRczqc4QvniuqwDVgpSlNTVOpzbzYcoMFg=";
   };
 
   pythonRemoveDeps = [

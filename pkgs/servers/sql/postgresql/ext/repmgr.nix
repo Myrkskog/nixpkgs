@@ -5,10 +5,9 @@
 , flex
 , curl
 , json_c
-, buildPostgresqlExtension
 }:
 
-buildPostgresqlExtension rec {
+stdenv.mkDerivation rec {
   pname = "repmgr";
   version = "5.4.1";
 
@@ -21,7 +20,16 @@ buildPostgresqlExtension rec {
 
   nativeBuildInputs = [ flex ];
 
-  buildInputs = postgresql.buildInputs ++ [ curl json_c ];
+  buildInputs = postgresql.buildInputs ++ [ postgresql curl json_c ];
+
+  installPhase = ''
+    mkdir -p $out/{bin,lib,share/postgresql/extension}
+
+    cp repmgr{,d} $out/bin
+    cp *${postgresql.dlSuffix} $out/lib
+    cp *.sql      $out/share/postgresql/extension
+    cp *.control  $out/share/postgresql/extension
+  '';
 
   meta = with lib; {
     homepage = "https://repmgr.org/";

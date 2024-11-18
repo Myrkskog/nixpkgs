@@ -8,16 +8,16 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "tealdeer";
-  version = "1.7.1";
+  version = "1.7.0";
 
   src = fetchFromGitHub {
     owner = "dbrgn";
     repo = "tealdeer";
     rev = "v${version}";
-    hash = "sha256-UYOAj6ft6FHQz06A+K2K+bK3WXQnF5U7TuN95WIXj+M=";
+    hash = "sha256-7Wavhl5irQU9OV7+dslrIQEAcsaqJZ/jWmxaCyTBsEs=";
   };
 
-  cargoHash = "sha256-ZKaq/JqH/Y2Cs9LLnlt1Gawe4R+kvS3vpUcNK95uujk=";
+  cargoHash = "sha256-WCbpwvCXm54/Cv+TscaqseWzTUd8V1DxmS30fUZZTwI=";
 
   buildInputs = lib.optional stdenv.hostPlatform.isDarwin Security;
 

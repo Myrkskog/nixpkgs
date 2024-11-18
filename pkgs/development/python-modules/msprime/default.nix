@@ -28,12 +28,6 @@ buildPythonPackage rec {
     hash = "sha256-2K55gHYWf2Mrj9fszVCJ+qqEyQNMppQi+IZCX5SlsBs=";
   };
 
-  postPatch = ''
-    # build-time constriant, used to ensure forward and backward compat
-    substituteInPlace pyproject.toml \
-      --replace-fail "numpy>=2" "numpy"
-  '';
-
   nativeBuildInputs = [
     gsl
     oldest-supported-numpy

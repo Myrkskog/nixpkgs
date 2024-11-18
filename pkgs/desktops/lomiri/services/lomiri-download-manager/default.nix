@@ -1,29 +1,28 @@
-{
-  stdenv,
-  lib,
-  fetchFromGitLab,
-  fetchpatch,
-  gitUpdater,
-  testers,
-  boost,
-  cmake,
-  cmake-extras,
-  dbus,
-  dbus-test-runner,
-  withDocumentation ? true,
-  doxygen,
-  glog,
-  graphviz,
-  gtest,
-  lomiri-api,
-  pkg-config,
-  python3,
-  qtbase,
-  qtdeclarative,
-  qttools,
-  validatePkgConfig,
-  wrapQtAppsHook,
-  xvfb-run,
+{ stdenv
+, lib
+, fetchFromGitLab
+, fetchpatch
+, gitUpdater
+, testers
+, boost
+, cmake
+, cmake-extras
+, dbus
+, dbus-test-runner
+# Needs qdoc, https://github.com/NixOS/nixpkgs/pull/245379
+, withDocumentation ? false
+, doxygen
+, glog
+, graphviz
+, gtest
+, lomiri-api
+, pkg-config
+, python3
+, qtbase
+, qtdeclarative
+, validatePkgConfig
+, wrapQtAppsHook
+, xvfb-run
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -40,7 +39,9 @@ stdenv.mkDerivation (finalAttrs: {
   outputs = [
     "out"
     "dev"
-  ] ++ lib.optionals withDocumentation [ "doc" ];
+  ] ++ lib.optionals withDocumentation [
+    "doc"
+  ];
 
   patches = [
     # This change seems incomplete, potentially breaks things on systems that don't use AppArmor mediation
@@ -68,18 +69,15 @@ stdenv.mkDerivation (finalAttrs: {
 
   strictDeps = true;
 
-  nativeBuildInputs =
-    [
-      cmake
-      pkg-config
-      validatePkgConfig
-      wrapQtAppsHook
-    ]
-    ++ lib.optionals withDocumentation [
-      doxygen
-      graphviz
-      qttools # qdoc
-    ];
+  nativeBuildInputs = [
+    cmake
+    pkg-config
+    validatePkgConfig
+    wrapQtAppsHook
+  ] ++ lib.optionals withDocumentation [
+    doxygen
+    graphviz
+  ];
 
   buildInputs = [
     boost
@@ -97,7 +95,9 @@ stdenv.mkDerivation (finalAttrs: {
     xvfb-run
   ];
 
-  checkInputs = [ gtest ];
+  checkInputs = [
+    gtest
+  ];
 
   cmakeFlags = [
     (lib.cmakeBool "ENABLE_DOC" withDocumentation)
@@ -106,7 +106,11 @@ stdenv.mkDerivation (finalAttrs: {
     (lib.cmakeBool "ENABLE_WERROR" false)
   ];
 
-  makeTargets = [ "all" ] ++ lib.optionals withDocumentation [ "doc" ];
+  makeTargets = [
+    "all"
+  ] ++ lib.optionals withDocumentation [
+    "doc"
+  ];
 
   doCheck = stdenv.buildPlatform.canExecute stdenv.hostPlatform;
 
@@ -123,13 +127,13 @@ stdenv.mkDerivation (finalAttrs: {
     updateScript = gitUpdater { };
   };
 
-  meta = {
+  meta = with lib; {
     description = "Performs uploads and downloads from a centralized location";
     homepage = "https://gitlab.com/ubports/development/core/lomiri-download-manager";
     changelog = "https://gitlab.com/ubports/development/core/lomiri-download-manager/-/blob/${finalAttrs.version}/ChangeLog";
-    license = lib.licenses.lgpl3Only;
-    maintainers = lib.teams.lomiri.members;
-    platforms = lib.platforms.linux;
+    license = licenses.lgpl3Only;
+    maintainers = teams.lomiri.members;
+    platforms = platforms.linux;
     pkgConfigModules = [
       "ldm-common"
       "lomiri-download-manager-client"

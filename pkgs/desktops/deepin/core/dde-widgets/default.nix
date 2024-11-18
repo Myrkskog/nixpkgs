@@ -5,8 +5,10 @@
   cmake,
   pkg-config,
   dde-qt-dbus-factory,
+  wrapQtAppsHook,
+  qtbase,
+  qtx11extras,
   dtkwidget,
-  libsForQt5,
   qt5integration,
   gtest,
 }:
@@ -26,12 +28,12 @@ stdenv.mkDerivation rec {
     cmake
     pkg-config
     dde-qt-dbus-factory
-    libsForQt5.wrapQtAppsHook
+    wrapQtAppsHook
   ];
 
   buildInputs = [
-    libsForQt5.qtbase
-    libsForQt5.qtx11extras
+    qtbase
+    qtx11extras
     dtkwidget
     qt5integration
     gtest

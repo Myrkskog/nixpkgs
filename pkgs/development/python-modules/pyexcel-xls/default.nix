@@ -8,7 +8,7 @@
   xlwt,
   pyexcel,
   pytestCheckHook,
-  pytest-cov-stub,
+  pytest-cov,
   setuptools,
 }:
 
@@ -45,7 +45,7 @@ buildPythonPackage rec {
   nativeCheckInputs = [
     pytestCheckHook
     pyexcel
-    pytest-cov-stub
+    pytest-cov
   ];
 
   postPatch = ''

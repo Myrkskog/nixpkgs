@@ -8,7 +8,6 @@ python3.pkgs.buildPythonApplication rec {
   pname = "nemo-emblems";
   version = "6.2.1";
 
-  # nixpkgs-update: no auto update
   src = fetchFromGitHub {
     owner = "linuxmint";
     repo = "nemo-extensions";

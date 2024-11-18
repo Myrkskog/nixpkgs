@@ -10,6 +10,7 @@
   falcon,
   fastapi,
   fetchFromGitHub,
+  fetchpatch,
   flask,
   flask-sockets,
   gunicorn,
@@ -32,22 +33,31 @@
 
 buildPythonPackage rec {
   pname = "slack-bolt";
-  version = "1.21.2";
+  version = "1.20.1";
   pyproject = true;
 
-  disabled = pythonOlder "3.9";
+  disabled = pythonOlder "3.7";
 
   src = fetchFromGitHub {
     owner = "slackapi";
     repo = "bolt-python";
     rev = "refs/tags/v${version}";
-    hash = "sha256-4zEg60f3wtLnzrZU4mZMJmF6hO0EiHDTx6iw4WDsx0U=";
+    hash = "sha256-wDiRQ44ei59I8/2JXv2j9VQFthdyS7sSEZLS7trhdp0=";
   };
 
   postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail '"pytest-runner==5.2",' ""
+    substituteInPlace setup.py \
+      --replace-fail "pytest-runner==5.2" ""
   '';
+
+  patches = [
+    # moto >=5 support, https://github.com/slackapi/bolt-python/pull/1046
+    (fetchpatch {
+      name = "moto-support.patch";
+      url = "https://github.com/slackapi/bolt-python/commit/69c2015ef49773de111f184dca9668aefac9e7c0.patch";
+      hash = "sha256-KW7KPeOqanV4n1UOv4DCadplJsqsPY+ju4ry0IvUqpA=";
+    })
+  ];
 
   build-system = [ setuptools ];
 

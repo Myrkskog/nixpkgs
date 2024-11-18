@@ -426,11 +426,9 @@ in
             libvirt/qemu/networks/*.xml \
             libvirt/nwfilter/*.xml );
         do
-            # Intended behavior
-            # shellcheck disable=SC2174
-            mkdir -p "/var/lib/$(dirname "$i")" -m 755
-            if [ ! -e "/var/lib/$i" ]; then
-              cp -pd "${cfg.package}/var/lib/$i" "/var/lib/$i"
+            mkdir -p /var/lib/$(dirname $i) -m 755
+            if [ ! -e /var/lib/$i ]; then
+              cp -pd ${cfg.package}/var/lib/$i /var/lib/$i
             fi
         done
 
@@ -442,7 +440,9 @@ in
           ln -s --force "$emulator" /run/${dirName}/nix-emulators/
         done
 
-        ln -s --force ${cfg.qemu.package}/bin/qemu-pr-helper /run/${dirName}/nix-helpers/
+        for helper in bin/qemu-pr-helper; do
+          ln -s --force ${cfg.qemu.package}/$helper /run/${dirName}/nix-helpers/
+        done
 
         ${optionalString cfg.qemu.ovmf.enable (let
           ovmfpackage = pkgs.buildEnv {

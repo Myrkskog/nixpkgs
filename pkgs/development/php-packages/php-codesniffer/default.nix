@@ -4,19 +4,19 @@
   php,
 }:
 
-php.buildComposerProject2 (finalAttrs: {
+php.buildComposerProject (finalAttrs: {
   pname = "php-codesniffer";
-  version = "3.11.0";
+  version = "3.9.0";
 
   src = fetchFromGitHub {
     owner = "PHPCSStandards";
     repo = "PHP_CodeSniffer";
     rev = "${finalAttrs.version}";
-    hash = "sha256-zCAaXKlKIBF7LK+DHkbzOqnSMj+ZaeafZnSOHOq3Z5Q=";
+    hash = "sha256-HyAb0vfruJWch09GVWtKI+NOTpsUkkLRusFSwZlNHjA=";
   };
 
   composerLock = ./composer.lock;
-  vendorHash = "sha256-r40bINMa9n4Rzlv75QSuz0TiV5qGsdh4mwMqj9BsKTY=";
+  vendorHash = "sha256-nM0sKdD+fc3saPCvU+0KI7HM+LdSi0vJIoutwuZnx/Y=";
 
   meta = {
     changelog = "https://github.com/PHPCSStandards/PHP_CodeSniffer/releases/tag/${finalAttrs.version}";

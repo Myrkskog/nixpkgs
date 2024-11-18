@@ -40,7 +40,7 @@ stdenv.mkDerivation (finalAttrs: {
     # Load-time libraries (loaded from DT_NEEDED section in ELF binary)
     alsa-lib
     gtk3
-    (lib.getLib stdenv.cc.cc)
+    stdenv.cc.cc.lib
     zlib
 
     # Run-time libraries (loaded with dlopen)
@@ -122,6 +122,5 @@ stdenv.mkDerivation (finalAttrs: {
     license = licenses.lgpl3Plus;
     maintainers = with maintainers; [ kira-bruneau ];
     platforms = [ "x86_64-linux" ];
-    sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
   };
 })

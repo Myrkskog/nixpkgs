@@ -10,13 +10,11 @@
   swig,
   iverilog,
   ghdl,
-  stdenv,
-  fetchpatch,
 }:
 
 buildPythonPackage rec {
   pname = "cocotb";
-  version = "1.9.2";
+  version = "1.9.1";
   format = "setuptools";
 
   # pypi source doesn't include tests
@@ -24,7 +22,7 @@ buildPythonPackage rec {
     owner = "cocotb";
     repo = "cocotb";
     rev = "refs/tags/v${version}";
-    hash = "sha256-7KCo7g2I1rfm8QDHRm3ZKloHwjDIICnJCF8KhaFdvqY=";
+    hash = "sha256-+pS+y9rmyJ4laDK5evAtoqr5D0GuHGaX6DpK1qtumnA=";
   };
 
   nativeBuildInputs = [ setuptools-scm ];
@@ -32,25 +30,29 @@ buildPythonPackage rec {
   buildInputs = [ setuptools ];
   propagatedBuildInputs = [ find-libpython ];
 
-  postPatch = ''
-    patchShebangs bin/*.py
+  postPatch =
+    ''
+      patchShebangs bin/*.py
 
-    # POSIX portability (TODO: upstream this)
-    for f in \
-      cocotb/share/makefiles/Makefile.* \
-      cocotb/share/makefiles/simulators/Makefile.*
-    do
-      substituteInPlace $f --replace 'shell which' 'shell command -v'
-    done
+      # POSIX portability (TODO: upstream this)
+      for f in \
+        cocotb/share/makefiles/Makefile.* \
+        cocotb/share/makefiles/simulators/Makefile.*
+      do
+        substituteInPlace $f --replace 'shell which' 'shell command -v'
+      done
 
-    # remove circular dependency cocotb-bus from setup.py
-    substituteInPlace setup.py --replace "'cocotb-bus<1.0'" ""
-  '';
+      # remove circular dependency cocotb-bus from setup.py
+      substituteInPlace setup.py --replace "'cocotb-bus<1.0'" ""
+    '';
 
-  disabledTests = [
-    # https://github.com/cocotb/cocotb/commit/425e1edb8e7133f4a891f2f87552aa2748cd8d2c#diff-4df986cbc2b1a3f22172caea94f959d8fcb4a128105979e6e99c68139469960cL33
-    "test_cocotb"
-    "test_cocotb_parallel"
+  patches = [
+    # Fix "can't link with bundle (MH_BUNDLE) only dylibs (MH_DYLIB) file" error
+    ./0001-Patch-LDCXXSHARED-for-macOS-along-with-LDSHARED.patch
+
+    # For the 1.8.1 release only: remove the test_unicode_handle_assignment_deprecated test
+    # It's more thoroughly removed upstream master with 425e1edb8e7133f4a891f2f87552aa2748cd8d2c
+    ./0002-Patch-remove-test_unicode_handle_assignment_deprecated-test.patch
   ];
 
   nativeCheckInputs = [
@@ -60,7 +62,6 @@ buildPythonPackage rec {
     iverilog
     ghdl
   ];
-
   preCheck = ''
     export PATH=$out/bin:$PATH
     mv cocotb cocotb.hidden
@@ -68,14 +69,13 @@ buildPythonPackage rec {
 
   pythonImportsCheck = [ "cocotb" ];
 
-  meta = {
+  meta = with lib; {
     changelog = "https://github.com/cocotb/cocotb/releases/tag/v${version}";
     description = "Coroutine based cosimulation library for writing VHDL and Verilog testbenches in Python";
     mainProgram = "cocotb-config";
     homepage = "https://github.com/cocotb/cocotb";
-    license = lib.licenses.bsd3;
-    broken = stdenv.hostPlatform.isDarwin;
-    maintainers = with lib.maintainers; [
+    license = licenses.bsd3;
+    maintainers = with maintainers; [
       matthuszagh
       jleightcap
     ];

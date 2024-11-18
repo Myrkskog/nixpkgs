@@ -5,9 +5,6 @@
   cmake,
   qt6,
   nix-update-script,
-  bubblewrap,
-  bash,
-  diffutils,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -26,19 +23,6 @@ stdenv.mkDerivation (finalAttrs: {
     cmake
     qt6.wrapQtAppsHook
   ];
-
-  patches = [
-    ./0001-Bind-Nix-Store.patch
-  ];
-
-  postPatch = ''
-    substituteInPlace src/core/judgingthread.cpp \
-      --replace-fail "/usr/bin/bwrap" "${lib.getExe bubblewrap}"
-    substituteInPlace unix/watcher_unix.cpp \
-      --replace-fail "bash" "${lib.getExe bash}"
-    substituteInPlace src/base/settings.cpp \
-      --replace-fail "/usr/bin/diff" "${diffutils}/bin/diff"
-  '';
 
   cmakeFlags = [
     (lib.cmakeBool "LEMON_QT6" true)
