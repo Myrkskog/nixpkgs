@@ -8,7 +8,7 @@ in
 
 stdenv.mkDerivation rec {
   pname = "iceSL";
-  version = "2.5.4-beta1"; #statically compiles glfw
+  version = "2.5.4-beta3"; #statically compiles glfw
   _versionType = "version=beta";
 
   src =  if stdenv.hostPlatform.system == "x86_64-linux" then fetchzip {
