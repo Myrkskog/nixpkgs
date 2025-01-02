@@ -26,7 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   src = fetchurl {
     url = "https://github.com/VoidForce/sprawl96_QC/archive/refs/tags/${finalAttrs.version}.tar.gz";
-    hash = "";
+    hash = "sha256-V83VTxmy341iPCJo+yo1iUIzh/AtsW69omfQ3jlMWAs=";
   };
 
   sourceRoot = "QSprawl-${finalAttrs.version}/Quake";
