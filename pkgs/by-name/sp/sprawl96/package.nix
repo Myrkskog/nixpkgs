@@ -29,7 +29,7 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-GzewuYhhIKcuQDXGLQUQZSJAfOR+2ruQ0TMsRL761X8=";
   };
 
-  sourceRoot = "${finalAttrs.pname}-${finalAttrs.version}/Quake";
+  sourceRoot = "QSprawl-${finalAttrs.version}/Quake";
 
   nativeBuildInputs = [
     copyDesktopItems
