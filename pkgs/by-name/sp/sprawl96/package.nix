@@ -69,6 +69,7 @@ stdenv.mkDerivation (finalAttrs: {
   preInstall = ''
     mkdir -p "$out/bin"
     mkdir -p "$out/share/quake"
+    mkdir -p "$out/share/quake/id1"
     substituteInPlace Makefile --replace-fail "cp sprawl96.pak /usr/local/games/quake" "cp sprawl96.pak $out/share/quake/sprawl96.pak"
     substituteInPlace Makefile --replace-fail "/usr/local/games/quake" "$out/bin/sprawl96"
   '';
