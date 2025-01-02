@@ -26,7 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   src = fetchurl {
     url = "https://github.com/VoidForce/QSprawl/archive/refs/tags/${finalAttrs.version}.tar.gz";
-    hash = "";
+    hash = "sha256-GzewuYhhIKcuQDXGLQUQZSJAfOR+2ruQ0TMsRL761X8=";
   };
 
   sourceRoot = "${finalAttrs.pname}-${finalAttrs.version}/Quake";
@@ -69,17 +69,17 @@ stdenv.mkDerivation (finalAttrs: {
   preInstall = ''
     mkdir -p "$out/bin"
     mkdir -p "$out/share/quake"
-    substituteInPlace Makefile --replace-fail "cp ironwail.pak /usr/local/games/quake" "cp ironwail.pak $out/share/quake/ironwail.pak"
-    substituteInPlace Makefile --replace-fail "/usr/local/games/quake" "$out/bin/ironwail"
+    substituteInPlace Makefile --replace-fail "cp sprawl96.pak /usr/local/games/quake" "cp sprawl96.pak $out/share/quake/sprawl96.pak"
+    substituteInPlace Makefile --replace-fail "/usr/local/games/quake" "$out/bin/sprawl96"
   '';
 
   enableParallelBuilding = true;
 
   desktopItems = [
     (makeDesktopItem {
-      name = "ironwail";
-      exec = "ironwail";
-      desktopName = "Ironwail";
+      name = "sprawl96";
+      exec = "sprawl96";
+      desktopName = "Sprawl96";
       categories = [ "Game" ];
     })
   ];
@@ -100,6 +100,6 @@ stdenv.mkDerivation (finalAttrs: {
     license = lib.licenses.gpl2Plus;
     platforms = lib.platforms.linux;
     maintainers = [ lib.maintainers.necrophcodr ];
-    mainProgram = "ironwail";
+    mainProgram = "sprawl96";
   };
 })
