@@ -25,11 +25,11 @@ stdenv.mkDerivation (finalAttrs: {
   version = "1.2";
 
   src = fetchurl {
-    url = "https://github.com/VoidForce/sprawl96_QC/archive/refs/tags/${finalAttrs.version}.tar.gz";
-    hash = "sha256-V83VTxmy341iPCJo+yo1iUIzh/AtsW69omfQ3jlMWAs=";
+    url = "https://github.com/VoidForce/QSprawl/archive/refs/tags/${finalAttrs.version}.tar.gz";
+    hash = "sha256-GzewuYhhIKcuQDXGLQUQZSJAfOR+2ruQ0TMsRL761X8=";
   };
 
-  sourceRoot = "sprawl96_QC-${finalAttrs.version}/Quake";
+  sourceRoot = "QSprawl-${finalAttrs.version}/Quake";
 
   nativeBuildInputs = [
     copyDesktopItems
