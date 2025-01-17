@@ -32,7 +32,7 @@ in
 
     src = fetchTarball {
       url = "https://github.com/IgeNiaI/Q-Zandronum/archive/refs/tags/1.4.20.tar.gz";
-      sha256 = "";
+      sha256 = "sha256:078r5isgh4gxmlq5my987iin4phpfbqalm5digmdzczzr8bhddyn";
     };
 
     # q-zandronum tries to download sqlite now when running cmake, don't let it
