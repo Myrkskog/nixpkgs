@@ -2,7 +2,7 @@
   description = "A Nix flake for Windows Plasticity";
 
   inputs.erosanix.url = "github:emmanuelrosa/erosanix";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
+  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
   inputs.nix-gaming.url = "github:fufexan/nix-gaming";
 
   outputs = {
@@ -11,7 +11,7 @@
     erosanix,
     ...
   }: {
-    packages.x86_64-linux.default = let
+    packages.x86_64-linux = let
       pkgs = import "${nixpkgs}" {
         system = "x86_64-linux";
       };
