@@ -113,7 +113,7 @@ let
 in
 
 stdenv'.mkDerivation (finalAttrs: {
-  pname = "blender";
+  pname = "blender-npr";
   version = "npr-prototype";
 
   srcs = [
