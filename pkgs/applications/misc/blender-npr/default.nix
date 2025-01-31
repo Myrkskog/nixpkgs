@@ -8,7 +8,6 @@
   addDriverRunpath,
   alembic,
   blender,
-  blender-npr,
   boost,
   brotli,
   callPackage,
@@ -114,7 +113,7 @@ let
 in
 
 stdenv'.mkDerivation (finalAttrs: {
-  pname = "blender-npr";
+  pname = blender.pname + "-npr";
   version = "prototype";
 
   srcs = [
@@ -396,12 +395,12 @@ stdenv'.mkDerivation (finalAttrs: {
     withPackages =
       f:
       (callPackage ./wrapper.nix { }).override {
-        blender-npr = finalAttrs.finalPackage;
+        blender = finalAttrs.finalPackage;
         extraModules = (f python3Packages);
       };
 
     tests = {
-      render = runCommand "npr-${finalAttrs.pname}-test" { nativeBuildInputs = [ mesa.llvmpipeHook ]; } ''
+      render = runCommand "${finalAttrs.pname}-test" { nativeBuildInputs = [ mesa.llvmpipeHook ]; } ''
         set -euo pipefail
         cat <<'PYTHON' > scene-config.py
         import bpy
