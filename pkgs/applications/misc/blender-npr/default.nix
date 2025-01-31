@@ -113,19 +113,19 @@ let
 in
 
 stdenv'.mkDerivation (finalAttrs: {
-  pname = "blender";
-  version = "npr-prototype";
+  pname = "blender-npr";
+  version = "prototype";
 
   srcs = [
     (fetchzip {
       name = "source";
-      url = "https://projects.blender.org/blender/blender/archive/${finalAttrs.version}.tar.gz";
+      url = "https://projects.blender.org/blender/blender/archive/npr-${finalAttrs.version}.tar.gz";
       hash = "";
     })
     (fetchgit {
       name = "assets";
       url = "https://projects.blender.org/blender/blender-assets.git";
-      rev = "${finalAttrs.version}";
+      rev = npr-"${finalAttrs.version}";
       fetchLFS = true;
       hash = "";
     })
@@ -400,7 +400,7 @@ stdenv'.mkDerivation (finalAttrs: {
       };
 
     tests = {
-      render = runCommand "${finalAttrs.pname}-test" { nativeBuildInputs = [ mesa.llvmpipeHook ]; } ''
+      render = runCommand "npr-${finalAttrs.pname}-test" { nativeBuildInputs = [ mesa.llvmpipeHook ]; } ''
         set -euo pipefail
         cat <<'PYTHON' > scene-config.py
         import bpy
