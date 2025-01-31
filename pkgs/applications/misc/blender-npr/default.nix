@@ -8,6 +8,7 @@
   addDriverRunpath,
   alembic,
   blender,
+  blender-npr,
   boost,
   brotli,
   callPackage,
@@ -395,7 +396,7 @@ stdenv'.mkDerivation (finalAttrs: {
     withPackages =
       f:
       (callPackage ./wrapper.nix { }).override {
-        blender = finalAttrs.finalPackage;
+        blender-npr = finalAttrs.finalPackage;
         extraModules = (f python3Packages);
       };
 
