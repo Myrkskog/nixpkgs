@@ -119,13 +119,13 @@ stdenv'.mkDerivation (finalAttrs: {
   srcs = [
     (fetchzip {
       name = "source";
-      url = "https://projects.blender.org/blender/blender/archive/npr-${finalAttrs.version}.tar.gz";
+      url = "https://projects.blender.org/blender/blender/archive/npr${finalAttrs.version}.tar.gz";
       hash = "";
     })
     (fetchgit {
       name = "assets";
       url = "https://projects.blender.org/blender/blender-assets.git";
-      rev = "npr-${finalAttrs.version}";
+      rev = "npr${finalAttrs.version}";
       fetchLFS = true;
       hash = "";
     })
