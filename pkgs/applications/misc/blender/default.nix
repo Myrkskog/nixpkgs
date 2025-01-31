@@ -113,21 +113,21 @@ let
 in
 
 stdenv'.mkDerivation (finalAttrs: {
-  pname = "blender";
-  version = "4.3.2";
+  pname = blender.pname + "-npr";
+  version = "-prototype";
 
   srcs = [
     (fetchzip {
       name = "source";
-      url = "https://download.blender.org/source/blender-${finalAttrs.version}.tar.xz";
-      hash = "sha256-LCU2JpQbvQ+W/jC+H8J2suh+X5sTLOG9TcE2EeHqVh4=";
+      url = "https://projects.blender.org/blender/blender/archive/npr-${finalAttrs.version}.tar.gz";
+      hash = "";
     })
     (fetchgit {
       name = "assets";
       url = "https://projects.blender.org/blender/blender-assets.git";
-      rev = "v${finalAttrs.version}";
+      rev = "npr-${finalAttrs.version}";
       fetchLFS = true;
-      hash = "sha256-B/UibETNBEUAO1pLCY6wR/Mmdk2o9YyNs6z6pV8dBJI=";
+      hash = "";
     })
   ];
 
