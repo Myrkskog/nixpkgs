@@ -113,7 +113,7 @@ let
 in
 
 stdenv'.mkDerivation (finalAttrs: {
-  pname = blender.pname + "-npr";
+  pname = blender + "-npr";
   version = "-prototype";
 
   srcs = [
