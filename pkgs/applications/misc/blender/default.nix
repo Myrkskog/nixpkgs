@@ -114,20 +114,20 @@ in
 
 stdenv'.mkDerivation (finalAttrs: {
   pname = "blender";
-  version = "npr-prototype";
+  version = "4.2.6";
 
   srcs = [
     (fetchzip {
       name = "source";
-      url = "https://projects.blender.org/blender/blender/archive/v4.3.2.tar.gz";
-      hash = "";
+      url = "https://download.blender.org/source/blender-${finalAttrs.version}.tar.xz";
+      hash = "sha256-s+Sp3xzfePktbyOHTzNZ+jxjK0JU9lDKmOhPS3+wl7Q=";
     })
     (fetchgit {
       name = "assets";
       url = "https://projects.blender.org/blender/blender-assets/";
-      rev = "${finalAttrs.version}";
+      rev = "v${finalAttrs.version}";
       fetchLFS = true;
-      hash = "sha256-6sQ9+upUUvQ9HO/BwYgnIdCghQ+i+ZcEWu4NFJ3Y3A0=";
+      hash = "sha256-scq0vCrs2DRhUYJ2eUVjqH/13nQfRWqw5Pnv0GQ+/w8=";
     })
   ];
 
