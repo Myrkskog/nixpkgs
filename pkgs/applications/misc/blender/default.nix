@@ -127,7 +127,7 @@ stdenv'.mkDerivation (finalAttrs: {
       url = "https://projects.blender.org/blender/blender-assets/";
       rev = "v${finalAttrs.version}";
       fetchLFS = true;
-      hash = "sha256-scq0vCrs2DRhUYJ2eUVjqH/13nQfRWqw5Pnv0GQ+/w8=";
+      hash = "sha256-vepK0inPMuleAJBSipwoI99nMBBiFaK/eSMHDetEtjY=";
     })
   ];
 
