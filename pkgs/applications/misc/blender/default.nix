@@ -124,7 +124,7 @@ stdenv'.mkDerivation (finalAttrs: {
     })
     (fetchgit {
       name = "assets";
-      url = "https://projects.blender.org/blender/blender-assets.git";
+      url = "git+https://projects.blender.org/blender/blender-assets/?ref=npr-prototype&submodules=1";
       rev = "npr${finalAttrs.version}";
       fetchLFS = true;
       hash = "sha256-6sQ9+upUUvQ9HO/BwYgnIdCghQ+i+ZcEWu4NFJ3Y3A0=";
