@@ -119,7 +119,7 @@ stdenv'.mkDerivation (finalAttrs: {
   srcs = [
     (fetchzip {
       name = "source";
-      url = "https://projects.blender.org/blender/blender/archive/${finalAttrs.version}.tar.gz";
+      url = "https://projects.blender.org/blender/blender/archive/v4.3.2.tar.gz";
       hash = "";
     })
     (fetchgit {
