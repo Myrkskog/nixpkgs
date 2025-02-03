@@ -113,19 +113,19 @@ let
 in
 
 stdenv'.mkDerivation (finalAttrs: {
-  pname = "blender-npr";
-  version = "-prototype";
+  pname = "blender";
+  version = "npr-prototype";
 
   srcs = [
     (fetchzip {
       name = "source";
-      url = "https://projects.blender.org/blender/blender/archive/npr${finalAttrs.version}.tar.gz";
+      url = "https://projects.blender.org/blender/blender/archive/${finalAttrs.version}.tar.gz";
       hash = "";
     })
     (fetchgit {
       name = "assets";
       url = "https://projects.blender.org/blender/blender-assets/";
-      rev = "npr${finalAttrs.version}";
+      rev = "${finalAttrs.version}";
       fetchLFS = true;
       hash = "sha256-6sQ9+upUUvQ9HO/BwYgnIdCghQ+i+ZcEWu4NFJ3Y3A0=";
     })
