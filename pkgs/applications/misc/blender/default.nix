@@ -120,7 +120,7 @@ stdenv'.mkDerivation (finalAttrs: {
     (fetchzip {
       name = "source";
       url = "https://download.blender.org/source/blender-${finalAttrs.version}.tar.xz";
-      hash = "sha256-s+Sp3xzfePktbyOHTzNZ+jxjK0JU9lDKmOhPS3+wl7Q=";
+      hash = "sha256-syXLuZ4dJsbvEMwHGdct/sm/xqjtgVxzc0OCYJLFN6Q=";
     })
     (fetchgit {
       name = "assets";
