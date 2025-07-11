@@ -8,14 +8,18 @@ in
 
 stdenv.mkDerivation rec {
   pname = "iceSL";
-  version = "2.5.4-beta3"; #statically compiles glfw
+  version = "2.5.4-beta5"; #statically compiles glfw
   _versionType = "version=beta";
 
   src =  if stdenv.hostPlatform.system == "x86_64-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=amd64";
     extension = "zip";
-    sha256 = "sha256-3k31i6rg798ztMifvBhSiwBVod95z/RlaNh8zMU5bO8=";#"sha256-BtP/lA9EU2H3DvjYny/6842+3nefjZFEz7GP2y+0iJM="; version 2.5.4-beta1
+    sha256 = "";#"sha256-3k31i6rg798ztMifvBhSiwBVod95z/RlaNh8zMU5bO8=";2.5.4-beta3 "sha256-BtP/lA9EU2H3DvjYny/6842+3nefjZFEz7GP2y+0iJM="; 2.5.4-beta1
     #sha256 = "sha256-db4qj7hg0UnrlCnWAijvMWMgncUWPacnip3jdKU6Vl4="; #hash for 2.5.3 stable
+  } else if stdenv.hostPlatform.system == "aarch64-linux" then fetchzip {
+    url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=amd64";
+    extension = "zip";
+    sha256 = "";#"sha256-3k31i6rg798ztMifvBhSiwBVod95z/RlaNh8zMU5bO8=";2.5.4-beta3
   } else if stdenv.hostPlatform.system == "i686-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=i386";
     extension = "zip";
@@ -23,6 +27,7 @@ stdenv.mkDerivation rec {
     #sha256 = ""; #2.5.4-beta1 unavailable 2024-11-08 check back
   } else throw "Unsupported architecture";
 
+  #create directories for your custom printer if it is not packaged with IceSL.
   nativeBuildInputs = [ makeWrapper ];
     installPhase = ''
     cp -r ./ $out
@@ -65,7 +70,7 @@ stdenv.mkDerivation rec {
     homepage = "https://icesl.loria.fr/";
     sourceProvenance = with sourceTypes; [ binaryNativeCode ];
     license = licenses.inria-icesl;
-    platforms = [ "i686-linux" "x86_64-linux" ];
+    platforms = [ "i686-linux" "x86_64-linux" "aarch64-linux" ];
     maintainers = with maintainers; [ mgttlinger ];
   };
 }
