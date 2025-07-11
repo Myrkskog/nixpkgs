@@ -14,12 +14,12 @@ stdenv.mkDerivation rec {
   src =  if stdenv.hostPlatform.system == "x86_64-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=amd64";
     extension = "zip";
-    sha256 = "";#"sha256-3k31i6rg798ztMifvBhSiwBVod95z/RlaNh8zMU5bO8=";2.5.4-beta3 "sha256-BtP/lA9EU2H3DvjYny/6842+3nefjZFEz7GP2y+0iJM="; 2.5.4-beta1
+    sha256 = "sha256-F0KM9GBYDY2BiWCoo7c84M5fFyrP7cXHVT7eLu52BJs=";#"sha256-3k31i6rg798ztMifvBhSiwBVod95z/RlaNh8zMU5bO8=";2.5.4-beta3 "sha256-BtP/lA9EU2H3DvjYny/6842+3nefjZFEz7GP2y+0iJM="; 2.5.4-beta1
     #sha256 = "sha256-db4qj7hg0UnrlCnWAijvMWMgncUWPacnip3jdKU6Vl4="; #hash for 2.5.3 stable
   } else if stdenv.hostPlatform.system == "aarch64-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=amd64";
     extension = "zip";
-    sha256 = "";#"sha256-3k31i6rg798ztMifvBhSiwBVod95z/RlaNh8zMU5bO8=";2.5.4-beta3
+    sha256 = "sha256-F0KM9GBYDY2BiWCoo7c84M5fFyrP7cXHVT7eLu52BJs=";#"sha256-3k31i6rg798ztMifvBhSiwBVod95z/RlaNh8zMU5bO8=";2.5.4-beta3
   } else if stdenv.hostPlatform.system == "i686-linux" then fetchzip {
     url = "https://icesl.loria.fr/assets/other/download.php?build=${version}&${_versionType}&os=i386";
     extension = "zip";
