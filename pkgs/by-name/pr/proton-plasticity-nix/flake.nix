@@ -2,7 +2,7 @@
   description = "A Nix flake for Windows Plasticity";
 
   inputs.erosanix.url = "github:emmanuelrosa/erosanix";
-  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
   inputs.nix-gaming.url = "github:fufexan/nix-gaming";
 
   outputs = {
