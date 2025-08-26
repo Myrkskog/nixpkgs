@@ -31,11 +31,11 @@ in
   mkWindowsApp rec {
     inherit wine pname;
 
-    version = "24.2.6";
+    version = "25.3.2";
 
     src = builtins.fetchurl {
       url = "https://github.com/nkallen/plasticity/releases/download/v${version}/Plasticity.msi";
-      sha256 = "";
+      sha256 = "sha256-NnydJEDm/pq0p7lHDyKJEwREl46edJT2naf3cSnaWIc=";
     };
 
     dontUnpack = true;
